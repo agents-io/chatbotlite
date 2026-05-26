@@ -3,6 +3,8 @@
 > Strategic context that doesn't belong in ROADMAP (what + when) or DESIGN_SYSTEM (visual rules).
 > This file captures the "why" — positioning, audience, tone, what we deliberately don't build.
 > Update when strategic direction shifts. Tactical state lives in CLAUDE.local.md.
+>
+> **For moat analysis, competitive playbooks, and the 6-12 month window thesis, see [STRATEGY.md](./STRATEGY.md).**
 
 ---
 
