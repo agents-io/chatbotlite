@@ -381,11 +381,13 @@ TypeScript types ship in the package.</span></div></div>
 <section class="block" style="text-align: center; border-top: none; padding-top: 24px;">
   <h2>Ship your chatbot today</h2>
   <p class="lede">3 lines. Any website. Free forever.</p>
-  <div class="install-bar" style="margin-bottom: 16px;"><code>npm install chatbotlite</code><button onclick="navigator.clipboard.writeText('npm install chatbotlite').then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button></div>
-  <div class="cta-row">
-    <a class="btn ghost" href="https://github.com/agents-io/chatbotlite">⭐ Star on GitHub</a>
-    <a class="btn ghost" href="/llms.txt">llms.txt</a>
-    <a class="btn ghost" href="/llms-full.txt">API Reference</a>
+  <div class="install-bar" onclick="navigator.clipboard.writeText('npm install chatbotlite').then(()=>{this.querySelector('.hint').textContent='Copied!';setTimeout(()=>this.querySelector('.hint').textContent='Click to copy',1500)})"><code>$ npm install chatbotlite</code><span class="hint">Click to copy</span></div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <a href="https://github.com/agents-io/chatbotlite" style="color:var(--accent);font-size:14px;font-weight:600;text-decoration:none;">⭐ Star on GitHub</a>
+    <span style="color:var(--border);">·</span>
+    <a href="/llms-full.txt" style="color:var(--text-muted);font-size:14px;text-decoration:none;">API Reference</a>
+    <span style="color:var(--border);">·</span>
+    <a href="/llms.txt" style="color:var(--text-muted);font-size:14px;text-decoration:none;">llms.txt</a>
   </div>
 </section>
 
