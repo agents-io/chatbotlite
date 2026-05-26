@@ -6,41 +6,83 @@
 <title>Bayside Coffee Co. — Specialty roaster, shipped fresh</title>
 <style>
   :root {
+    --brand: #8B4513;
+    --brand-light: #fdf4e8;
+    --brand-dark: #5c2d0e;
     --ink: #1a1410;
-    --paper: #fbf6ef;
     --muted: #6b5f55;
-    --accent: #8B4513;
+    --faint: #a39485;
+    --bg: #fbf6ef;
+    --surface: #ffffff;
     --border: #e5dcd0;
+    --serif: 'Georgia', 'Cambria', serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
   }
-  * { box-sizing: border-box; }
-  body { font-family: 'Georgia', 'Cambria', serif; margin: 0; background: var(--paper); color: var(--ink); line-height: 1.55; }
-  header { padding: 18px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .brand { font-size: 20px; font-weight: bold; letter-spacing: -0.01em; }
-  nav a { margin-left: 24px; color: var(--ink); text-decoration: none; font-size: 14px; }
-  nav a:hover { color: var(--accent); }
-  .hero { padding: 80px 32px 60px; max-width: 1100px; margin: 0 auto; text-align: center; }
-  .hero h1 { font-size: 48px; margin: 0 0 16px; letter-spacing: -0.025em; line-height: 1.1; }
-  .hero p { font-size: 18px; color: var(--muted); max-width: 540px; margin: 0 auto 32px; }
-  .cta { display: inline-block; padding: 14px 32px; background: var(--ink); color: var(--paper); text-decoration: none; border-radius: 4px; font-family: -apple-system, sans-serif; font-weight: 600; font-size: 15px; }
-  .cta:hover { background: var(--accent); }
-  .grid { max-width: 1100px; margin: 40px auto; padding: 0 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px; }
-  .product { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .product-img { aspect-ratio: 4/3; background: linear-gradient(135deg, #d4a574, #8b6543); display: flex; align-items: center; justify-content: center; font-size: 64px; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: var(--serif); color: var(--ink); background: var(--bg); line-height: 1.55; }
+  a { color: inherit; text-decoration: none; }
+
+  .header { padding: 16px 28px; border-bottom: 1px solid var(--border); max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+  .header nav { font-family: var(--sans); }
+  .header nav a { margin-left: 24px; color: var(--ink); font-size: 14px; }
+  .header nav a:hover { color: var(--brand); }
+
+  .hero { padding: 100px 28px 80px; text-align: center; max-width: 1100px; margin: 0 auto; }
+  .badge { display: inline-block; padding: 6px 14px; background: var(--brand); color: white; border-radius: 99px; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(36px, 5vw, 56px); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1.1; }
+  .hero p { font-size: 18px; color: var(--muted); max-width: 520px; margin: 0 auto 32px; }
+  .hero .cta { display: inline-block; padding: 14px 32px; background: var(--ink); color: var(--bg); border-radius: 4px; font-family: var(--sans); font-weight: 600; font-size: 15px; transition: background 150ms; }
+  .hero .cta:hover { background: var(--brand); }
+  .hero .sub-line { margin-top: 24px; font-family: var(--sans); font-size: 13px; color: var(--faint); }
+
+  .section { max-width: 1100px; margin: 0 auto; padding: 72px 28px; }
+  .section-title { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
+  .section-sub { color: var(--muted); font-family: var(--sans); font-size: 15px; margin-bottom: 36px; }
+
+  /* Products */
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
+  .product { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: box-shadow 180ms; }
+  .product:hover { box-shadow: 0 8px 24px -8px rgba(0,0,0,0.1); }
+  .product-img { aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 56px; }
   .product-body { padding: 16px 18px 20px; }
-  .product-name { font-size: 16px; font-weight: bold; margin: 0 0 4px; }
-  .product-meta { font-size: 13px; color: var(--muted); margin: 0 0 12px; font-family: -apple-system, sans-serif; }
-  .product-price { font-family: -apple-system, sans-serif; font-size: 18px; font-weight: 600; }
-  footer { padding: 60px 32px; text-align: center; color: var(--muted); border-top: 1px solid var(--border); margin-top: 80px; font-size: 13px; }
-  .badge { display: inline-block; padding: 4px 10px; background: var(--accent); color: white; border-radius: 99px; font-family: -apple-system, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px; }
+  .product-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
+  .product-meta { font-family: var(--sans); font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+  .product-price { font-family: var(--sans); font-size: 20px; font-weight: 600; }
+  .product-tag { display: inline-block; padding: 3px 8px; background: var(--brand-light); color: var(--brand); border-radius: 4px; font-family: var(--sans); font-size: 11px; font-weight: 600; margin-bottom: 8px; }
+
+  /* Story */
+  .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  @media (max-width: 700px) { .story-grid { grid-template-columns: 1fr; } }
+  .story-visual { background: linear-gradient(135deg, var(--brand-light) 0%, var(--brand) 100%); border-radius: 16px; padding: 48px; text-align: center; color: white; font-size: 80px; min-height: 280px; display: flex; align-items: center; justify-content: center; }
+
+  /* Process */
+  .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; counter-reset: step; }
+  .process-step { text-align: center; padding: 24px; }
+  .process-step::before { counter-increment: step; content: counter(step); display: flex; width: 40px; height: 40px; align-items: center; justify-content: center; background: var(--brand); color: white; border-radius: 50%; font-family: var(--sans); font-weight: 700; font-size: 16px; margin: 0 auto 16px; }
+  .process-step h4 { font-size: 15px; margin-bottom: 6px; font-family: var(--sans); }
+  .process-step p { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+
+  /* Reviews */
+  .testimonials { background: var(--brand-light); border-radius: 16px; padding: 48px 32px; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .review { background: var(--surface); border-radius: 12px; padding: 24px; }
+  .review .stars { color: #f59e0b; font-size: 14px; margin-bottom: 10px; }
+  .review .quote { font-family: var(--sans); font-size: 14px; color: var(--ink); margin-bottom: 12px; }
+  .review .author { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+
+  footer { border-top: 1px solid var(--border); padding: 48px 28px; text-align: center; color: var(--faint); font-family: var(--sans); font-size: 13px; max-width: 1100px; margin: 0 auto; }
+  footer a { color: var(--muted); }
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">☕ Bayside Coffee Co.</div>
+
+<header class="header">
+  <div class="logo">☕ Bayside Coffee Co.</div>
   <nav>
     <a href="#shop">Shop</a>
-    <a href="#about">About</a>
-    <a href="#cart">Cart (0)</a>
+    <a href="#story">Our story</a>
+    <a href="#reviews">Reviews</a>
   </nav>
 </header>
 
@@ -49,57 +91,121 @@
   <h1>Coffee that doesn't<br>sit on a shelf.</h1>
   <p>Specialty single-origin and blends, roasted Mondays in small batches and shipped the next day. Across Canada and US.</p>
   <a href="#shop" class="cta">Shop coffee</a>
+  <p class="sub-line">Free shipping on orders over $50 · Roasted in East Vancouver</p>
 </section>
 
-<section class="grid" id="shop">
-  <div class="product">
-    <div class="product-img">🇪🇹</div>
-    <div class="product-body">
-      <p class="product-name">Ethiopia Yirgacheffe</p>
-      <p class="product-meta">Single-origin · 250g · Light roast</p>
-      <p class="product-price">$22</p>
+<section class="section" id="shop">
+  <h2 class="section-title">The lineup</h2>
+  <p class="section-sub">Every bag roasted to order. We don't stock pre-roasted inventory.</p>
+  <div class="products-grid">
+    <div class="product">
+      <div class="product-img" style="background: linear-gradient(135deg, #f5e6d3, #d4a574);">🇪🇹</div>
+      <div class="product-body">
+        <div class="product-tag">Bestseller</div>
+        <p class="product-name">Ethiopia Yirgacheffe</p>
+        <p class="product-meta">Single-origin · 250g · Light roast</p>
+        <p class="product-price">$22</p>
+      </div>
+    </div>
+    <div class="product">
+      <div class="product-img" style="background: linear-gradient(135deg, #3d2b1f, #1a1410);">🌑</div>
+      <div class="product-body">
+        <p class="product-name">Espresso Blend</p>
+        <p class="product-meta">House blend · 250g · Dark roast</p>
+        <p class="product-price">$18</p>
+      </div>
+    </div>
+    <div class="product">
+      <div class="product-img" style="background: linear-gradient(135deg, #c4a882, #8b6543);">🇧🇷</div>
+      <div class="product-body">
+        <p class="product-name">Decaf Brazil</p>
+        <p class="product-meta">Swiss water process · 250g · Medium</p>
+        <p class="product-price">$20</p>
+      </div>
+    </div>
+    <div class="product">
+      <div class="product-img" style="background: linear-gradient(135deg, #d4a574, #8b6543);">📦</div>
+      <div class="product-body">
+        <div class="product-tag">Best value</div>
+        <p class="product-name">House Blend (1kg)</p>
+        <p class="product-meta">Daily drinker · Medium roast</p>
+        <p class="product-price">$52</p>
+      </div>
+    </div>
+    <div class="product">
+      <div class="product-img" style="background: linear-gradient(135deg, #e8ddd0, #c4b5a0);">⚗️</div>
+      <div class="product-body">
+        <p class="product-name">Pour-over Starter Kit</p>
+        <p class="product-meta">Hario V60 + grinder + filters</p>
+        <p class="product-price">$95</p>
+      </div>
     </div>
   </div>
-  <div class="product">
-    <div class="product-img">🌑</div>
-    <div class="product-body">
-      <p class="product-name">Espresso Blend</p>
-      <p class="product-meta">House blend · 250g · Dark roast</p>
-      <p class="product-price">$18</p>
+</section>
+
+<section class="section">
+  <h2 class="section-title">How it works</h2>
+  <p class="section-sub">From green bean to your mug in one week.</p>
+  <div class="process-steps">
+    <div class="process-step">
+      <h4>You order</h4>
+      <p>Pick your beans. We don't roast until your order comes in.</p>
+    </div>
+    <div class="process-step">
+      <h4>We roast Monday</h4>
+      <p>Small-batch roaster, 12kg capacity. Every roast profiled by hand.</p>
+    </div>
+    <div class="process-step">
+      <h4>Ships Tuesday</h4>
+      <p>Packed in valve bags. Most Canadian orders arrive by Thursday.</p>
+    </div>
+    <div class="process-step">
+      <h4>You brew</h4>
+      <p>Peak flavor 5-14 days post-roast. Our chatbot has brewing tips.</p>
     </div>
   </div>
-  <div class="product">
-    <div class="product-img">🇧🇷</div>
-    <div class="product-body">
-      <p class="product-name">Decaf Brazil</p>
-      <p class="product-meta">Swiss water · 250g · Medium</p>
-      <p class="product-price">$20</p>
+</section>
+
+<section class="section" id="story">
+  <div class="story-grid">
+    <div>
+      <h2 class="section-title">Our story</h2>
+      <p style="color: var(--muted); font-family: var(--sans); margin: 16px 0; font-size: 15px;">Started in a garage in East Van in 2021 with a secondhand sample roaster and an obsession with freshness. We kept things small on purpose. No wholesale, no cafe, no middlemen. Just roasted-to-order beans shipped direct.</p>
+      <p style="color: var(--muted); font-family: var(--sans); font-size: 15px;">Today we source from 6 origin countries, roast weekly, and ship across Canada and the US. Still the same garage. Still the same standards.</p>
     </div>
+    <div class="story-visual">☕</div>
   </div>
-  <div class="product">
-    <div class="product-img">📦</div>
-    <div class="product-body">
-      <p class="product-name">House Blend (1kg)</p>
-      <p class="product-meta">Daily drinker · Medium roast</p>
-      <p class="product-price">$52</p>
-    </div>
-  </div>
-  <div class="product">
-    <div class="product-img">⚗️</div>
-    <div class="product-body">
-      <p class="product-name">Pour-over Starter Kit</p>
-      <p class="product-meta">Hario V60 + grinder + filters</p>
-      <p class="product-price">$95</p>
+</section>
+
+<section class="section" id="reviews">
+  <h2 class="section-title">What coffee people say</h2>
+  <div class="testimonials" style="margin-top: 24px;">
+    <div class="testimonials-grid">
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"I've had a subscription for 8 months. Every bag is noticeably fresher than anything in stores. The Ethiopia Yirgacheffe is my desert island coffee."</p>
+        <p class="author">Nina K. — Toronto</p>
+      </div>
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Asked the chatbot for pour-over advice for the Decaf Brazil. Got actual grind settings and water temp, not generic instructions. Impressive."</p>
+        <p class="author">Derek P. — Calgary</p>
+      </div>
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Ordered Sunday night, beans arrived Wednesday in Vancouver. Roast date was the day before shipping. That's real freshness, not marketing."</p>
+        <p class="author">Aisha R. — Vancouver</p>
+      </div>
     </div>
   </div>
 </section>
 
 <footer>
-  <p>Bayside Coffee Co. — A demo storefront powered by chatbotlite.</p>
-  <p>Click the ⚡ bubble to chat with our AI barista.</p>
+  <p>Bayside Coffee Co. — Roasted in East Vancouver, BC</p>
+  <p style="margin-top: 4px;">Free shipping on orders over $50 · Roast-to-order since 2021</p>
+  <p style="margin-top: 12px;">Demo storefront powered by <a href="https://chatbotlite-demos.vercel.app">ChatbotLite</a></p>
 </footer>
 
-<!-- ⬇️ The 3 lines a real shop owner pastes ⬇️ -->
 <script src="https://unpkg.com/chatbotlite@latest/dist/embed.global.js"></script>
 <script>
   chatbotlite.mount({

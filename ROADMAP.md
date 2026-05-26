@@ -43,7 +43,61 @@ Small, additive — backwards-compatible.
 
 ---
 
-## `0.7` — Adapter SDK + Marketing-ready
+## `0.7.0` — Adapter SDK + Logo + Demos + llms-full.txt ✅ (2026-05-25)
+
+| Item | Status |
+|---|---|
+| **Logo**: robot speech bubble (DALL-E → SVG trace), integrated as default launcher icon + landing nav | ✅ |
+| **llms-full.txt**: 35KB complete API reference for LLM consumption, linked from landing page | ✅ |
+| **Adapter SDK** (`chatbotlite/adapters`): 13 URL-only adapters (5 payment + 6 schedule + 2 lead capture) | ✅ |
+| RequestPayment: `paymentLink` + `paymentLabel` generics (backward-compat with `stripeLink`) | ✅ |
+| ScheduleCallback: `bookingUrl` + `bookingLabel` (skip slot picker, show single CTA) | ✅ |
+| 6 demo verticals upgraded to production-grade (200-310 lines each, responsive, testimonials) | ✅ |
+| Landing page: version bump, SVG logo, llms-full.txt link | ✅ |
+| 13 new adapter unit tests (32 total unit + 6 E2E = 38 tests) | ✅ |
+
+---
+
+## Next up — Widget UX features (cherry-picked from Intercom/Tidio/Crisp/tawk.to)
+
+Priority batch (building now):
+
+| # | Feature | Notes |
+|---|---|---|
+| 3 | **Picker messages** | Bot sends structured choice buttons; user taps to reply. Generic `PickerCard` primitive. |
+| 6 | **Session persistence** | `sessionId` + pluggable storage interface (`localStorage` default, customer can wire to own DB/API). Returning visitors see previous conversation. |
+| 7 | **Mobile auto full-screen** | Expand/compact already exists; mobile should auto full-screen on open. |
+| 8 | **AI conversation titles** | Summarize first few messages into a title. Cheap via existing LLM access. |
+| 10 | **Streaming "thinking" indicator** | Partial response preview during streaming, more informative than 3 dots. |
+
+---
+
+## Ideas backlog (no version assigned, validated ideas from competitor research)
+
+Cherry-picked from Intercom, Tidio, tawk.to, Crisp. All can be built as open-source pipeline (customer brings own LLM key).
+
+| # | Idea | Source | Impact | Notes |
+|---|---|---|---|---|
+| 1 | **Home screen with composable cards** | tawk.to Widget Cards | High | Pre-chat menu: KB search, quick-action buttons, branding. `homeCards={[...]}` prop. Reduces unnecessary AI calls. |
+| 2 | **In-widget knowledge base search** | Intercom Help space | High | Expose `knowledge` markdown as searchable card inside widget. Zero API cost for FAQ lookups. |
+| 4 | **Proactive message triggers** | Intercom/Crisp | Medium | Time-on-page or scroll triggers that pop a greeting bubble without opening widget. `proactive: { delay, message }` prop. |
+| 5 | **Bot vs Human label** | Intercom | Medium | Visual distinction: grey bubble for bot, named avatar for human. `senderType: "bot" \| "human" \| "system"` on messages. Foundation for human handoff feature. |
+| 9 | **WCAG accessibility** | tawk.to | Medium | `aria-live`, `role="log"`, keyboard focus trap, high-contrast mode. Legal requirement in some markets. |
+| — | **Human handoff** | All four | High | Bot-to-human escalation when AI can't answer. Requires session persistence + real-time channel (WebSocket/SSE). |
+| — | **Conversation analytics** | Intercom/Crisp | Medium | Resolved-without-human rate, common questions, tool conversion. Already in 1.0 vision. |
+| — | **Multi-language UI** | Tidio | Low | Header, error states, footer copy in customer's locale. Already in 1.0 vision. |
+
+### Explicitly NOT doing
+
+- ❌ Multi-space navigation (Intercom 6-tab portal) — too bloated for a drop-in widget
+- ❌ Bouncing attention-grabber animations (tawk.to) — spammy, conflicts with "calm messenger" positioning
+- ❌ Pre-chat forms that block conversation — kills conversion; collect info later via tool cards
+- ❌ Per-resolution pricing — we are BYOK (bring your own key), never meter the widget layer
+- ❌ Heavy bundle — budget: <50KB gzipped
+
+---
+
+## Previous `0.7` plan (subsumed into 0.7.0 above)
 
 Goal: make the "30-second integration" claim true for the top 3 verticals.
 

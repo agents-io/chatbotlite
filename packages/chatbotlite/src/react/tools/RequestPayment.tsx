@@ -15,8 +15,12 @@ export interface RequestPaymentProps {
   showInterac?: boolean;
   /** Optional Stripe Payment Link URL — falls back to this if Elements not configured. */
   stripeLink?: string;
+  /** Generic payment link URL (PayPal, Square, LemonSqueezy, Gumroad, etc). Opens in new tab on click. */
+  paymentLink?: string;
+  /** Custom label for the payment button (default "Pay by card"). */
+  paymentLabel?: string;
   /** Called when user picks a method. Customer wires actual checkout. */
-  onPick: (method: "interac" | "stripe") => Promise<void> | void;
+  onPick: (method: "interac" | "stripe" | string) => Promise<void> | void;
   submitting?: boolean;
   submitted?: boolean;
   submittedMethod?: "interac" | "stripe";
@@ -38,9 +42,12 @@ export function RequestPayment(props: RequestPaymentProps): ReactElement {
   const {
     amount, currency = "USD", reason,
     primary, border, surface, textBody, textMuted,
-    showInterac = false, stripeLink, onPick,
+    showInterac = false, stripeLink, paymentLink, paymentLabel,
+    onPick,
     submitting = false, submitted = false, submittedMethod
   } = props;
+  const resolvedLink = paymentLink || stripeLink;
+  const resolvedLabel = paymentLabel || "Pay by card";
   const formatted = formatAmount(amount, currency);
 
   if (submitted) {
@@ -108,7 +115,7 @@ export function RequestPayment(props: RequestPaymentProps): ReactElement {
           </button>
         )}
         <button
-          onClick={() => { if (stripeLink) window.open(stripeLink, "_blank", "noopener"); void onPick("stripe"); }}
+          onClick={() => { if (resolvedLink) window.open(resolvedLink, "_blank", "noopener"); void onPick("stripe"); }}
           disabled={submitting}
           style={{
             display: "flex",
@@ -139,7 +146,7 @@ export function RequestPayment(props: RequestPaymentProps): ReactElement {
             </svg>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: textBody }}>Pay by card</p>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: textBody }}>{resolvedLabel}</p>
             <p style={{ margin: "2px 0 0", fontSize: 11, color: textMuted }}>Visa · Mastercard · Amex</p>
           </div>
         </button>

@@ -5,47 +5,274 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MaxTax — Online personal tax filing in Canada</title>
 <style>
-  body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: #fef2f2; color: #0f172a; }
-  header { padding: 16px 32px; background: white; border-bottom: 1px solid #fecaca; display: flex; justify-content: space-between; align-items: center; }
-  .brand { font-size: 18px; font-weight: bold; }
-  .brand .red { color: #dc2626; }
-  nav a { margin-left: 20px; color: #0f172a; text-decoration: none; font-size: 14px; }
-  .hero { padding: 60px 32px 30px; text-align: center; max-width: 720px; margin: 0 auto; }
-  h1 { font-size: 38px; margin: 0 0 12px; letter-spacing: -0.02em; }
-  .sub { color: #64748b; font-size: 17px; }
-  .pricing { max-width: 880px; margin: 40px auto; padding: 0 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
-  .tier { background: white; padding: 20px; border-radius: 12px; border: 1px solid #fecaca; text-align: center; }
-  .tier h3 { margin: 0 0 8px; font-size: 14px; color: #64748b; }
-  .tier .price { font-size: 28px; font-weight: 700; color: #dc2626; }
-  .tier .price small { font-size: 14px; color: #64748b; font-weight: 400; }
-  .tier p { color: #64748b; font-size: 13px; margin: 8px 0 0; }
-  footer { padding: 40px 32px; text-align: center; color: #94a3b8; font-size: 13px; }
+  :root {
+    --accent: #dc2626;
+    --accent-light: #fef2f2;
+    --accent-medium: #fecaca;
+    --accent-dark: #b91c1c;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --bg: #fafafa;
+    --white: #ffffff;
+    --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Header */
+  .site-header { background: var(--white); padding: 0 32px; height: 64px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; position: sticky; top: 0; z-index: 50; }
+  .brand { font-size: 20px; font-weight: 800; text-decoration: none; color: var(--text); letter-spacing: -0.02em; }
+  .brand .red { color: var(--accent); }
+  nav { display: flex; gap: 24px; align-items: center; }
+  nav a { color: var(--text); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  nav a:hover { color: var(--accent); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 18px; border-radius: 6px; font-size: 13px; }
+  .nav-cta:hover { background: var(--accent-dark); }
+  .lang-links { display: flex; gap: 12px; font-size: 13px; }
+  .lang-links a { color: var(--text-muted); padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 4px; }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 80px 32px 72px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; top: 50%; left: 50%; width: 800px; height: 800px; background: radial-gradient(circle, rgba(220,38,38,0.12) 0%, transparent 70%); transform: translate(-50%, -50%); }
+  .hero-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.15; }
+  .hero h1 .highlight { color: var(--accent); }
+  .hero .subtitle { font-size: 18px; opacity: 0.8; margin-bottom: 28px; line-height: 1.5; }
+  .hero-cta { display: inline-block; background: var(--accent); color: white; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 15px; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; }
+  .hero-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(220,38,38,0.3); }
+  .hero-trust { display: flex; justify-content: center; gap: 32px; margin-top: 32px; font-size: 13px; opacity: 0.7; }
+
+  /* Process */
+  .section { max-width: 960px; margin: 0 auto; padding: 64px 32px; }
+  .section-label { text-align: center; font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .section-title { text-align: center; font-size: 30px; font-weight: 700; margin-bottom: 40px; letter-spacing: -0.01em; }
+  .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  .step { text-align: center; padding: 24px 16px; }
+  .step-num { width: 40px; height: 40px; background: var(--accent-light); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 14px; }
+  .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .step p { font-size: 14px; color: var(--text-muted); }
+
+  /* Pricing */
+  .pricing-bg { background: var(--accent-light); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .tier { background: var(--white); padding: 28px 24px; border-radius: 12px; border: 1px solid var(--accent-medium); text-align: center; transition: box-shadow 0.2s; position: relative; }
+  .tier:hover { box-shadow: 0 4px 20px rgba(220,38,38,0.08); }
+  .tier.popular { border: 2px solid var(--accent); }
+  .tier.popular::before { content: "Most popular"; position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; font-size: 11px; font-weight: 600; padding: 2px 12px; border-radius: 10px; }
+  .tier-name { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .tier-price { font-size: 36px; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .tier-price small { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+  .tier-desc { color: var(--text-muted); font-size: 14px; margin-top: 8px; }
+
+  /* Testimonials */
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .testimonial { padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; background: var(--white); }
+  .testimonial .stars { color: #f59e0b; font-size: 14px; margin-bottom: 10px; }
+  .testimonial blockquote { font-size: 14px; line-height: 1.6; color: var(--text); margin-bottom: 12px; font-style: italic; }
+  .testimonial .author { font-size: 13px; font-weight: 600; }
+  .testimonial .author span { font-weight: 400; color: var(--text-muted); }
+
+  /* Languages */
+  .languages-strip { background: #0f172a; color: white; text-align: center; padding: 40px 32px; }
+  .languages-strip h2 { font-size: 22px; margin-bottom: 8px; }
+  .languages-strip p { font-size: 15px; opacity: 0.7; max-width: 520px; margin: 0 auto; }
+  .lang-badges { display: flex; justify-content: center; gap: 16px; margin-top: 20px; }
+  .lang-badge { background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
+
+  /* About */
+  .about-content { max-width: 640px; margin: 0 auto; text-align: center; }
+  .about-content p { font-size: 15px; color: var(--text-muted); margin-bottom: 12px; }
+  .cert-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); border: 1px solid var(--accent-medium); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--accent-dark); margin-top: 12px; }
+
+  /* Contact */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  .contact-block h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .contact-block p { font-size: 14px; color: var(--text-muted); }
+
+  /* Footer */
+  .site-footer { background: #0f172a; color: rgba(255,255,255,0.7); padding: 40px 32px; }
+  .footer-inner { max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-brand { color: white; font-weight: 700; font-size: 16px; }
+  .footer-brand .red { color: var(--accent); }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; }
+  .footer-links a:hover { color: white; }
+  .footer-copy { width: 100%; text-align: center; font-size: 12px; margin-top: 16px; opacity: 0.5; }
+
+  /* Mobile */
+  .mobile-menu { display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text); }
+  @media (max-width: 640px) {
+    nav { display: none; }
+    .mobile-menu { display: block; }
+    .hero h1 { font-size: 28px; }
+    .hero { padding: 56px 20px 48px; }
+    .section { padding: 48px 20px; }
+    .hero-trust { flex-direction: column; gap: 6px; }
+    .lang-badges { flex-wrap: wrap; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">Max<span class="red">Tax</span></div>
+
+<header class="site-header">
+  <a class="brand" href="#">Max<span class="red">Tax</span></a>
   <nav>
-    <a href="#">Pricing</a>
-    <a href="#">Process</a>
-    <a href="#">中文</a>
-    <a href="#">ਪੰਜਾਬੀ</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#process">How It Works</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#contact">Contact</a>
+    <div class="lang-links">
+      <a href="#">中文</a>
+      <a href="#">ਪੰਜਾਬੀ</a>
+    </div>
+    <a href="#" class="nav-cta">Start Filing</a>
   </nav>
+  <button class="mobile-menu" aria-label="Menu">&#9776;</button>
 </header>
 
 <section class="hero">
-  <h1>Send us your documents. We take it from here.</h1>
-  <p class="sub">Personal tax returns handled for you, start to finish. 100% online, from $40.</p>
+  <div class="hero-inner">
+    <h1>Send us your documents.<br><span class="highlight">We take it from here.</span></h1>
+    <p class="subtitle">Personal tax returns handled by real CPAs, 100% online. CRA EFILE certified. From $40.</p>
+    <a href="#" class="hero-cta">File My Taxes</a>
+    <div class="hero-trust">
+      <span>CRA EFILE Certified</span>
+      <span>100% Online</span>
+      <span>3 Languages</span>
+      <span>Since 2019</span>
+    </div>
+  </div>
 </section>
 
-<section class="pricing">
-  <div class="tier"><h3>Student / First-time</h3><div class="price">$40</div><p>1 income source · tuition credits</p></div>
-  <div class="tier"><h3>Simple T1</h3><div class="price">$50</div><p>Employment + standard credits</p></div>
-  <div class="tier"><h3>Standard T1</h3><div class="price">$80</div><p>Multiple T4s + investments</p></div>
-  <div class="tier"><h3>Complex T1</h3><div class="price">$120<small>+</small></div><p>Self-employed / rental / catch-up</p></div>
+<section class="section" id="process">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">Four steps. No office visit.</h2>
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Upload documents</h3>
+      <p>T4s, T5s, receipts. Snap a photo or upload PDFs. We accept everything.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>CPA reviews</h3>
+      <p>A licensed CPA reviews your return line-by-line and optimizes deductions.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>We EFILE</h3>
+      <p>Your return is filed electronically with CRA. You get confirmation same day.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Get your refund</h3>
+      <p>Direct deposit in 7-14 business days. We follow up if CRA has questions.</p>
+    </div>
+  </div>
 </section>
 
-<footer>MaxTax — Demo tax service powered by chatbotlite.</footer>
+<section class="section pricing-bg" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title">Transparent, flat-rate pricing</h2>
+  <div class="pricing-grid">
+    <div class="tier">
+      <div class="tier-name">Student / First-time</div>
+      <div class="tier-price">$40</div>
+      <div class="tier-desc">1 income source, tuition credits, simple deductions</div>
+    </div>
+    <div class="tier">
+      <div class="tier-name">Simple T1</div>
+      <div class="tier-price">$50</div>
+      <div class="tier-desc">Employment income + standard credits and deductions</div>
+    </div>
+    <div class="tier popular">
+      <div class="tier-name">Standard T1</div>
+      <div class="tier-price">$80</div>
+      <div class="tier-desc">Multiple T4s, investment income, RRSP, donations</div>
+    </div>
+    <div class="tier">
+      <div class="tier-name">Complex T1</div>
+      <div class="tier-price">$120<small>+</small></div>
+      <div class="tier-desc">Self-employed, rental income, prior-year catch-up</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="reviews">
+  <div class="section-label">Reviews</div>
+  <h2 class="section-title">What clients say</h2>
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"First year filing in Canada and I was totally lost. Uploaded my T4 and they handled everything. Got $1,200 back that I didn't even know I was owed."</blockquote>
+      <div class="author">Amira Hassan <span>Student tier</span></div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"我用中文同佢哋溝通，完全冇問題。CPA好仔細咁check過每一行，幫我搵到額外嘅扣稅。下年一定會再用。"</blockquote>
+      <div class="author">Kevin Wong <span>Standard tier</span></div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"Self-employed with rental income, so my taxes are always a headache. MaxTax sorted it all out in 3 days. Their CPA even called to clarify one receipt. Way better than doing it myself."</blockquote>
+      <div class="author">Raj Dhillon <span>Complex tier</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="languages-strip">
+  <h2>We speak your language</h2>
+  <p>Our team serves clients in three languages. Ask questions, upload documents, and get support in whichever you prefer.</p>
+  <div class="lang-badges">
+    <span class="lang-badge">English</span>
+    <span class="lang-badge">中文 (Chinese)</span>
+    <span class="lang-badge">ਪੰਜਾਬੀ (Punjabi)</span>
+  </div>
+</div>
+
+<section class="section" id="about">
+  <div class="section-label">About MaxTax</div>
+  <h2 class="section-title">Real CPAs, not software guesses</h2>
+  <div class="about-content">
+    <p>MaxTax is an online-only tax preparation service based in Canada. Every return is reviewed by a licensed CPA before filing. We started in 2019 to make professional tax prep accessible to people who can't take a day off work to sit in an accountant's office.</p>
+    <p>We're CRA EFILE certified and serve clients in all provinces and territories.</p>
+    <div class="cert-badge">CRA EFILE Certified</div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="section-label">Contact</div>
+  <h2 class="section-title">Get in touch</h2>
+  <div class="contact-grid">
+    <div class="contact-block">
+      <h3>Email</h3>
+      <p>hello@maxtax.ca<br>Response within 1 business day</p>
+    </div>
+    <div class="contact-block">
+      <h3>Phone</h3>
+      <p>(604) 555-0298<br>Mon-Fri 9 AM - 6 PM PT</p>
+    </div>
+    <div class="contact-block">
+      <h3>Tax Season Hours</h3>
+      <p>Feb 1 - Apr 30: 7 days/week<br>Off-season: Mon-Fri only</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Max<span class="red">Tax</span></div>
+    <div class="footer-links">
+      <a href="#pricing">Pricing</a>
+      <a href="#process">Process</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 MaxTax Canada Inc. All rights reserved. Demo tax service powered by ChatbotLite.</div>
+  </div>
+</footer>
 
 <script src="https://unpkg.com/chatbotlite@latest/dist/embed.global.js"></script>
 <script>

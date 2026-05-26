@@ -7,19 +7,28 @@ import { parseToolMarkers, stripToolMarkers, type ToolMarker } from "../core/too
 import { UploadForReview } from "./tools/UploadForReview.js";
 import { ScheduleCallback } from "./tools/ScheduleCallback.js";
 import { RequestPayment } from "./tools/RequestPayment.js";
+import { PickerMessage } from "./tools/PickerMessage.js";
+import { LocalChatStorage, type ChatStorage, type StoredMessage } from "./storage.js";
 
 export interface ChatWidgetTools {
   uploadForReview?: {
     handler: (args: { files: File[]; purpose: string }) => Promise<{ status?: string; message?: string; [k: string]: unknown }>;
   };
   scheduleCallback?: {
+    bookingUrl?: string;
+    bookingLabel?: string;
     getAvailableSlots: (args: { durationMin: number; timezone: string }) => Promise<string[]>;
     onConfirm: (args: { slot: string }) => Promise<{ confirmedAt?: string; joinUrl?: string; [k: string]: unknown }>;
   };
   requestPayment?: {
     showInterac?: boolean;
     stripeLink?: string;
-    onPick: (args: { method: "interac" | "stripe"; amount: number; currency: string }) => Promise<{ status?: string; [k: string]: unknown }>;
+    paymentLink?: string;
+    paymentLabel?: string;
+    onPick: (args: { method: "interac" | "stripe" | string; amount: number; currency: string }) => Promise<{ status?: string; [k: string]: unknown }>;
+  };
+  pickerMessage?: {
+    onPick: (args: { value: string; prompt?: string }) => Promise<{ status?: string; [k: string]: unknown }>;
   };
 }
 
@@ -81,6 +90,10 @@ interface ChatWidgetCommonProps {
    * launcher-first behaviour so the chrome stays unobtrusive.
    */
   defaultOpen?: boolean;
+  /** Session ID for conversation persistence. When set, messages are saved/loaded via storage. */
+  sessionId?: string;
+  /** Pluggable storage backend. Default: localStorage. Pass your own to wire to a DB or API. */
+  storage?: ChatStorage;
 }
 
 interface ChatWidgetDirectProps extends ChatWidgetCommonProps {
@@ -264,6 +277,9 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
     position = "bottom-right"
   } = props;
 
+  const sessionId = props.sessionId;
+  const storageBackend = useMemo(() => props.storage ?? new LocalChatStorage(), [props.storage]);
+
   const isEndpointMode = "endpoint" in props && typeof props.endpoint === "string";
   const resolvedTitle = title ?? "Chat";
   const resolvedGreeting = greeting ?? "Hi! How can we help?";
@@ -312,6 +328,50 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: "g0", role: "assistant", content: resolvedGreeting, ts: Date.now() }
   ]);
+  const [sessionLoaded, setSessionLoaded] = useState(!sessionId);
+  const [conversationTitle, setConversationTitle] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    let cancelled = false;
+    storageBackend.loadMessages(sessionId).then((stored) => {
+      if (cancelled || stored.length === 0) { setSessionLoaded(true); return; }
+      const restored: ChatMessage[] = [
+        { id: "g0", role: "assistant", content: resolvedGreeting, ts: stored[0]!.timestamp - 1 },
+        ...stored.map((m) => ({ id: m.id, role: m.role, content: m.content, ts: m.timestamp }))
+      ];
+      setMessages(restored);
+      setSessionLoaded(true);
+    }).catch(() => setSessionLoaded(true));
+    return () => { cancelled = true; };
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (!sessionId || !sessionLoaded) return;
+    const toStore: StoredMessage[] = messages
+      .filter((m) => m.id !== "g0" && m.content && (m.role === "user" || m.role === "assistant"))
+      .map((m) => ({ id: m.id, role: m.role as "user" | "assistant", content: m.content, timestamp: m.ts }));
+    if (toStore.length > 0) {
+      storageBackend.saveMessages(sessionId, toStore).catch(() => {});
+    }
+  }, [messages, sessionId, sessionLoaded]);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    storageBackend.loadTitle(sessionId).then((t) => {
+      if (t) setConversationTitle(t);
+    }).catch(() => {});
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (!sessionId || conversationTitle) return;
+    const userMsgs = messages.filter((m) => m.role === "user" && m.content);
+    if (userMsgs.length < 1) return;
+    const firstUserMsg = userMsgs[0]!.content;
+    const title = firstUserMsg.length > 40 ? firstUserMsg.slice(0, 40) + "…" : firstUserMsg;
+    setConversationTitle(title);
+    storageBackend.saveTitle(sessionId, title).catch(() => {});
+  }, [messages, sessionId, conversationTitle]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
@@ -624,11 +684,13 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                 ? <img src={props.launcherIcon} alt="" style={{ width: 28, height: 28, objectFit: "contain" }} />
                 : <span style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))" }}>{props.launcherIcon}</span>)
             : (
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 12a8 8 0 0 1-13.6 5.8L3 19l1.2-4.4A8 8 0 1 1 21 12z" />
-                <circle cx="9" cy="12" r="1" fill="currentColor" stroke="none" />
-                <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
-                <circle cx="15" cy="12" r="1" fill="currentColor" stroke="none" />
+              <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <path d="M3 9a4 4 0 0 1 4-4h18a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H14l-5.4 5.4a.8.8 0 0 1-1.4-.6V25H7a4 4 0 0 1-4-4V9Z" fill="currentColor"/>
+                <rect x="8" y="10.5" width="16" height="11" rx="4" fill="var(--cbl-primary, #0066FF)"/>
+                <ellipse cx="13.5" cy="15.5" rx="2" ry="2.5" fill="currentColor"/>
+                <path d="M18 15 Q20 13 22 15" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" fill="none"/>
+                <path d="M13 19 Q16 21 19 19" stroke="currentColor" strokeWidth="1" strokeLinecap="round" fill="none"/>
+                <path d="M16 1.5 L17 4 L19.5 5 L17 6 L16 8.5 L15 6 L12.5 5 L15 4 Z" fill="currentColor"/>
               </svg>
             )}
         </button>
@@ -709,9 +771,9 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                 <span style={{ fontWeight: 600, fontSize: 15, letterSpacing: "-0.01em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: onPrimary }}>
                   {resolvedTitle}
                 </span>
-                {(subtitle || sending) && (
+                {(subtitle || conversationTitle || sending) && (
                   <span style={{ fontSize: 12, color: onPrimary, opacity: 0.75, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {subtitle ?? (sending ? "typing…" : "")}
+                    {sending ? "typing…" : (subtitle ?? conversationTitle ?? "")}
                   </span>
                 )}
               </div>
@@ -917,6 +979,33 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                         </div>
                       );
                     }
+                    if (pt.marker.name === "pickerMessage") {
+                      const optionsRaw = String(pt.marker.args.options ?? "");
+                      const options = optionsRaw.split(",").map((o) => o.trim()).filter(Boolean);
+                      const pickerHandler = tools.pickerMessage;
+                      return (
+                        <div key={`tool-${originalIdx}`} {...toolCommonStyle}>
+                          <PickerMessage
+                            {...palette}
+                            {...(pt.marker.args.prompt ? { prompt: String(pt.marker.args.prompt) } : {})}
+                            options={options}
+                            submitting={pt.status === "submitting"}
+                            submitted={pt.status === "submitted"}
+                            {...(pt.result?.value ? { submittedValue: pt.result.value as string } : {})}
+                            onPick={async (value) => {
+                              setPendingTools((prev) =>
+                                prev.map((p, i) => (i === originalIdx ? { ...p, status: "submitting" } : p))
+                              );
+                              const pickerPrompt = pt.marker.args.prompt ? String(pt.marker.args.prompt) : undefined;
+                              const result = pickerHandler
+                                ? await pickerHandler.onPick({ value, ...(pickerPrompt ? { prompt: pickerPrompt } : {}) })
+                                : { status: "picked", value };
+                              await handleToolSubmit("pickerMessage", originalIdx, { ...result, value });
+                            }}
+                          />
+                        </div>
+                      );
+                    }
                     return null;
                   })}
               </div>
@@ -930,12 +1019,16 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                   borderRadius: "18px 18px 18px 4px",
                   background: BUBBLE_BOT,
                   border: `1px solid ${BORDER}`,
-                  boxShadow: "0 1px 2px rgba(15,23,42,0.04)"
+                  boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4
                 }}
               >
                 <span className="chatbotlite-dot" />
                 <span className="chatbotlite-dot" />
                 <span className="chatbotlite-dot" />
+                <span style={{ fontSize: 12, color: TEXT_MUTED, marginLeft: 4 }}>thinking</span>
               </div>
             )}
           </div>

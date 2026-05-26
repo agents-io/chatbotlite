@@ -5,45 +5,277 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sunrise Yoga — Kitsilano, Vancouver</title>
 <style>
-  body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: #fffaf5; color: #422006; line-height: 1.6; }
-  header { padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
-  .brand { font-size: 20px; font-weight: 300; letter-spacing: 0.04em; }
-  nav a { margin-left: 20px; color: #422006; text-decoration: none; font-size: 14px; }
-  .hero { padding: 80px 32px 40px; text-align: center; max-width: 760px; margin: 0 auto; }
-  h1 { font-size: 44px; font-weight: 300; margin: 0 0 14px; letter-spacing: -0.02em; }
-  .sub { color: #78716c; font-size: 18px; }
-  .classes { max-width: 880px; margin: 30px auto; padding: 0 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-  .class { background: white; padding: 22px; border-radius: 14px; border: 1px solid #fed7aa; }
-  .class .name { font-size: 17px; font-weight: 500; }
-  .class .duration { color: #78716c; font-size: 13px; margin: 4px 0 8px; }
-  .class .price { font-weight: 600; color: #ea580c; }
-  footer { padding: 40px 32px; text-align: center; color: #a8a29e; font-size: 13px; }
+  :root {
+    --accent: #ea580c;
+    --accent-light: #fff7ed;
+    --accent-medium: #fed7aa;
+    --accent-dark: #c2410c;
+    --text: #422006;
+    --text-muted: #78716c;
+    --bg: #fffbf7;
+    --white: #ffffff;
+    --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Header */
+  .site-header { background: var(--white); padding: 0 32px; height: 64px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--accent-medium); position: sticky; top: 0; z-index: 50; }
+  .brand { font-size: 18px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 10px; }
+  .brand-mark { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent) 0%, #f97316 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
+  nav { display: flex; gap: 24px; align-items: center; }
+  nav a { color: var(--text); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  nav a:hover { color: var(--accent); }
+  .nav-cta { background: var(--accent); color: white !important; padding: 8px 18px; border-radius: 6px; font-size: 13px; }
+  .nav-cta:hover { background: var(--accent-dark); }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #422006 0%, #78350f 50%, var(--accent-dark) 100%); color: white; padding: 100px 32px 88px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 30% 80%, rgba(234,88,12,0.2) 0%, transparent 60%), radial-gradient(ellipse at 70% 20%, rgba(251,146,60,0.15) 0%, transparent 50%); }
+  .hero-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero h1 { font-size: 48px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.15; }
+  .hero .subtitle { font-size: 18px; opacity: 0.85; margin-bottom: 28px; line-height: 1.5; font-weight: 300; }
+  .hero-cta { display: inline-block; background: var(--accent); color: white; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 15px; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; }
+  .hero-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(234,88,12,0.3); }
+  .hero-note { margin-top: 16px; font-size: 14px; opacity: 0.7; }
+
+  /* Free class banner */
+  .free-banner { background: var(--accent); color: white; text-align: center; padding: 14px 32px; font-size: 15px; font-weight: 500; }
+  .free-banner strong { font-weight: 700; }
+
+  /* Sections */
+  .section { max-width: 960px; margin: 0 auto; padding: 64px 32px; }
+  .section-label { text-align: center; font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .section-title { text-align: center; font-size: 30px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em; }
+  .section-subtitle { text-align: center; font-size: 15px; color: var(--text-muted); margin-bottom: 40px; max-width: 520px; margin-left: auto; margin-right: auto; }
+
+  /* Classes */
+  .classes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .class-card { background: var(--white); padding: 24px; border-radius: 12px; border: 1px solid var(--accent-medium); display: flex; justify-content: space-between; align-items: flex-start; transition: box-shadow 0.2s; }
+  .class-card:hover { box-shadow: 0 4px 20px rgba(234,88,12,0.08); }
+  .class-info h3 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+  .class-info .meta { font-size: 13px; color: var(--text-muted); }
+  .class-price { font-size: 18px; font-weight: 700; color: var(--accent); white-space: nowrap; margin-left: 16px; }
+
+  /* Pricing */
+  .pricing-bg { background: var(--accent-light); }
+  .pricing-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .price-card { background: var(--white); padding: 32px 24px; border-radius: 12px; border: 1px solid var(--accent-medium); text-align: center; transition: box-shadow 0.2s; }
+  .price-card:hover { box-shadow: 0 4px 20px rgba(234,88,12,0.1); }
+  .price-card.featured { border: 2px solid var(--accent); position: relative; }
+  .price-card.featured::before { content: "Best value"; position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; font-size: 11px; font-weight: 600; padding: 2px 12px; border-radius: 10px; }
+  .price-card h3 { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .price-card .amount { font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .price-card .amount small { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+  .price-card p { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
+
+  /* Testimonials */
+  .testimonials-bg { background: var(--white); }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .testimonial { padding: 24px; border: 1px solid var(--accent-medium); border-radius: 12px; background: var(--bg); }
+  .testimonial .stars { color: #f59e0b; font-size: 14px; margin-bottom: 10px; }
+  .testimonial blockquote { font-size: 14px; line-height: 1.6; color: var(--text); margin-bottom: 12px; font-style: italic; }
+  .testimonial .author { font-size: 13px; font-weight: 600; }
+  .testimonial .author span { font-weight: 400; color: var(--text-muted); }
+
+  /* About */
+  .about-content { max-width: 640px; margin: 0 auto; text-align: center; }
+  .about-content p { font-size: 15px; color: var(--text-muted); margin-bottom: 12px; }
+
+  /* Contact + Hours */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  .contact-block h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--accent-dark); }
+  .contact-block p, .contact-block li { font-size: 14px; color: var(--text-muted); }
+  .contact-block ul { list-style: none; }
+  .contact-block li { margin-bottom: 4px; }
+
+  /* Footer */
+  .site-footer { background: #422006; color: rgba(255,255,255,0.7); padding: 40px 32px; }
+  .footer-inner { max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-brand { color: white; font-weight: 300; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; }
+  .footer-links a:hover { color: white; }
+  .footer-copy { width: 100%; text-align: center; font-size: 12px; margin-top: 16px; opacity: 0.5; }
+
+  /* Mobile */
+  .mobile-menu { display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text); }
+  @media (max-width: 640px) {
+    nav { display: none; }
+    .mobile-menu { display: block; }
+    .hero h1 { font-size: 34px; }
+    .hero { padding: 64px 20px 56px; }
+    .section { padding: 48px 20px; }
+    .class-card { flex-direction: column; }
+    .class-price { margin-left: 0; margin-top: 8px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">🧘 SUNRISE YOGA</div>
+
+<header class="site-header">
+  <a class="brand" href="#">
+    <div class="brand-mark">S</div>
+    Sunrise Yoga
+  </a>
   <nav>
-    <a href="#">Classes</a>
-    <a href="#">Schedule</a>
-    <a href="#">First class free</a>
+    <a href="#classes">Classes</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#contact">Visit</a>
+    <a href="#" class="nav-cta">First Class Free</a>
   </nav>
+  <button class="mobile-menu" aria-label="Menu">&#9776;</button>
 </header>
 
 <section class="hero">
-  <h1>Slow down. Breathe. Begin.</h1>
-  <p class="sub">Boutique yoga studio in Kitsilano. First class is free — bring your mat or rent ours.</p>
+  <div class="hero-inner">
+    <h1>Slow down. Breathe. Begin.</h1>
+    <p class="subtitle">A boutique yoga studio in Kitsilano, Vancouver. Five class styles, expert instructors, and a space that feels like home.</p>
+    <a href="#" class="hero-cta">Try Your First Class Free</a>
+    <p class="hero-note">No commitment. Bring your mat or borrow ours.</p>
+  </div>
 </section>
 
-<section class="classes">
-  <div class="class"><div class="name">Vinyasa Flow</div><div class="duration">60 min · All levels</div><div class="price">$22 drop-in</div></div>
-  <div class="class"><div class="name">Yin / Restorative</div><div class="duration">75 min · All levels</div><div class="price">$22 drop-in</div></div>
-  <div class="class"><div class="name">Hot Power Yoga</div><div class="duration">60 min · Intermediate</div><div class="price">$25 drop-in</div></div>
-  <div class="class"><div class="name">Beginners' Foundation</div><div class="duration">45 min · Brand new</div><div class="price">$18 drop-in</div></div>
-  <div class="class"><div class="name">Prenatal</div><div class="duration">60 min · All trimesters</div><div class="price">$24 drop-in</div></div>
+<div class="free-banner">
+  <strong>New students:</strong> Your first class is on us. Walk in or book online.
+</div>
+
+<section class="section" id="classes">
+  <div class="section-label">Classes</div>
+  <h2 class="section-title">Find your practice</h2>
+  <p class="section-subtitle">From vigorous power flows to slow restorative holds. All levels welcome in every class unless noted.</p>
+  <div class="classes-grid">
+    <div class="class-card">
+      <div class="class-info">
+        <h3>Vinyasa Flow</h3>
+        <div class="meta">60 min / All levels</div>
+      </div>
+      <div class="class-price">$22</div>
+    </div>
+    <div class="class-card">
+      <div class="class-info">
+        <h3>Yin / Restorative</h3>
+        <div class="meta">75 min / All levels</div>
+      </div>
+      <div class="class-price">$22</div>
+    </div>
+    <div class="class-card">
+      <div class="class-info">
+        <h3>Hot Power Yoga</h3>
+        <div class="meta">60 min / Intermediate</div>
+      </div>
+      <div class="class-price">$25</div>
+    </div>
+    <div class="class-card">
+      <div class="class-info">
+        <h3>Beginners' Foundation</h3>
+        <div class="meta">45 min / Brand new to yoga</div>
+      </div>
+      <div class="class-price">$18</div>
+    </div>
+    <div class="class-card">
+      <div class="class-info">
+        <h3>Prenatal Yoga</h3>
+        <div class="meta">60 min / All trimesters</div>
+      </div>
+      <div class="class-price">$24</div>
+    </div>
+  </div>
 </section>
 
-<footer>Sunrise Yoga — Demo studio powered by chatbotlite.</footer>
+<section class="section pricing-bg" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title">Passes and memberships</h2>
+  <p class="section-subtitle">Drop in anytime, or save with a pass. All prices include mat rental.</p>
+  <div class="pricing-cards">
+    <div class="price-card">
+      <h3>Drop-in</h3>
+      <div class="amount">$18-25</div>
+      <p>Pay per class. Price varies by class type.</p>
+    </div>
+    <div class="price-card featured">
+      <h3>10-Class Pass</h3>
+      <div class="amount">$180</div>
+      <p>Valid 3 months. Any class, any time. $18/class.</p>
+    </div>
+    <div class="price-card">
+      <h3>Monthly Unlimited</h3>
+      <div class="amount">$149<small>/mo</small></div>
+      <p>Unlimited classes. Cancel anytime. Best for 3+ classes/week.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section testimonials-bg" id="reviews">
+  <div class="section-label">Community</div>
+  <h2 class="section-title">What our students say</h2>
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"I came for one trial class eight months ago and I'm still here. The yin class on Thursday evenings is the one thing I never skip. It completely changed how I sleep."</blockquote>
+      <div class="author">Mei Lin <span>Unlimited member</span></div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"As someone who'd never done yoga before, I was nervous. The beginners' class made it so approachable. Instructors correct your form without making you feel stupid."</blockquote>
+      <div class="author">David Okonkwo <span>10-class pass</span></div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <blockquote>"Did prenatal here through my second trimester. The instructor adapted every pose for me without me having to ask. Clean space, great energy, no pretentiousness."</blockquote>
+      <div class="author">Sarah Petersen <span>Prenatal student</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="section-label">About</div>
+  <h2 class="section-title">Our studio</h2>
+  <div class="about-content">
+    <p>Sunrise Yoga opened in 2018 in the heart of Kitsilano. We keep class sizes small (max 18 students) so instructors can give real attention to every person on the mat. Our 1,800 sq ft studio has radiant floor heating, a changing room with showers, and mat storage for members.</p>
+    <p>We believe yoga should be accessible, not exclusive. That's why your first class is always free, and our pricing stays honest.</p>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="section-label">Visit Us</div>
+  <h2 class="section-title">Location &amp; Hours</h2>
+  <div class="contact-grid">
+    <div class="contact-block">
+      <h3>Address</h3>
+      <p>2187 West 4th Avenue<br>Vancouver, BC V6K 1N7</p>
+      <p style="margin-top:8px">Kitsilano, half a block from the beach.</p>
+    </div>
+    <div class="contact-block">
+      <h3>Hours</h3>
+      <ul>
+        <li>Mon - Sat: 6:00 AM - 9:00 PM</li>
+        <li>Sunday: 8:00 AM - 6:00 PM</li>
+      </ul>
+    </div>
+    <div class="contact-block">
+      <h3>Contact</h3>
+      <p>Phone: (604) 555-0341<br>Email: hello@sunriseyoga.ca</p>
+      <p style="margin-top:8px">Or use the chat to book a class.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Sunrise Yoga</div>
+    <div class="footer-links">
+      <a href="#classes">Classes</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact">Visit</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 Sunrise Yoga. All rights reserved. Demo studio powered by ChatbotLite.</div>
+  </div>
+</footer>
 
 <script src="https://unpkg.com/chatbotlite@latest/dist/embed.global.js"></script>
 <script>

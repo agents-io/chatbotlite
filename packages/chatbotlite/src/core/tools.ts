@@ -69,7 +69,8 @@ export function buildToolsPromptAddendum(enabledTools: readonly string[]): strin
   const examples: Record<string, string> = {
     uploadForReview: '[SKILL:uploadForReview purpose="T4 slip" accept="image/*,application/pdf" maxMb=10] — collect a document for human review (bytes go to webhook, you never see content)',
     scheduleCallback: '[SKILL:scheduleCallback durationMin=15 timezone="America/Vancouver"] — let the user pick a callback time slot',
-    requestPayment: '[SKILL:requestPayment amount=4250 currency="cad" reason="initial deposit"] — collect payment via inline card'
+    requestPayment: '[SKILL:requestPayment amount=4250 currency="cad" reason="initial deposit"] — collect payment via inline card',
+    pickerMessage: '[SKILL:pickerMessage prompt="What type of service?" options="Inspection,Repair,Emergency,Quote only"] — show tappable choice buttons; user picks one and the value is returned'
   };
   const lines = enabledTools
     .filter((t) => examples[t])

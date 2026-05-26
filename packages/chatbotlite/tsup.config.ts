@@ -8,7 +8,8 @@ export default defineConfig([
       "core/index": "src/core/index.ts",
       "client/index": "src/client/index.ts",
       "react/index": "src/react/index.tsx",
-      "node/index": "src/node/index.ts"
+      "node/index": "src/node/index.ts",
+      "adapters/index": "src/adapters/index.ts"
     },
     format: ["esm", "cjs"],
     dts: true,

@@ -5,58 +5,173 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bella Italia — Yaletown, Vancouver</title>
 <style>
-  body { font-family: 'Georgia', serif; margin: 0; background: #f5f0e8; color: #2d1f10; }
-  header { padding: 16px 32px; border-bottom: 1px solid #d4c4a8; display: flex; justify-content: space-between; align-items: center; }
-  .brand { font-size: 22px; font-weight: bold; color: #8B0000; }
-  nav a { margin-left: 20px; color: #2d1f10; text-decoration: none; font-size: 14px; font-family: -apple-system, sans-serif; }
-  .hero { padding: 60px 32px 30px; text-align: center; max-width: 880px; margin: 0 auto; }
-  h1 { font-size: 46px; margin: 0 0 14px; font-style: italic; }
-  .sub { color: #6b5b4c; font-size: 18px; }
-  .menu { max-width: 880px; margin: 40px auto; padding: 0 32px; }
-  .menu-section { margin-bottom: 40px; }
-  .menu-section h2 { font-size: 22px; color: #8B0000; border-bottom: 1px solid #d4c4a8; padding-bottom: 8px; }
-  .item { display: flex; justify-content: space-between; margin: 10px 0; font-family: -apple-system, sans-serif; font-size: 15px; }
-  .item .price { color: #6b5b4c; }
-  footer { padding: 40px 32px; text-align: center; color: #94a3b8; font-size: 13px; }
+  :root {
+    --brand: #8B0000;
+    --brand-light: #fef2f2;
+    --ink: #2d1f10;
+    --muted: #6b5b4c;
+    --faint: #a39485;
+    --bg: #faf8f5;
+    --surface: #ffffff;
+    --border: #e8e0d4;
+    --serif: 'Georgia', 'Cambria', serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: var(--serif); color: var(--ink); background: var(--bg); line-height: 1.6; }
+  a { color: inherit; text-decoration: none; }
+
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); }
+  .header-inner { max-width: 1100px; margin: 0 auto; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 24px; font-weight: bold; color: var(--brand); }
+  .header nav { font-family: var(--sans); }
+  .header nav a { margin-left: 24px; color: var(--ink); font-size: 14px; }
+  .header nav a:hover { color: var(--brand); }
+
+  .hero { background: linear-gradient(180deg, var(--brand) 0%, #5a0000 100%); color: white; padding: 100px 28px 80px; text-align: center; }
+  .hero h1 { font-size: clamp(36px, 5vw, 56px); font-style: italic; font-weight: normal; margin-bottom: 16px; }
+  .hero p { font-family: var(--sans); font-size: 17px; opacity: 0.85; max-width: 520px; margin: 0 auto 32px; }
+  .hero .cta { display: inline-block; padding: 14px 32px; border: 2px solid white; color: white; border-radius: 4px; font-family: var(--sans); font-weight: 600; font-size: 15px; transition: all 150ms; }
+  .hero .cta:hover { background: white; color: var(--brand); }
+  .hero .hours { margin-top: 28px; font-family: var(--sans); font-size: 13px; opacity: 0.6; }
+
+  .section { max-width: 1100px; margin: 0 auto; padding: 72px 28px; }
+  .section-title { font-size: 28px; font-weight: bold; color: var(--brand); margin-bottom: 8px; }
+  .section-sub { color: var(--muted); font-family: var(--sans); font-size: 15px; margin-bottom: 36px; }
+
+  /* Menu */
+  .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+  .menu-section h3 { font-size: 20px; color: var(--brand); border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; }
+  .menu-item { display: flex; justify-content: space-between; padding: 8px 0; font-family: var(--sans); font-size: 15px; border-bottom: 1px dotted var(--border); }
+  .menu-item .price { color: var(--muted); font-weight: 500; }
+  .menu-item .desc { font-size: 12px; color: var(--faint); margin-top: 2px; }
+
+  /* Testimonials */
+  .testimonials { background: var(--brand-light); border-radius: 16px; padding: 48px 32px; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .review { background: var(--surface); border-radius: 12px; padding: 24px; }
+  .review .stars { color: #f59e0b; font-size: 14px; margin-bottom: 10px; }
+  .review .quote { font-family: var(--sans); font-size: 14px; color: var(--ink); margin-bottom: 12px; }
+  .review .author { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+
+  /* Info bar */
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  .info-card { text-align: center; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+  .info-card .icon { font-size: 28px; margin-bottom: 10px; }
+  .info-card h4 { font-size: 15px; margin-bottom: 4px; font-family: var(--sans); }
+  .info-card p { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+
+  footer { border-top: 1px solid var(--border); padding: 32px 28px; text-align: center; color: var(--faint); font-family: var(--sans); font-size: 13px; }
+  footer a { color: var(--muted); }
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">Bella Italia</div>
-  <nav>
-    <a href="#menu">Menu</a>
-    <a href="#">Hours</a>
-    <a href="#">Reserve</a>
-  </nav>
-</header>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">Bella Italia</div>
+    <nav>
+      <a href="#menu">Menu</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#visit">Visit</a>
+    </nav>
+  </div>
+</div>
 
 <section class="hero">
   <h1>Cucina Italiana, Yaletown</h1>
-  <p class="sub">Wood-fired pizza, hand-cut pasta, and a wine list that doesn't disappoint.</p>
+  <p>Wood-fired pizza, hand-cut pasta, and a wine list that goes beyond the usual suspects. Dinner nightly, brunch weekends.</p>
+  <a href="#menu" class="cta">View the menu</a>
+  <p class="hours">Dinner: Tue-Sun 5pm-10pm · Brunch: Sat-Sun 10am-2pm · Closed Monday</p>
 </section>
 
-<section class="menu" id="menu">
-  <div class="menu-section">
-    <h2>Pasta</h2>
-    <div class="item"><span>Cacio e Pepe</span><span class="price">$24</span></div>
-    <div class="item"><span>Tagliatelle alla Bolognese</span><span class="price">$28</span></div>
-    <div class="item"><span>Wild Mushroom Ravioli</span><span class="price">$26</span></div>
-  </div>
-  <div class="menu-section">
-    <h2>Wood-fired Pizza</h2>
-    <div class="item"><span>Margherita</span><span class="price">$22</span></div>
-    <div class="item"><span>Quattro Formaggi</span><span class="price">$26</span></div>
-    <div class="item"><span>Diavola</span><span class="price">$25</span></div>
-  </div>
-  <div class="menu-section">
-    <h2>Mains</h2>
-    <div class="item"><span>Branzino</span><span class="price">$42</span></div>
-    <div class="item"><span>Osso buco</span><span class="price">$46</span></div>
-    <div class="item"><span>Eggplant parmigiana</span><span class="price">$24</span></div>
+<section class="section" id="menu">
+  <h2 class="section-title">The menu</h2>
+  <p class="section-sub">Seasonal ingredients, simple preparations. Pasta made in-house daily.</p>
+  <div class="menu-grid">
+    <div class="menu-section">
+      <h3>Pasta</h3>
+      <div class="menu-item"><div><span>Cacio e Pepe</span><div class="desc">Pecorino romano, black pepper, hand-cut tonnarelli</div></div><span class="price">$24</span></div>
+      <div class="menu-item"><div><span>Tagliatelle alla Bolognese</span><div class="desc">8-hour pork and veal ragu</div></div><span class="price">$28</span></div>
+      <div class="menu-item"><div><span>Wild Mushroom Ravioli</span><div class="desc">Porcini cream, truffle oil, parmesan</div></div><span class="price">$26</span></div>
+      <div class="menu-item"><div><span>Spaghetti alle Vongole</span><div class="desc">Manila clams, white wine, chili flake</div></div><span class="price">$27</span></div>
+    </div>
+    <div class="menu-section">
+      <h3>Wood-fired Pizza</h3>
+      <div class="menu-item"><div><span>Margherita</span><div class="desc">San Marzano, fior di latte, basil</div></div><span class="price">$22</span></div>
+      <div class="menu-item"><div><span>Quattro Formaggi</span><div class="desc">Mozzarella, gorgonzola, taleggio, parmesan</div></div><span class="price">$26</span></div>
+      <div class="menu-item"><div><span>Diavola</span><div class="desc">Spicy salami, chili oil, roasted peppers</div></div><span class="price">$25</span></div>
+      <div class="menu-item"><div><span>Prosciutto e Rucola</span><div class="desc">Parma ham, arugula, shaved parmesan</div></div><span class="price">$27</span></div>
+    </div>
+    <div class="menu-section">
+      <h3>Mains</h3>
+      <div class="menu-item"><div><span>Branzino</span><div class="desc">Pan-roasted, lemon caper butter, seasonal greens</div></div><span class="price">$42</span></div>
+      <div class="menu-item"><div><span>Osso Buco</span><div class="desc">Braised veal shank, saffron risotto, gremolata</div></div><span class="price">$46</span></div>
+      <div class="menu-item"><div><span>Eggplant Parmigiana</span><div class="desc">Layers of eggplant, mozzarella, pomodoro</div></div><span class="price">$24</span></div>
+    </div>
+    <div class="menu-section">
+      <h3>Dolci</h3>
+      <div class="menu-item"><div><span>Tiramisu</span><div class="desc">Classic. Mascarpone, espresso, cocoa.</div></div><span class="price">$14</span></div>
+      <div class="menu-item"><div><span>Panna Cotta</span><div class="desc">Vanilla bean, seasonal berry compote</div></div><span class="price">$12</span></div>
+      <div class="menu-item"><div><span>Affogato</span><div class="desc">Vanilla gelato, double espresso shot</div></div><span class="price">$10</span></div>
+    </div>
   </div>
 </section>
 
-<footer>Bella Italia — Demo restaurant powered by chatbotlite.</footer>
+<section class="section" id="reviews">
+  <h2 class="section-title">What diners say</h2>
+  <div class="testimonials" style="margin-top: 24px;">
+    <div class="testimonials-grid">
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"The cacio e pepe alone is worth the trip to Yaletown. Simple, honest Italian cooking. No pretension, just great food."</p>
+        <p class="author">Sarah M. — via Google</p>
+      </div>
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"We booked through the chatbot on their site. Asked about dietary options, got a real answer in seconds. The mushroom ravioli was incredible."</p>
+        <p class="author">James &amp; Lily W. — via Yelp</p>
+      </div>
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Best wood-fired pizza in Vancouver. The dough has that perfect char. Wine list is thoughtful without being overwhelming. We come every other week."</p>
+        <p class="author">Marcus T. — via Google</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="visit">
+  <h2 class="section-title">Visit us</h2>
+  <p class="section-sub">In the heart of Yaletown. Street parking on Hamilton, paid lot on Davie.</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">📍</div>
+      <h4>Location</h4>
+      <p>1234 Hamilton St<br>Yaletown, Vancouver</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🕐</div>
+      <h4>Hours</h4>
+      <p>Dinner: Tue-Sun 5-10pm<br>Brunch: Sat-Sun 10am-2pm</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">📞</div>
+      <h4>Reservations</h4>
+      <p>604-555-0200<br>Or ask our chatbot</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🍷</div>
+      <h4>Private dining</h4>
+      <p>Wine room seats 12<br>Email for bookings</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Bella Italia — 1234 Hamilton St, Yaletown, Vancouver, BC</p>
+  <p style="margin-top: 8px;">Demo restaurant powered by <a href="https://chatbotlite-demos.vercel.app">ChatbotLite</a></p>
+</footer>
 
 <script src="https://unpkg.com/chatbotlite@latest/dist/embed.global.js"></script>
 <script>

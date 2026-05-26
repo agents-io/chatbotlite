@@ -10,6 +10,10 @@ export interface ScheduleCallbackProps {
   surfaceMuted: string;
   textBody: string;
   textMuted: string;
+  /** Direct booking URL (Calendly, Cal.com, etc). When set, skip slot picker and show a single CTA. */
+  bookingUrl?: string;
+  /** Label for the booking CTA (default "Book appointment"). */
+  bookingLabel?: string;
   getAvailableSlots: (args: { durationMin: number; timezone: string }) => Promise<string[]>;
   onConfirm: (slot: string) => Promise<void> | void;
   submitting?: boolean;
@@ -22,6 +26,7 @@ export function ScheduleCallback(props: ScheduleCallbackProps): ReactElement {
     durationMin = 15,
     timezone = "UTC",
     primary, onPrimary, border, surface, surfaceMuted, textBody, textMuted,
+    bookingUrl, bookingLabel,
     getAvailableSlots, onConfirm,
     submitting = false, submitted = false, submittedSlot
   } = props;
@@ -39,6 +44,38 @@ export function ScheduleCallback(props: ScheduleCallbackProps): ReactElement {
     }).catch(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [durationMin, timezone, getAvailableSlots]);
+
+  if (bookingUrl) {
+    return (
+      <div style={{
+        padding: 16,
+        borderRadius: 14,
+        background: surface,
+        border: `1px solid ${border}`,
+        boxShadow: "0 2px 8px -2px rgba(15,23,42,0.08)"
+      }}>
+        <p style={{ margin: 0, marginBottom: 12, fontSize: 13, fontWeight: 600, color: textBody }}>
+          {bookingLabel || "Book appointment"}
+        </p>
+        <button
+          onClick={() => { window.open(bookingUrl, "_blank", "noopener"); }}
+          style={{
+            width: "100%",
+            padding: "9px 16px",
+            borderRadius: 10,
+            background: primary,
+            color: onPrimary,
+            border: "none",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer"
+          }}
+        >
+          {bookingLabel || "Book appointment"}
+        </button>
+      </div>
+    );
+  }
 
   if (submitted && submittedSlot) {
     return (
