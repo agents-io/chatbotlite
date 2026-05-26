@@ -1,10 +1,11 @@
 {
   "name": "chatbotlite-demos",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "description": "Live demo gallery — vanilla HTML pages embedding chatbotlite.",
   "dependencies": {
-    "chatbotlite": "^0.5.0"
+    "chatbotlite": "^0.6.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

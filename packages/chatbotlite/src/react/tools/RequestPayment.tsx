@@ -11,7 +11,7 @@ export interface RequestPaymentProps {
   surfaceMuted: string;
   textBody: string;
   textMuted: string;
-  /** Show Interac e-Transfer option (good default for Canadian SMBs). */
+  /** Show Interac e-Transfer option. Default false — Canada-only. Opt-in for CA SMBs. */
   showInterac?: boolean;
   /** Optional Stripe Payment Link URL — falls back to this if Elements not configured. */
   stripeLink?: string;
@@ -38,7 +38,7 @@ export function RequestPayment(props: RequestPaymentProps): ReactElement {
   const {
     amount, currency = "USD", reason,
     primary, border, surface, textBody, textMuted,
-    showInterac = true, stripeLink, onPick,
+    showInterac = false, stripeLink, onPick,
     submitting = false, submitted = false, submittedMethod
   } = props;
   const formatted = formatAmount(amount, currency);
@@ -130,9 +130,13 @@ export function RequestPayment(props: RequestPaymentProps): ReactElement {
             width: 40, height: 40, borderRadius: 10,
             background: "#635BFF1a",
             display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0
+            flexShrink: 0,
+            color: "#635BFF"
           }}>
-            <span style={{ color: "#635BFF", fontSize: 14, fontWeight: 700 }}>💳</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="2" y="5" width="20" height="14" rx="2.5" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: textBody }}>Pay by card</p>

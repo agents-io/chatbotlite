@@ -2,22 +2,89 @@
 //
 // Endpoint: /api/chat?demo=<vertical>
 // Verticals: shopify-store, plumber, restaurant, dentist, tax-prep, yoga-studio
+//
+// Abuse protection (in-memory, per-instance — survives warm invocations, resets on cold start):
+//   - Per-IP:  MAX_REQS_PER_IP_PER_HOUR
+//   - Global:  MAX_REQS_PER_DAY (Groq free tier is 14400/day; we cap below)
+//   - Prompt:  MAX_PROMPT_CHARS
+// When any cap is hit, returns a friendly canned reply instead of calling the LLM.
 
 import { ChatBot } from "chatbotlite";
 import type { Message } from "chatbotlite";
 
-const KNOWLEDGE_BY_DEMO: Record<string, string> = {
-  // Lazy: bundle knowledge at build via fs read. For now, inline minimal versions.
-  // The full markdown lives in demos/_shared/knowledge/<demo>.md but Vercel won't
-  // bundle the parent ../_shared by default, so we read at module init.
-};
+const MAX_REQS_PER_IP_PER_HOUR = 10;
+const MAX_REQS_PER_DAY = 5000;
+const MAX_PROMPT_CHARS = 500;
+const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
 
-// Read all knowledge .md files at cold-start
+// ─── Rate-limit state (in-memory; per-instance) ───
+const ipHits = new Map<string, number[]>(); // ip → array of request timestamps (ms)
+let dayStart = Date.now();
+let dayCounter = 0;
+
+function rateLimitCheck(ip: string): { ok: true } | { ok: false; reason: string } {
+  const now = Date.now();
+
+  // Reset day counter every 24h
+  if (now - dayStart > DAY_MS) {
+    dayStart = now;
+    dayCounter = 0;
+  }
+
+  if (dayCounter >= MAX_REQS_PER_DAY) {
+    return { ok: false, reason: "Demo is busy today — try again tomorrow or check the live install at github.com/agents-io/chatbotlite." };
+  }
+
+  const hits = ipHits.get(ip) ?? [];
+  const recent = hits.filter((t) => now - t < HOUR_MS);
+  if (recent.length >= MAX_REQS_PER_IP_PER_HOUR) {
+    return { ok: false, reason: "You've hit the demo rate limit (10/hour). Try again in a bit, or self-host from GitHub." };
+  }
+
+  recent.push(now);
+  ipHits.set(ip, recent);
+  dayCounter++;
+  return { ok: true };
+}
+
+function getClientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0]!.trim();
+  return req.headers.get("x-real-ip") ?? "unknown";
+}
+
+function cannedReplyStream(message: string): ReadableStream {
+  // Mimic the SSE shape the widget expects: token events then done.
+  const encoder = new TextEncoder();
+  return new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`event: token\ndata: ${JSON.stringify(message)}\n\n`));
+      controller.enqueue(encoder.encode(`event: done\ndata: ${JSON.stringify({ reply: message })}\n\n`));
+      controller.close();
+    }
+  });
+}
+
+// ─── Knowledge loading ───
+const KNOWLEDGE_BY_DEMO: Record<string, string> = {};
+
 async function loadKnowledge(): Promise<void> {
   if (Object.keys(KNOWLEDGE_BY_DEMO).length > 0) return;
   const fs = await import("node:fs/promises");
   const path = await import("node:path");
-  const dir = path.join(process.cwd(), "demos", "_shared", "knowledge");
+  // On Vercel, the function is bundled at /var/task with includeFiles bringing _shared/knowledge in.
+  // Locally (vercel dev), cwd is the demos/ folder.
+  // Probe both common layouts.
+  const candidates = [
+    path.join(process.cwd(), "_shared", "knowledge"),
+    path.join(process.cwd(), "demos", "_shared", "knowledge"),
+    path.join("/var/task", "_shared", "knowledge")
+  ];
+  let dir = candidates[0]!;
+  for (const c of candidates) {
+    try { await fs.access(c); dir = c; break; } catch { /* try next */ }
+  }
   try {
     const files = await fs.readdir(dir);
     for (const f of files) {
@@ -37,21 +104,23 @@ function getBot(demo: string): ChatBot {
   if (botCache.has(demo)) return botCache.get(demo)!;
   const knowledge = KNOWLEDGE_BY_DEMO[demo];
   if (!knowledge) throw new Error(`unknown demo: ${demo}`);
-  const bot = new ChatBot({
-    knowledge,
-    providers: {
-      keys: {
-        deepseek: process.env.DEEPSEEK_API_KEY ?? "",
-        groq: process.env.GROQ_API_KEY ?? "",
-        openai: process.env.OPENAI_API_KEY ?? ""
-      },
-      chain: [
-        { provider: "deepseek", model: "deepseek-chat" },
-        { provider: "groq", model: "llama-3.3-70b-versatile" },
-        { provider: "openai", model: "gpt-4o-mini" }
-      ]
-    }
-  });
+  // Only include providers that actually have a key configured.
+  const keys: Record<string, string> = {};
+  const chain: { provider: "groq" | "deepseek" | "openai"; model: string }[] = [];
+  if (process.env.GROQ_API_KEY) {
+    keys.groq = process.env.GROQ_API_KEY;
+    chain.push({ provider: "groq", model: "llama-3.3-70b-versatile" });
+  }
+  if (process.env.DEEPSEEK_API_KEY) {
+    keys.deepseek = process.env.DEEPSEEK_API_KEY;
+    chain.push({ provider: "deepseek", model: "deepseek-chat" });
+  }
+  if (process.env.OPENAI_API_KEY) {
+    keys.openai = process.env.OPENAI_API_KEY;
+    chain.push({ provider: "openai", model: "gpt-4o-mini" });
+  }
+  if (chain.length === 0) throw new Error("no LLM provider key configured");
+  const bot = new ChatBot({ knowledge, providers: { keys, chain } });
   botCache.set(demo, bot);
   return bot;
 }
@@ -61,9 +130,10 @@ export const config = {
   maxDuration: 30
 };
 
-export default async function handler(req: Request): Promise<Response> {
+export async function POST(req: Request): Promise<Response> {
   await loadKnowledge();
-  const url = new URL(req.url);
+  // req.url can be path-only on Vercel — supply a dummy base for parsing.
+  const url = new URL(req.url, "http://localhost");
   const demo = url.searchParams.get("demo") ?? "shopify-store";
 
   try {
@@ -94,6 +164,23 @@ export default async function handler(req: Request): Promise<Response> {
       return Response.json({ error: "message required" }, { status: 400 });
     }
 
+    // Abuse caps — return a friendly streaming reply rather than 4xx,
+    // so the widget renders it like any other bot message.
+    if (message.length > MAX_PROMPT_CHARS) {
+      const reply = `That's a lot to chew on — demo accepts up to ${MAX_PROMPT_CHARS} chars. Try a shorter question, or self-host from github.com/agents-io/chatbotlite for no limits.`;
+      return new Response(cannedReplyStream(reply), {
+        headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" }
+      });
+    }
+
+    const ip = getClientIp(req);
+    const gate = rateLimitCheck(ip);
+    if (!gate.ok) {
+      return new Response(cannedReplyStream(gate.reason), {
+        headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" }
+      });
+    }
+
     const bot = getBot(demo);
     const stream = await bot.replyStream(message, { history: transcript, enabledTools });
     return new Response(stream, {
@@ -105,6 +192,7 @@ export default async function handler(req: Request): Promise<Response> {
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
+    console.error("[chatbotlite/demos]", msg);
     return Response.json({ error: msg }, { status: 500 });
   }
 }

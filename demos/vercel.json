@@ -5,7 +5,8 @@
   "outputDirectory": ".",
   "functions": {
     "api/chat.ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "includeFiles": "_shared/knowledge/**"
     }
   },
   "rewrites": [

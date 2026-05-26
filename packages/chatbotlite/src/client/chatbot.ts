@@ -15,6 +15,19 @@ export interface ChatBotInit {
   options?: ClientOptions;
   /** Defense-in-depth: phrase redlines (default) + optional LLM input/output judges. */
   guards?: GuardsConfig;
+  /**
+   * Append per-vertical behaviour tweaks to our default system prompt
+   * (e.g. "Don't quote price in first reply", "Use warm empathetic tone").
+   * Appended after our anti-hallucination rules, before tool examples.
+   */
+  extraInstructions?: string;
+  /**
+   * Power-user hook to MODIFY (not just append) the default system prompt.
+   * Receives the fully-assembled prompt (knowledge + rules + extras + tools)
+   * and returns a transformed string. Use for: replacing default rules,
+   * deleting rules, restructuring sections.
+   */
+  systemPromptTransform?: (defaultPrompt: string) => string;
 }
 
 export interface ReplyOptions {
@@ -74,6 +87,8 @@ export class ChatBot {
   private readonly guards: GuardsConfig;
 
   private readonly knowledge: string;
+  private readonly extraInstructions: string | undefined;
+  private readonly systemPromptTransform: ((p: string) => string) | undefined;
 
   constructor(init: ChatBotInit) {
     if (!init.knowledge || typeof init.knowledge !== "string" || init.knowledge.trim().length === 0) {
@@ -84,7 +99,12 @@ export class ChatBot {
     this.steps = resolveChain(init.providers);
     this.fetcher = init.options?.fetch ?? globalThis.fetch.bind(globalThis);
     this.timeoutMs = init.options?.timeoutMs ?? 30_000;
-    this.cachedSystemPrompt = buildSystemPrompt(init.knowledge);
+    this.extraInstructions = init.extraInstructions;
+    this.systemPromptTransform = init.systemPromptTransform;
+    this.cachedSystemPrompt = buildSystemPrompt(init.knowledge, {
+      extraInstructions: this.extraInstructions,
+      systemPromptTransform: this.systemPromptTransform
+    });
     this.guards = init.guards ?? {};
   }
 
@@ -92,7 +112,11 @@ export class ChatBot {
   private resolveSystemPrompt(opts: ReplyOptions): string {
     if (opts.systemPrompt) return opts.systemPrompt;
     if (opts.enabledTools && opts.enabledTools.length > 0) {
-      return buildSystemPrompt(this.knowledge, opts.enabledTools);
+      return buildSystemPrompt(this.knowledge, {
+        enabledTools: opts.enabledTools,
+        extraInstructions: this.extraInstructions,
+        systemPromptTransform: this.systemPromptTransform
+      });
     }
     return this.cachedSystemPrompt;
   }

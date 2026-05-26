@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo, type ReactElement, type CSSProperties } from "react";
+import { luminance } from "./color.js";
 import type { Knowledge, Message } from "../core/types.js";
 import { ChatBot } from "../client/chatbot.js";
 import type { ProviderConfig } from "../client/types.js";
@@ -80,6 +81,19 @@ interface ChatWidgetDirectProps extends ChatWidgetCommonProps {
   knowledge: Knowledge;
   /** Provider chain + API keys. */
   providers: ProviderConfig;
+  /**
+   * Append per-vertical behaviour tweaks to the default system prompt
+   * (tone, escalation rules, "don't quote price too early", etc.).
+   * Only used in direct (client-side) mode — in endpoint mode the server
+   * controls the prompt.
+   */
+  extraInstructions?: string;
+  /**
+   * Power-user hook to modify our default scaffolding inline.
+   * Receives the assembled default prompt, returns a transformed string.
+   * Direct mode only.
+   */
+  systemPromptTransform?: (defaultPrompt: string) => string;
   endpoint?: never;
 }
 
@@ -105,36 +119,95 @@ interface ChatMessage extends Message {
   ts: number;
 }
 
-const BOLT = "\u26A1";
 const DEFAULT_PRIMARY = "#0f172a";
 const DEFAULT_ON_PRIMARY = "#ffffff";
 
-/**
- * WCAG relative luminance for a hex color. Used to pick contrast text + outline.
- * Returns 0-1. > 0.65 ≈ light (yellow/lime/pale) → need dark text on the bubble.
- */
-function luminance(hex: string): number {
-  const m = hex.replace("#", "");
-  const norm = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
-  if (norm.length !== 6) return 0;
-  const r = parseInt(norm.slice(0, 2), 16) / 255;
-  const g = parseInt(norm.slice(2, 4), 16) / 255;
-  const b = parseInt(norm.slice(4, 6), 16) / 255;
-  const toLinear = (c: number): number => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
-  return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
-}
-const SURFACE = "#ffffff";
-const CHAT_BG = "#f5f1eb";          // off-white warm tone (messenger feel, not clinical)
-const BUBBLE_BOT = "#ffffff";        // bot bubble = white, sits on warm bg
-const INPUT_BG = "#f1f3f5";          // light gray composer pill (Telegram-style)
-const BORDER = "#e5e7eb";
-const BORDER_LIGHT = "rgba(15,23,42,0.06)";
-const TEXT_BODY = "#0f172a";
-const TEXT_MUTED = "#64748b";
-const TEXT_FAINT = "#94a3b8";
-const FONT_STACK = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`;
+// Inline SVG icons — premium-feel, no emoji in chrome. Sized via width/height on caller.
+const IconPaperclip = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+  </svg>
+);
+const IconMic = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="9" y="3" width="6" height="12" rx="3" />
+    <path d="M5 11a7 7 0 0 0 14 0M12 19v3" />
+  </svg>
+);
+const IconBolt = ({ size = 11 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ verticalAlign: "-1px" }}>
+    <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" />
+  </svg>
+);
+
+// Design tokens — see DESIGN_SYSTEM.md for spec. All visual constants resolve to CSS vars
+// declared inside the injected stylesheet. Override per-instance: set inline CSS vars on
+// the .chatbotlite-root element (e.g. theme.primary populates --cbl-primary).
+// Host page CSS can override too — `.chatbotlite-root { --cbl-bg: #1a1a1a }`.
+const SURFACE = "var(--cbl-bg)";
+const CHAT_BG = "var(--cbl-bg-chat)";
+const BUBBLE_BOT = "var(--cbl-bg-elevated)";
+const INPUT_BG = "var(--cbl-bg-sunken)";
+const BORDER = "var(--cbl-border)";
+const BORDER_LIGHT = "var(--cbl-border-light)";
+const TEXT_BODY = "var(--cbl-text)";
+const TEXT_MUTED = "var(--cbl-text-muted)";
+const TEXT_FAINT = "var(--cbl-text-faint)";
+const FONT_STACK = "var(--cbl-font)";
 
 const STYLE_TAG_ID = "chatbotlite-widget-styles";
+const TOKENS = `
+:where(.chatbotlite-root) {
+  --cbl-bg: #FFFFFF;
+  --cbl-bg-elevated: #FFFFFF;
+  --cbl-bg-chat: #F7F8FA;
+  --cbl-bg-sunken: #F1F3F5;
+  --cbl-border: #E5E7EB;
+  --cbl-border-strong: #D1D5DB;
+  --cbl-border-light: rgba(15,23,42,0.06);
+  --cbl-text: #0F172A;
+  --cbl-text-muted: #64748B;
+  --cbl-text-faint: #94A3B8;
+  --cbl-success: #10B981;
+  --cbl-danger: #EF4444;
+  --cbl-font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", system-ui, sans-serif;
+  --cbl-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --cbl-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --cbl-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --cbl-shadow-1: 0 1px 2px rgba(15,23,42,0.04);
+  --cbl-shadow-2: 0 4px 12px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --cbl-shadow-3: 0 10px 32px rgba(15,23,42,0.10), 0 2px 6px rgba(15,23,42,0.04);
+  --cbl-shadow-4: 0 20px 48px rgba(15,23,42,0.18), 0 4px 12px rgba(15,23,42,0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :where(.chatbotlite-root[data-color-scheme="auto"]),
+  :where(.chatbotlite-root[data-color-scheme="dark"]) {
+    --cbl-bg: #16181D;
+    --cbl-bg-elevated: #1F2228;
+    --cbl-bg-chat: #0B0D10;
+    --cbl-bg-sunken: #1F2228;
+    --cbl-border: #24272E;
+    --cbl-border-strong: #2E323A;
+    --cbl-border-light: rgba(255,255,255,0.06);
+    --cbl-text: #ECEDEE;
+    --cbl-text-muted: #9BA1A6;
+    --cbl-text-faint: #6B7177;
+  }
+}
+:where(.chatbotlite-root[data-color-scheme="light"]) {
+  --cbl-bg: #FFFFFF;
+  --cbl-bg-elevated: #FFFFFF;
+  --cbl-bg-chat: #F7F8FA;
+  --cbl-bg-sunken: #F1F3F5;
+  --cbl-border: #E5E7EB;
+  --cbl-border-strong: #D1D5DB;
+  --cbl-border-light: rgba(15,23,42,0.06);
+  --cbl-text: #0F172A;
+  --cbl-text-muted: #64748B;
+  --cbl-text-faint: #94A3B8;
+}
+`;
+
 const KEYFRAMES = `
 @keyframes chatbotlite-pop { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes chatbotlite-slide { 0% { opacity: 0; transform: translateY(16px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
@@ -168,7 +241,7 @@ function ensureStyles(): void {
   if (document.getElementById(STYLE_TAG_ID)) return;
   const style = document.createElement("style");
   style.id = STYLE_TAG_ID;
-  style.textContent = KEYFRAMES;
+  style.textContent = TOKENS + KEYFRAMES;
   document.head.appendChild(style);
 }
 
@@ -205,6 +278,28 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
       Boolean((window as unknown as { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition));
 
   const [open, setOpen] = useState(false);
+  // Panel expansion — persisted in localStorage so the visitor's preference survives reload.
+  const [expanded, setExpanded] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try { return window.localStorage.getItem("cbl-panel-size") === "expanded"; } catch { return false; }
+  });
+  // Mobile breakpoint — under 640px we go full-screen and hide the toggle.
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window === "undefined" ? false : window.innerWidth < 640
+  );
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onResize = (): void => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  function toggleExpanded(): void {
+    setExpanded((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem("cbl-panel-size", next ? "expanded" : "compact"); } catch { /* ignore quota */ }
+      return next;
+    });
+  }
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: "g0", role: "assistant", content: resolvedGreeting, ts: Date.now() }
   ]);
@@ -314,11 +409,17 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
 
   useEffect(() => { ensureStyles(); }, []);
 
+  const directProps = isEndpointMode ? null : (props as ChatWidgetDirectProps);
   const bot = useMemo(() => {
-    if (isEndpointMode) return null;
-    if (!props.knowledge || !props.providers) return null;
-    return new ChatBot({ knowledge: props.knowledge, providers: props.providers });
-  }, [isEndpointMode, props.knowledge, props.providers]);
+    if (!directProps) return null;
+    if (!directProps.knowledge || !directProps.providers) return null;
+    return new ChatBot({
+      knowledge: directProps.knowledge,
+      providers: directProps.providers,
+      ...(directProps.extraInstructions ? { extraInstructions: directProps.extraInstructions } : {}),
+      ...(directProps.systemPromptTransform ? { systemPromptTransform: directProps.systemPromptTransform } : {})
+    });
+  }, [directProps]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -359,7 +460,13 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
       body = JSON.stringify({ message: text, transcript: history, enabledTools });
     }
     const res = await fetch(props.endpoint!, { method: "POST", headers, body });
-    if (!res.ok) throw new Error(`Endpoint ${res.status}: ${await res.text().catch(() => "")}`);
+    if (!res.ok) {
+      // Read body for diagnostics but don't leak HTML / huge payloads into the bubble.
+      const raw = await res.text().catch(() => "");
+      const looksLikeHtml = /^\s*<(!doctype|html|head|body)/i.test(raw);
+      const snippet = looksLikeHtml ? "" : raw.slice(0, 120).replace(/\s+/g, " ").trim();
+      throw new Error(`Server returned ${res.status}${snippet ? ` — ${snippet}` : ""}`);
+    }
 
     const contentType = res.headers.get("Content-Type") ?? "";
     if (contentType.includes("text/event-stream") && res.body) {
@@ -476,10 +583,13 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
     <>
       {!open && (
         <button
-          className="chatbotlite-launcher"
+          className="chatbotlite-root chatbotlite-launcher"
+          data-color-scheme="auto"
           onClick={() => setOpen(true)}
           aria-label="Open chat"
           style={{
+            ["--cbl-primary" as never]: primary,
+            ["--cbl-on-primary" as never]: onPrimary,
             position: "fixed",
             bottom: 20,
             ...launcherPos,
@@ -517,16 +627,20 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
 
       {open && (
         <div
+          className="chatbotlite-root"
+          data-color-scheme="auto"
           role="dialog"
           aria-label="Chat"
           style={{
+            ["--cbl-primary" as never]: primary,
+            ["--cbl-on-primary" as never]: onPrimary,
             position: "fixed",
-            bottom: 20,
-            ...panelPos,
-            width: 380,
-            maxWidth: "calc(100vw - 40px)",
-            height: 580,
-            maxHeight: "calc(100vh - 40px)",
+            bottom: isMobile ? 0 : 20,
+            ...(isMobile ? { left: 0, right: 0 } : panelPos),
+            width: isMobile ? "100vw" : (expanded ? 720 : 380),
+            maxWidth: isMobile ? "100vw" : "calc(100vw - 40px)",
+            height: isMobile ? "100vh" : (expanded ? 800 : 580),
+            maxHeight: isMobile ? "100vh" : "calc(100vh - 40px)",
             background: SURFACE,
             color: TEXT_BODY,
             borderRadius: 20,
@@ -594,28 +708,65 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                 )}
               </div>
             </div>
-            <button
-              className="chatbotlite-close"
-              onClick={() => setOpen(false)}
-              aria-label="Close chat"
-              style={{
-                background: "transparent",
-                border: "none",
-                color: TEXT_MUTED,
-                width: 32,
-                height: 32,
-                borderRadius: 10,
-                fontSize: 22,
-                lineHeight: 1,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0
-              }}
-            >
-              {"\u00D7"}
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
+              {!isMobile && (
+                <button
+                  className="chatbotlite-resize"
+                  onClick={toggleExpanded}
+                  aria-label={expanded ? "Compact view" : "Expand view"}
+                  title={expanded ? "Compact view" : "Expand view"}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: TEXT_MUTED,
+                    width: 32,
+                    height: 32,
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  {expanded ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="9 4 4 4 4 9" />
+                      <polyline points="15 4 20 4 20 9" />
+                      <polyline points="4 15 4 20 9 20" />
+                      <polyline points="20 15 20 20 15 20" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="3 9 3 3 9 3" />
+                      <polyline points="21 9 21 3 15 3" />
+                      <polyline points="3 15 3 21 9 21" />
+                      <polyline points="21 15 21 21 15 21" />
+                    </svg>
+                  )}
+                </button>
+              )}
+              <button
+                className="chatbotlite-close"
+                onClick={() => setOpen(false)}
+                aria-label="Close chat"
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: TEXT_MUTED,
+                  width: 32,
+                  height: 32,
+                  borderRadius: 10,
+                  fontSize: 22,
+                  lineHeight: 1,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                {"\u00D7"}
+              </button>
+            </div>
           </header>
 
           <div
@@ -803,7 +954,10 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                     maxWidth: 200
                   }}
                 >
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>📎 {f.name}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: TEXT_MUTED }}>
+                    <IconPaperclip size={12} />
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", color: TEXT_BODY }}>{f.name}</span>
+                  </span>
                   <button
                     onClick={() => removeFile(i)}
                     aria-label={`Remove ${f.name}`}
@@ -855,8 +1009,8 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                       background: "transparent",
                       border: "none",
                       cursor: sending || files.length >= maxFiles ? "default" : "pointer",
-                      opacity: sending || files.length >= maxFiles ? 0.35 : 0.7,
-                      fontSize: 18,
+                      opacity: sending || files.length >= maxFiles ? 0.35 : 0.75,
+                      color: TEXT_MUTED,
                       lineHeight: 1,
                       padding: 0,
                       display: "flex",
@@ -866,7 +1020,7 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                       alignSelf: "center",
                       transition: "opacity 120ms ease, background 120ms ease"
                     }}
-                  >📎</button>
+                  ><IconPaperclip size={18} /></button>
                 </>
               )}
               {voiceEnabled && speechSupported && (
@@ -883,8 +1037,7 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                     color: voiceListening ? onPrimary : "inherit",
                     border: "none",
                     cursor: sending ? "default" : "pointer",
-                    opacity: sending ? 0.35 : (voiceListening ? 1 : 0.7),
-                    fontSize: 16,
+                    opacity: sending ? 0.35 : (voiceListening ? 1 : 0.75),
                     lineHeight: 1,
                     padding: 0,
                     display: "flex",
@@ -894,7 +1047,7 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                     alignSelf: "center",
                     transition: "opacity 120ms ease, background 120ms ease, color 120ms ease"
                   }}
-                >🎙️</button>
+                ><IconMic size={16} /></button>
               )}
               <textarea
                 ref={inputRef}
@@ -987,7 +1140,10 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                 transition: "color 120ms ease"
               }}
             >
-              {BOLT} Powered by chatbotlite
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <IconBolt size={11} />
+                Powered by chatbotlite
+              </span>
             </a>
           )}
         </div>

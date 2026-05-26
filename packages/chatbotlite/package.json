@@ -1,6 +1,6 @@
 {
   "name": "chatbotlite",
-  "version": "0.5.2",
+  "version": "0.6.1",
   "description": "Drop-in AI chatbot SDK + React widget. Multi-LLM with fallback, business config, anti-hallucination guards. One import, one config — your site has a chatbot.",
   "license": "Apache-2.0",
   "author": "agents.io",
@@ -71,7 +71,10 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:all": "npm run typecheck && npm run test && npm run build && npm run test:e2e",
+    "prepublishOnly": "npm run test:all"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
@@ -86,12 +89,18 @@
     }
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "jsdom": "^29.1.1",
+    "msw": "^2.14.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tsup": "^8.3.0",
+    "tsx": "^4.22.3",
     "typescript": "^5.7.2",
     "vitest": "^2.1.0"
   },

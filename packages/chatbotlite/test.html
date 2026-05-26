@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>chatbotlite v0.6.0 visual test</title>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; margin: 0; padding: 48px; background: #f1f5f9; color: #0f172a; }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .card { background: white; border-radius: 12px; padding: 24px; border: 1px solid #e2e8f0; }
+  h1 { margin: 0 0 8px; font-size: 22px; }
+  p { color: #64748b; }
+</style>
+</head>
+<body>
+<h1>chatbotlite v0.6.0 — visual test</h1>
+<p>Click the launcher (bottom-right) to open. Verify: SVG icons (paperclip, send, bolt), cool-gray chat bg, bot bubble contrast.</p>
+
+<div class="row">
+  <div class="card">Hero card 1</div>
+  <div class="card">Hero card 2</div>
+</div>
+
+<script src="./dist/embed.global.js"></script>
+<script>
+  chatbotlite.mount({
+    endpoint: "/api/chat",
+    title: "Acme Plumbing",
+    subtitle: "We reply in minutes",
+    avatar: true,
+    greeting: "Hi! Ask me anything about the demo. Try attaching a file to test the paperclip icon.",
+    theme: { primary: "#0066ff" },
+    attach: { enabled: true, accept: ["image/*"], maxSizeMb: 5 }
+  });
+</script>
+</body>
+</html>
