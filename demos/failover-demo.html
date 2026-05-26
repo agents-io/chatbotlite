@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChatbotLite — Provider Failover Demo</title>
+<style>
+  :root { --bg: #0B0D10; --surface: #16181D; --border: #2A2E37; --text: #ECEDEE; --muted: #6B7177; --accent: #0066FF; --red: #EF4444; --green: #10B981; --mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 40px 20px; }
+
+  .demo { width: 720px; max-width: 100%; }
+  .demo h2 { font-size: 20px; font-weight: 600; margin-bottom: 24px; text-align: center; letter-spacing: -0.02em; }
+  .demo .sub { text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+
+  /* Chat widget mockup */
+  .widget { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .widget-header { background: var(--accent); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
+  .widget-header .title { color: white; font-weight: 600; font-size: 15px; }
+  .widget-header .provider-badge { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(255,255,255,0.15); border-radius: 99px; font-size: 11px; font-weight: 600; color: white; font-family: var(--mono); transition: all 300ms ease; }
+  .widget-header .provider-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); transition: background 300ms ease; }
+  .widget-header .provider-badge.failing .dot { background: var(--red); }
+  .widget-header .provider-badge.failing { background: rgba(239,68,68,0.3); }
+
+  .messages { padding: 18px; min-height: 240px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; animation: fadeIn 200ms ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.user { align-self: flex-end; background: var(--accent); color: white; border-radius: 14px 14px 4px 14px; }
+  .msg.bot { align-self: flex-start; background: #1E2028; border: 1px solid var(--border); border-radius: 14px 14px 14px 4px; }
+  .msg .cursor { display: inline-block; width: 0.5ch; animation: blink 1s ease-in-out infinite; color: var(--accent); }
+  @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.2; } }
+
+  /* Provider status bar */
+  .status-bar { border-top: 1px solid var(--border); padding: 12px 18px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); font-family: var(--mono); }
+  .status-bar .chain { display: flex; gap: 4px; align-items: center; }
+  .status-bar .chain .p { padding: 2px 8px; border-radius: 4px; background: #1E2028; border: 1px solid var(--border); font-size: 11px; transition: all 300ms ease; }
+  .status-bar .chain .p.active { border-color: var(--green); color: var(--green); }
+  .status-bar .chain .p.failed { border-color: var(--red); color: var(--red); text-decoration: line-through; opacity: 0.5; }
+  .status-bar .chain .arrow { color: var(--muted); font-size: 10px; }
+
+  /* Log */
+  .log { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; font-family: var(--mono); font-size: 12px; line-height: 1.8; max-height: 200px; overflow-y: auto; }
+  .log .line { animation: fadeIn 150ms ease; }
+  .log .time { color: var(--muted); }
+  .log .info { color: var(--accent); }
+  .log .error { color: var(--red); }
+  .log .success { color: var(--green); }
+
+  .replay-btn { display: block; margin: 24px auto 0; padding: 10px 24px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--sans); }
+  .replay-btn:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+<div class="demo">
+  <h2>3 lines. 11 providers. Zero downtime.</h2>
+  <p class="sub">Watch: OpenAI fails mid-stream → auto-failover to Groq → zero tokens lost.</p>
+
+  <div class="widget">
+    <div class="widget-header">
+      <span class="title">Acme Plumbing · Chat</span>
+      <div class="provider-badge" id="badge"><span class="dot"></span><span id="badge-text">openai</span></div>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="status-bar">
+      <span>chain:</span>
+      <div class="chain">
+        <span class="p" id="p-openai">openai</span>
+        <span class="arrow">→</span>
+        <span class="p" id="p-groq">groq</span>
+        <span class="arrow">→</span>
+        <span class="p" id="p-deepseek">deepseek</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="log" id="log"></div>
+  <button class="replay-btn" id="replay" style="display:none">Replay demo</button>
+</div>
+
+<script>
+const msgs = document.getElementById('messages');
+const log = document.getElementById('log');
+const badge = document.getElementById('badge');
+const badgeText = document.getElementById('badge-text');
+const pOpenai = document.getElementById('p-openai');
+const pGroq = document.getElementById('p-groq');
+const replay = document.getElementById('replay');
+
+const TOKENS_BEFORE_FAIL = "Our sink leak inspection costs $95 and includes a full diagnostic assessment. A qualified plumber will visit your".split(' ');
+const TOKENS_AFTER_FAIL = " home, inspect the issue, and provide a written quote on the spot. Most inspections take about 30 minutes. Would you like me to help you schedule one?".split(' ');
+
+function addMsg(role, text) {
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  d.innerHTML = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+function addLog(type, text) {
+  const d = document.createElement('div');
+  d.className = 'line';
+  const now = new Date().toLocaleTimeString('en', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  d.innerHTML = `<span class="time">[${now}]</span> <span class="${type}">${text}</span>`;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function runDemo() {
+  msgs.innerHTML = '';
+  log.innerHTML = '';
+  replay.style.display = 'none';
+  badge.className = 'provider-badge';
+  badgeText.textContent = 'openai';
+  pOpenai.className = 'p active';
+  pGroq.className = 'p';
+  pOpenai.style.textDecoration = 'none';
+  pOpenai.style.opacity = '1';
+
+  await sleep(500);
+  addLog('info', 'User message received');
+  addMsg('user', 'How much is a leak inspection?');
+
+  await sleep(800);
+  addLog('info', 'Routing to provider chain: openai → groq → deepseek');
+  addLog('success', 'Connected to openai (gpt-4o-mini)');
+  pOpenai.className = 'p active';
+
+  await sleep(400);
+  const botMsg = addMsg('bot', '');
+  let text = '';
+
+  // Stream from "OpenAI"
+  for (let i = 0; i < TOKENS_BEFORE_FAIL.length; i++) {
+    text += (i > 0 ? ' ' : '') + TOKENS_BEFORE_FAIL[i];
+    botMsg.innerHTML = text + '<span class="cursor">▍</span>';
+    msgs.scrollTop = msgs.scrollHeight;
+    await sleep(60 + Math.random() * 40);
+  }
+
+  // FAIL
+  await sleep(200);
+  badge.className = 'provider-badge failing';
+  pOpenai.className = 'p failed';
+  addLog('error', '✗ openai: 503 Service Unavailable — rate limit exceeded');
+  addLog('info', 'Retrying with next provider in chain...');
+
+  await sleep(600);
+  badgeText.textContent = 'groq';
+  badge.className = 'provider-badge';
+  pGroq.className = 'p active';
+  addLog('success', '✓ Connected to groq (llama-3.3-70b) — resuming stream');
+
+  await sleep(300);
+
+  // Continue streaming from "Groq"
+  for (let i = 0; i < TOKENS_AFTER_FAIL.length; i++) {
+    text += (i > 0 ? ' ' : '') + TOKENS_AFTER_FAIL[i];
+    botMsg.innerHTML = text + '<span class="cursor">▍</span>';
+    msgs.scrollTop = msgs.scrollHeight;
+    await sleep(30 + Math.random() * 20);
+  }
+
+  // Done
+  botMsg.innerHTML = text;
+  addLog('success', '✓ Reply complete. 47 tokens, 0 dropped. Failover: 0.6s.');
+
+  await sleep(500);
+  replay.style.display = 'block';
+}
+
+replay.addEventListener('click', runDemo);
+runDemo();
+</script>
+</body>
+</html>
