@@ -74,6 +74,13 @@ interface ChatWidgetCommonProps {
    * - URL → rendered as image
    */
   launcherIcon?: string;
+  /**
+   * Open the chat panel on mount instead of showing only the launcher.
+   * Good for demo / landing pages where the visitor should see the bot
+   * immediately. Default false — production sites usually want the
+   * launcher-first behaviour so the chrome stays unobtrusive.
+   */
+  defaultOpen?: boolean;
 }
 
 interface ChatWidgetDirectProps extends ChatWidgetCommonProps {
@@ -149,7 +156,6 @@ const CHAT_BG = "var(--cbl-bg-chat)";
 const BUBBLE_BOT = "var(--cbl-bg-elevated)";
 const INPUT_BG = "var(--cbl-bg-sunken)";
 const BORDER = "var(--cbl-border)";
-const BORDER_LIGHT = "var(--cbl-border-light)";
 const TEXT_BODY = "var(--cbl-text)";
 const TEXT_MUTED = "var(--cbl-text-muted)";
 const TEXT_FAINT = "var(--cbl-text-faint)";
@@ -170,6 +176,9 @@ const TOKENS = `
   --cbl-text-faint: #94A3B8;
   --cbl-success: #10B981;
   --cbl-danger: #EF4444;
+  /* Soft tint of primary brand color — used for header background, avatar bg fallback.
+     12% mix keeps chrome neutral but lets the panel feel branded on colored vertical pages. */
+  --cbl-primary-soft: color-mix(in oklab, var(--cbl-primary, #0F172A) 10%, white);
   --cbl-font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", system-ui, sans-serif;
   --cbl-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --cbl-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -277,7 +286,7 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
     (Boolean((window as unknown as { SpeechRecognition?: unknown }).SpeechRecognition) ||
       Boolean((window as unknown as { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition));
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(Boolean(props.defaultOpen));
   // Panel expansion — persisted in localStorage so the visitor's preference survives reload.
   const [expanded, setExpanded] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -655,13 +664,12 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
         >
           <header style={{
             padding: "14px 16px",
-            background: SURFACE,
-            color: TEXT_BODY,
+            background: primary,
+            color: onPrimary,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            gap: 12,
-            borderBottom: `1px solid ${BORDER_LIGHT}`
+            gap: 12
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: props.avatar ? 10 : 0, minWidth: 0 }}>
               {/* Avatar — opt-in: true=letter badge, string=image URL, omit=none */}
@@ -670,13 +678,13 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                   width: 32,
                   height: 32,
                   borderRadius: "50%",
-                  background: primary,
-                  color: onPrimary,
+                  background: onPrimary,
+                  color: primary,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 14,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   flexShrink: 0,
                   letterSpacing: "-0.02em"
                 }}>
@@ -693,16 +701,16 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                     borderRadius: "50%",
                     objectFit: "cover",
                     flexShrink: 0,
-                    border: `1px solid ${BORDER}`
+                    border: `1px solid rgba(255,255,255,0.25)`
                   }}
                 />
               )}
               <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2, minWidth: 0 }}>
-                <span style={{ fontWeight: 600, fontSize: 15, letterSpacing: "-0.01em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: TEXT_BODY }}>
+                <span style={{ fontWeight: 600, fontSize: 15, letterSpacing: "-0.01em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: onPrimary }}>
                   {resolvedTitle}
                 </span>
                 {(subtitle || sending) && (
-                  <span style={{ fontSize: 12, color: TEXT_MUTED, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <span style={{ fontSize: 12, color: onPrimary, opacity: 0.75, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {subtitle ?? (sending ? "typing…" : "")}
                   </span>
                 )}
@@ -718,7 +726,8 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                   style={{
                     background: "transparent",
                     border: "none",
-                    color: TEXT_MUTED,
+                    color: onPrimary,
+                    opacity: 0.85,
                     width: 32,
                     height: 32,
                     borderRadius: 10,
@@ -752,7 +761,8 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: TEXT_MUTED,
+                  color: onPrimary,
+                  opacity: 0.85,
                   width: 32,
                   height: 32,
                   borderRadius: 10,
@@ -1124,7 +1134,7 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
           {showBranding && (
             <a
               className="chatbotlite-brand"
-              href="https://github.com/agents-io/chatbotlite"
+              href="https://chatbotlite-demos.vercel.app"
               target="_blank"
               rel="noreferrer"
               style={{
@@ -1142,7 +1152,7 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
             >
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
                 <IconBolt size={11} />
-                Powered by chatbotlite
+                Powered by ChatbotLite
               </span>
             </a>
           )}

@@ -5,7 +5,7 @@
   "private": true,
   "description": "Live demo gallery — vanilla HTML pages embedding chatbotlite.",
   "dependencies": {
-    "chatbotlite": "^0.6.1"
+    "chatbotlite": "^0.6.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

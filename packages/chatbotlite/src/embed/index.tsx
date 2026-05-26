@@ -86,7 +86,7 @@ declare global {
 if (typeof window !== "undefined") {
   window.chatbotlite = {
     mount,
-    version: "0.6.1"
+    version: "0.6.3"
   };
 }
 
