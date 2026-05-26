@@ -150,7 +150,7 @@
 <body>
 
 <nav class="top">
-  <div class="brand"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" style="vertical-align:-4px"><path d="M3 9a4 4 0 0 1 4-4h18a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H14l-5.4 5.4a.8.8 0 0 1-1.4-.6V25H7a4 4 0 0 1-4-4V9Z" fill="var(--accent)"/><rect x="8" y="10.5" width="16" height="11" rx="4" fill="var(--bg)"/><ellipse cx="13.5" cy="15.5" rx="2" ry="2.5" fill="var(--accent)"/><path d="M18 15 Q20 13 22 15" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M13 19 Q16 21 19 19" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" fill="none"/><path d="M16 1.5 L17 4 L19.5 5 L17 6 L16 8.5 L15 6 L12.5 5 L15 4 Z" fill="var(--accent)"/></svg> ChatbotLite</div>
+  <div class="brand"><img src="https://raw.githubusercontent.com/agents-io/chatbotlite/main/packages/chatbotlite/logo.png" alt="ChatbotLite" width="24" height="24" style="vertical-align:-5px; border-radius: 4px;"> ChatbotLite</div>
   <div class="links">
     <a href="https://github.com/agents-io/chatbotlite">GitHub</a>
     <a href="https://www.npmjs.com/package/chatbotlite">npm</a>
@@ -161,7 +161,7 @@
 <!-- Hero -->
 <header class="hero">
   <h1>AI chatbot in<br><span class="accent">3 lines of code.</span></h1>
-  <p class="sub">Drop a smart chatbot into any website. React, Shopify, WordPress, plain HTML. 11 LLM providers with auto-failover. Open source.</p>
+  <p class="sub">Stop burning tokens building chatbots from scratch. We did it for you. React, Shopify, WordPress, plain HTML. 11 LLM providers. Open source.</p>
   <div class="install-bar"><code>npm install chatbotlite</code><button onclick="navigator.clipboard.writeText('npm install chatbotlite').then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button></div>
   <div class="cta-row">
     <a class="btn ghost" href="https://github.com/agents-io/chatbotlite">⭐ Star on GitHub</a>
@@ -210,6 +210,28 @@ const bot = new ChatBot({
 // POST /api/chat
 const stream = await bot.replyStream(message);
 return new Response(stream);</div></div>
+  </div>
+</section>
+
+<!-- AI Prompt -->
+<section class="block">
+  <h2>Or just paste this into your AI</h2>
+  <p class="lede">Claude, Cursor, Copilot, GPT. Copy this prompt, paste it, hit run. Your AI does the rest.</p>
+  <div class="code-wrap">
+    <div class="code-block" id="ai-prompt-block" style="border-radius: 12px; position: relative;"><button style="position:absolute;top:12px;right:12px;padding:7px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:#E6EDF3;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);z-index:2;" onclick="navigator.clipboard.writeText(document.getElementById('ai-prompt-text').innerText).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button><span id="ai-prompt-text">Add chatbotlite to this project — a drop-in AI chatbot widget.
+
+Reference: https://github.com/agents-io/chatbotlite
+Docs for LLM: https://chatbotlite-demos.vercel.app/llms-full.txt
+
+Steps:
+1. npm i chatbotlite
+2. Create knowledge.md describing the business
+3. Mount: &lt;ChatWidget endpoint="/api/chat" title="..." /&gt;
+4. Build /api/chat with ChatBot from "chatbotlite/client" + a Groq key (free)
+
+Defaults: Groq llama-3.3-70b. Fallback chain auto-routes if provider fails.
+Customize: theme.primary, avatar, tools.requestPayment.stripeLink, extraInstructions.
+TypeScript types ship in the package.</span></div>
   </div>
 </section>
 
@@ -266,6 +288,30 @@ return new Response(stream);</div></div>
       <h3>Apache 2.0. Fully yours.</h3>
       <p>No SaaS subscription. No per-conversation pricing. Self-host, read every line, own your customer data.</p>
     </div>
+  </div>
+</section>
+
+<!-- Docs -->
+<section class="block">
+  <h2>Documentation</h2>
+  <p class="lede">Everything you need to integrate, customize, and ship.</p>
+  <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <a href="https://github.com/agents-io/chatbotlite" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <h3>GitHub README</h3>
+      <p>Quick start, installation, basic usage examples.</p>
+    </a>
+    <a href="/llms-full.txt" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <h3>Full API Reference</h3>
+      <p>Every prop, method, type, and example. 35KB. LLM-readable.</p>
+    </a>
+    <a href="https://github.com/agents-io/chatbotlite/blob/main/SKILL_MARKER_SPEC.md" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <h3>SKILL Protocol Spec</h3>
+      <p>Open protocol for LLM-triggered UI cards. Adopt it in your own library.</p>
+    </a>
+    <a href="https://github.com/agents-io/chatbotlite/blob/main/ROADMAP.md" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <h3>Roadmap</h3>
+      <p>What's shipped, what's next, what's in the ideas backlog.</p>
+    </a>
   </div>
 </section>
 
