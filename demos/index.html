@@ -225,11 +225,12 @@ Docs for LLM: https://chatbotlite-demos.vercel.app/llms-full.txt
 
 Steps:
 1. npm i chatbotlite
-2. Create knowledge.md describing the business
+2. Create knowledge.md describing the business (services, hours, pricing, FAQ)
 3. Mount: &lt;ChatWidget endpoint="/api/chat" title="..." /&gt;
-4. Build /api/chat with ChatBot from "chatbotlite/client" + a Groq key (free)
+4. Build /api/chat with ChatBot from "chatbotlite/client" + your LLM API key
 
-Defaults: Groq llama-3.3-70b. Fallback chain auto-routes if provider fails.
+Supports 11 providers: OpenAI, Anthropic, Groq, DeepSeek, Gemini, Mistral, and more.
+Add multiple keys for auto-failover if one provider goes down.
 Customize: theme.primary, avatar, tools.requestPayment.stripeLink, extraInstructions.
 TypeScript types ship in the package.</span></div>
   </div>
