@@ -184,6 +184,7 @@
       <button class="code-tab active" onclick="showTab('react')">React</button>
       <button class="code-tab" onclick="showTab('html')">HTML / Shopify</button>
       <button class="code-tab" onclick="showTab('server')">Server</button>
+      <button class="code-tab" onclick="showTab('ai')">AI Prompt</button>
     </div>
     <div class="code-pane active" id="tab-react"><div class="code-block">import { ChatWidget } from "chatbotlite/react";
 
@@ -204,35 +205,27 @@ import { knowledgeFromFile } from "chatbotlite/node";
 
 const bot = new ChatBot({
   knowledge: knowledgeFromFile("./knowledge.md"),
-  providers: { keys: { groq: process.env.GROQ_API_KEY } }
+  providers: { keys: { openai: process.env.OPENAI_API_KEY } }
 });
 
 // POST /api/chat
 const stream = await bot.replyStream(message);
 return new Response(stream);</div></div>
-  </div>
-</section>
-
-<!-- AI Prompt -->
-<section class="block">
-  <h2>Or just paste this into your AI</h2>
-  <p class="lede">Claude, Cursor, Copilot, GPT. Copy this prompt, paste it, hit run. Your AI does the rest.</p>
-  <div class="code-wrap">
-    <div class="code-block" id="ai-prompt-block" style="border-radius: 12px; position: relative;"><button style="position:absolute;top:12px;right:12px;padding:7px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:#E6EDF3;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);z-index:2;" onclick="navigator.clipboard.writeText(document.getElementById('ai-prompt-text').innerText).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button><span id="ai-prompt-text">Add chatbotlite to this project — a drop-in AI chatbot widget.
+    <div class="code-pane" id="tab-ai"><div class="code-block" style="position:relative;"><button style="position:absolute;top:8px;right:8px;padding:5px 12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:#E6EDF3;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);" onclick="navigator.clipboard.writeText(document.getElementById('ai-prompt-text').innerText).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button><span id="ai-prompt-text">Add chatbotlite to this project — a drop-in AI chatbot widget.
 
 Reference: https://github.com/agents-io/chatbotlite
 Docs for LLM: https://chatbotlite-demos.vercel.app/llms-full.txt
 
 Steps:
 1. npm i chatbotlite
-2. Create knowledge.md describing the business (services, hours, pricing, FAQ)
+2. Create knowledge.md describing the business
 3. Mount: &lt;ChatWidget endpoint="/api/chat" title="..." /&gt;
 4. Build /api/chat with ChatBot from "chatbotlite/client" + your LLM API key
 
 Supports 11 providers: OpenAI, Anthropic, Groq, DeepSeek, Gemini, Mistral, and more.
 Add multiple keys for auto-failover if one provider goes down.
 Customize: theme.primary, avatar, tools.requestPayment.stripeLink, extraInstructions.
-TypeScript types ship in the package.</span></div>
+TypeScript types ship in the package.</span></div></div>
   </div>
 </section>
 
@@ -255,12 +248,21 @@ TypeScript types ship in the package.</span></div>
   </div>
 </section>
 
-<!-- Failover demo -->
+<!-- Failover demo (inline) -->
 <section class="block">
   <h2>Zero downtime. Auto-failover.</h2>
   <p class="lede">OpenAI fails mid-stream? The chatbot keeps talking. Zero tokens lost.</p>
-  <div class="failover-embed">
-    <a href="/failover-demo.html"><img src="https://raw.githubusercontent.com/agents-io/chatbotlite/main/docs/failover-demo.gif" alt="ChatbotLite provider failover demo" loading="lazy"></a>
+  <div id="failover-demo" style="max-width:720px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+    <div style="background:var(--accent);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:white;font-weight:600;font-size:14px;">Acme Plumbing · Chat</span>
+      <span id="fo-badge" style="display:flex;align-items:center;gap:5px;padding:3px 9px;background:rgba(255,255,255,0.15);border-radius:99px;font-size:11px;font-weight:600;color:white;font-family:var(--mono);"><span id="fo-dot" style="width:6px;height:6px;border-radius:50%;background:#10B981;"></span><span id="fo-provider">openai</span></span>
+    </div>
+    <div id="fo-msgs" style="padding:16px;min-height:160px;display:flex;flex-direction:column;gap:10px;"></div>
+    <div style="border-top:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-faint);font-family:var(--mono);">
+      chain: <span id="fo-p-openai" style="padding:2px 7px;border-radius:4px;background:var(--bg-soft);border:1px solid var(--border);font-size:10px;">openai</span> <span style="color:var(--text-faint);font-size:9px;">→</span> <span id="fo-p-groq" style="padding:2px 7px;border-radius:4px;background:var(--bg-soft);border:1px solid var(--border);font-size:10px;">groq</span> <span style="color:var(--text-faint);font-size:9px;">→</span> <span style="padding:2px 7px;border-radius:4px;background:var(--bg-soft);border:1px solid var(--border);font-size:10px;">deepseek</span>
+    </div>
+    <div id="fo-log" style="border-top:1px solid var(--border);padding:12px 16px;font-family:var(--mono);font-size:11px;line-height:1.8;max-height:140px;overflow-y:auto;"></div>
+    <div style="text-align:center;padding:8px;"><button id="fo-replay" onclick="runFailoverDemo()" style="display:none;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">Replay</button></div>
   </div>
 </section>
 
@@ -384,7 +386,7 @@ TypeScript types ship in the package.</span></div>
 </footer>
 
 <!-- chatbotlite running on chatbotlite -->
-<script src="https://unpkg.com/chatbotlite@0.7.6/dist/embed.global.js"></script>
+<script src="https://unpkg.com/chatbotlite@0.7.7/dist/embed.global.js"></script>
 <script>
   chatbotlite.mount({
     endpoint: "/api/chat?demo=chatbotlite",
@@ -398,6 +400,70 @@ TypeScript types ship in the package.</span></div>
 </script>
 
 <script>
+// Failover demo animation
+const FO_BEFORE = "Our sink leak inspection costs $95 and includes a full diagnostic assessment. A qualified plumber will visit your".split(' ');
+const FO_AFTER = " home, inspect the issue, and provide a written quote on the spot. Most inspections take about 30 minutes. Would you like me to help you schedule one?".split(' ');
+function foAddMsg(role, html) {
+  const d = document.createElement('div');
+  d.style.cssText = `max-width:78%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.5;animation:chatbotlite-fade-in 200ms ease;${role==='user'?'align-self:flex-end;background:var(--accent);color:white;border-radius:14px 14px 4px 14px;':'align-self:flex-start;background:var(--bg-soft);border:1px solid var(--border);border-radius:14px 14px 14px 4px;'}`;
+  d.innerHTML = html;
+  document.getElementById('fo-msgs').appendChild(d);
+  return d;
+}
+function foLog(type, text) {
+  const d = document.createElement('div');
+  const now = new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const color = type==='error'?'#EF4444':type==='success'?'#10B981':'var(--accent)';
+  d.innerHTML = `<span style="color:var(--text-faint)">[${now}]</span> <span style="color:${color}">${text}</span>`;
+  const log = document.getElementById('fo-log');
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+async function runFailoverDemo() {
+  const msgs = document.getElementById('fo-msgs');
+  const log = document.getElementById('fo-log');
+  const badge = document.getElementById('fo-badge');
+  const dot = document.getElementById('fo-dot');
+  const prov = document.getElementById('fo-provider');
+  const pO = document.getElementById('fo-p-openai');
+  const pG = document.getElementById('fo-p-groq');
+  const replay = document.getElementById('fo-replay');
+  msgs.innerHTML=''; log.innerHTML=''; replay.style.display='none';
+  dot.style.background='#10B981'; prov.textContent='openai';
+  pO.style.cssText='padding:2px 7px;border-radius:4px;background:var(--bg-soft);border:1px solid #10B981;color:#10B981;font-size:10px;';
+  pG.style.cssText='padding:2px 7px;border-radius:4px;background:var(--bg-soft);border:1px solid var(--border);font-size:10px;';
+  badge.style.background='rgba(255,255,255,0.15)';
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  await sleep(400);
+  foLog('info','User message received');
+  foAddMsg('user','How much is a leak inspection?');
+  await sleep(600);
+  foLog('info','Routing to chain: openai → groq → deepseek');
+  foLog('success','Connected to openai (gpt-4o-mini)');
+  await sleep(300);
+  const bot = foAddMsg('bot','');
+  let text = '';
+  for (let i=0;i<FO_BEFORE.length;i++){text+=(i>0?' ':'')+FO_BEFORE[i];bot.innerHTML=text+'<span style="color:var(--accent);animation:chatbotlite-cursor 1s ease-in-out infinite;">▍</span>';await sleep(50+Math.random()*30);}
+  await sleep(200);
+  badge.style.background='rgba(239,68,68,0.3)'; dot.style.background='#EF4444';
+  pO.style.cssText='padding:2px 7px;border-radius:4px;background:var(--bg-soft);border:1px solid #EF4444;color:#EF4444;font-size:10px;text-decoration:line-through;opacity:0.5;';
+  foLog('error','✗ openai: 503 Service Unavailable');
+  foLog('info','Retrying next provider...');
+  await sleep(500);
+  prov.textContent='groq'; dot.style.background='#10B981'; badge.style.background='rgba(255,255,255,0.15)';
+  pG.style.cssText='padding:2px 7px;border-radius:4px;background:var(--bg-soft);border:1px solid #10B981;color:#10B981;font-size:10px;';
+  foLog('success','✓ Connected to groq (llama-3.3-70b)');
+  await sleep(200);
+  for(let i=0;i<FO_AFTER.length;i++){text+=(i>0?' ':'')+FO_AFTER[i];bot.innerHTML=text+'<span style="color:var(--accent);animation:chatbotlite-cursor 1s ease-in-out infinite;">▍</span>';await sleep(25+Math.random()*15);}
+  bot.innerHTML=text;
+  foLog('success','✓ 47 tokens, 0 dropped. Failover: 0.6s.');
+  await sleep(400);
+  replay.style.display='inline-block';
+}
+// Auto-play when visible
+const foObs = new IntersectionObserver(([e]) => { if(e.isIntersecting){foObs.disconnect();runFailoverDemo();} },{threshold:0.3});
+foObs.observe(document.getElementById('failover-demo'));
+
 function showTab(name) {
   document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.code-pane').forEach(p => p.classList.remove('active'));
