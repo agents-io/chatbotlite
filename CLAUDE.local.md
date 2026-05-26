@@ -117,10 +117,13 @@ We shipped `llms.txt` (summary). Add `llms-full.txt` — complete API reference 
 ## How to resume
 
 1. `cd ~/MyGithub/chatbotlite`
-2. `cat CLAUDE.local.md` (this file) and `cat ROADMAP.md`
-3. `git log --oneline -5` (3 commits on main from this session)
+2. Read these three in order:
+   - `VISION.md` — why we exist, audience, tone, anti-features, north star
+   - `ROADMAP.md` — what + when (versions, adapter SDK, future)
+   - `CLAUDE.local.md` (this file) — current state + open items
+3. `git log --oneline -5` (4 commits on main from this session)
 4. `cd packages/chatbotlite && npm run test:all` (verify everything green)
-5. Pick next item from the list above or from ROADMAP.md
+5. Pick next item from the pending list above or from ROADMAP.md
 
 ## Useful URLs
 
