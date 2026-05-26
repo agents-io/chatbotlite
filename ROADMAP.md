@@ -27,7 +27,7 @@
 
 ---
 
-## Next patch: `0.6.1` (in flight)
+## `0.6.1` — Published 2026-05-25 ✅
 
 Small, additive — backwards-compatible.
 

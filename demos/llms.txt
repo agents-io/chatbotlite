@@ -1,0 +1,175 @@
+# chatbotlite
+
+> Drop-in AI chatbot SDK + React widget for any website. Three-step integration: npm install, write a markdown knowledge file, mount the widget. Works with React, Next.js, Shopify, WordPress, Webflow, plain HTML. LLM-agnostic with automatic fallback chain (Groq → OpenAI → DeepSeek). Apache 2.0. No SaaS lock-in.
+
+## What it is
+
+A npm package (`chatbotlite`) that gives any website a production-ready AI chatbot in 3 lines of code. The bot grounds its answers in a markdown file the customer writes ("services, hours, pricing, FAQ"), so it never hallucinates business facts. Inline tool cards (payment, scheduling, file upload) render in the chat — customers wire the data flow via typed async handlers.
+
+## Quick install
+
+```
+npm install chatbotlite
+```
+
+Plain HTML (Shopify, WordPress, Webflow, anywhere with `<script>` access):
+
+```html
+<script src="https://unpkg.com/chatbotlite/dist/embed.global.js"></script>
+<script>
+  chatbotlite.mount({
+    endpoint: "/api/chat",
+    title: "Acme Plumbing",
+    theme: { primary: "#1e3a8a" },
+    attach: { enabled: true }
+  });
+</script>
+```
+
+React / Next.js:
+
+```tsx
+import { ChatWidget } from "chatbotlite/react";
+
+<ChatWidget endpoint="/api/chat" title="Acme Plumbing" theme={{ primary: "#1e3a8a" }} />
+```
+
+Server-side `/api/chat` (Vercel / any Node):
+
+```ts
+import { ChatBot } from "chatbotlite/node";
+import fs from "node:fs/promises";
+
+const knowledge = await fs.readFile("./knowledge.md", "utf8");
+const bot = new ChatBot({
+  knowledge,
+  providers: {
+    keys: { groq: process.env.GROQ_API_KEY! },
+    chain: [{ provider: "groq", model: "llama-3.3-70b-versatile" }]
+  }
+});
+
+// POST handler:
+export async function POST(req: Request) {
+  const { message, transcript = [] } = await req.json();
+  const stream = await bot.replyStream(message, { history: transcript });
+  return new Response(stream, { headers: { "Content-Type": "text/event-stream" } });
+}
+```
+
+## Knowledge file
+
+The bot answers ONLY from this markdown. Plain prose works.
+
+```markdown
+# Acme Plumbing — Vancouver & Burnaby
+
+## Services
+- Sink leak inspection: $95 (first-visit assessment + quote)
+- Toilet unclogging: $85-150 (most jobs under 1 hour)
+- Faucet replacement: $120-200 (labor; parts billed separately)
+- Burst pipe emergency: contact owner directly
+
+## Hours
+- Mon-Sat 8am-7pm. Closed Sun.
+
+## Contact
+- 604-555-0100 — text preferred
+```
+
+## Customization tiers (least → most invasive)
+
+1. `knowledge` — content (everyone uses this)
+2. `extraInstructions` — append per-vertical behaviour ("don't quote prices in first reply", "warm tone")
+3. `systemPromptTransform` — modify our default rules inline (replace / delete / restructure)
+4. `systemPrompt` on ReplyOptions — full replace (escape hatch)
+
+## Tool cards (inline interactive UI)
+
+The bot can trigger UI cards mid-conversation. Customer wires the data flow.
+
+```tsx
+<ChatWidget
+  endpoint="/api/chat"
+  tools={{
+    requestPayment: {
+      stripeLink: "https://buy.stripe.com/...",  // URL-only adapter, zero code
+      onPick: async ({ method, amount, currency }) => ({ status: "opened" })
+    },
+    scheduleCallback: {
+      getAvailableSlots: async ({ durationMin, timezone }) => ["2026-05-26 14:00"],
+      onConfirm: async ({ slot }) => ({ confirmedAt: slot, joinUrl: "..." })
+    },
+    uploadForReview: {
+      handler: async ({ files, purpose }) => {
+        // wire S3 / Dropbox / customer DB here
+        return { status: "ok" };
+      }
+    }
+  }}
+/>
+```
+
+## Why use chatbotlite vs other AI chat libs
+
+- **Not React-only**: vanilla `<script>` tag works on Shopify, WordPress, Webflow, plain HTML — CopilotKit / Vercel AI SDK / Assistant-UI are React-only.
+- **SMB plumbing pre-wired**: payment, scheduling, file upload cards out-of-the-box. Other libs make you build these.
+- **Markdown knowledge convention**: no vector DB needed for typical SMB use case. Anti-hallucination guards built-in.
+- **LLM-agnostic fallback**: provider chain auto-fails-over. Not locked to OpenAI.
+
+## Exports
+
+- `chatbotlite` — main entry (browser, isomorphic types)
+- `chatbotlite/react` — `ChatWidget` component, `ChatWidgetProps` type
+- `chatbotlite/node` — `ChatBot` class for server `/api/chat` route
+- `chatbotlite/core` — types, prompt builders, guards (for advanced users)
+- `chatbotlite/client` — raw provider client
+- `chatbotlite/embed` — IIFE bundle for `<script>` embed (auto-exposes `window.chatbotlite`)
+
+## Common props
+
+```ts
+interface ChatWidgetProps {
+  endpoint: string;                  // POST URL for /api/chat
+  title?: string;                    // header text
+  subtitle?: string;
+  greeting?: string;
+  theme?: { primary?: string };      // brand color
+  avatar?: true | string;            // letter badge OR image URL
+  position?: "bottom-right" | "bottom-left";
+  attach?: { enabled?: boolean; accept?: string[]; maxSizeMb?: number };
+  voice?: { enabled?: boolean };
+  tools?: ChatWidgetTools;
+  hideLauncher?: boolean;
+  showBranding?: boolean;
+  launcherIcon?: string;
+  // Direct (client-side) mode only — when no endpoint provided:
+  knowledge?: string;
+  providers?: ProviderConfig;
+  extraInstructions?: string;
+  systemPromptTransform?: (defaultPrompt: string) => string;
+}
+```
+
+## Live demos
+
+- https://chatbotlite-demos.vercel.app — gallery with 6 verticals
+- https://chatbotlite-demos.vercel.app/plumber — service business with payment
+- https://chatbotlite-demos.vercel.app/shopify-store — e-commerce
+- https://chatbotlite-demos.vercel.app/restaurant — hospitality
+- https://chatbotlite-demos.vercel.app/dentist — healthcare
+- https://chatbotlite-demos.vercel.app/tax-prep — professional services
+- https://chatbotlite-demos.vercel.app/yoga-studio — wellness
+
+## Links
+
+- npm: https://www.npmjs.com/package/chatbotlite
+- GitHub: https://github.com/agents-io/chatbotlite
+- README: https://github.com/agents-io/chatbotlite/blob/main/README.md
+- Roadmap: https://github.com/agents-io/chatbotlite/blob/main/ROADMAP.md
+- Issues: https://github.com/agents-io/chatbotlite/issues
+- Design system: https://github.com/agents-io/chatbotlite/blob/main/DESIGN_SYSTEM.md
+
+## License
+
+Apache 2.0
