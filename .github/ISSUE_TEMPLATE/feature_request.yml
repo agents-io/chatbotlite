@@ -1,0 +1,44 @@
+name: ✨ Feature request
+description: Propose a new feature or adapter.
+labels: [enhancement, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea? Great. ChatbotLite stays small on purpose — see `CONTRIBUTING.md` for what we usually decline.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What's painful right now without this feature?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: Sketch the prop / function / config shape.
+      placeholder: |
+        ```ts
+        tools: {
+          newThing: { ... }
+        }
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What did you try first? Why didn't it work?
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - URL-only adapter (small)
+        - New widget prop / tool card (medium)
+        - Provider chain change (medium)
+        - Architecture change (large — please open a discussion first)
+    validations:
+      required: true

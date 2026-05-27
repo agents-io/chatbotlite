@@ -1,0 +1,42 @@
+{
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "startedAt": "2026-05-26T09:29:20.764Z",
+  "events": [
+    {
+      "timestamp": 0.001,
+      "type": "waitForSelector",
+      "selector": ".demo",
+      "text": null,
+      "delay": null,
+      "boundingBox": null
+    },
+    {
+      "timestamp": 0.037,
+      "type": "wait",
+      "selector": null,
+      "text": null,
+      "delay": null,
+      "boundingBox": null
+    },
+    {
+      "timestamp": 0.537,
+      "type": "wait",
+      "selector": null,
+      "text": null,
+      "delay": null,
+      "boundingBox": null
+    },
+    {
+      "timestamp": 12.537,
+      "type": "wait",
+      "selector": null,
+      "text": null,
+      "delay": null,
+      "boundingBox": null
+    }
+  ],
+  "duration": 15.6
+}

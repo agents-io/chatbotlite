@@ -10,7 +10,10 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/chatbotlite"><img src="https://img.shields.io/npm/v/chatbotlite.svg" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/chatbotlite"><img src="https://img.shields.io/npm/v/chatbotlite.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/chatbotlite"><img src="https://img.shields.io/npm/dw/chatbotlite.svg" alt="npm downloads"></a>
+  <a href="https://bundlephobia.com/package/chatbotlite"><img src="https://img.shields.io/bundlephobia/minzip/chatbotlite.svg" alt="bundle size"></a>
+  <a href="https://github.com/agents-io/chatbotlite/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/agents-io/chatbotlite/test.yml?branch=main" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/npm/l/chatbotlite.svg" alt="license"></a>
 </p>
 
@@ -170,6 +173,12 @@ Top-to-bottom = priority. Auto-retry on 429/5xx, then fall to next.
 - [Strategy](STRATEGY.md)
 
 ---
+
+## Contributing
+
+PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for what we merge fast and what we usually decline.
+
+For security disclosures, see [SECURITY.md](SECURITY.md) — please do not open a public issue.
 
 ## License
 

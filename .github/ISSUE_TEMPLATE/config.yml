@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://chatbotlite-demos.vercel.app/llms-full.txt
+    about: Full API reference (LLM-readable, also useful for humans).
+  - name: 🔒 Security disclosure
+    url: https://github.com/agents-io/chatbotlite/blob/main/SECURITY.md
+    about: For vulnerabilities — please do NOT open a public issue.
