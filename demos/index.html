@@ -110,12 +110,12 @@
   .code-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; max-width: 640px; margin: 0 auto; }
 
   /* Platform carousel */
-  .platform-strip { overflow: hidden; position: relative; margin: -20px auto 0; max-width: 640px; padding: 16px 0; }
-  .platform-strip::before, .platform-strip::after { content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 1; pointer-events: none; }
+  .platform-strip { overflow: hidden; position: relative; margin: 20px auto 0; max-width: 900px; padding: 20px 0; }
+  .platform-strip::before, .platform-strip::after { content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 1; pointer-events: none; }
   .platform-strip::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
   .platform-strip::after { right: 0; background: linear-gradient(270deg, var(--bg), transparent); }
-  .platform-track { display: flex; gap: 32px; animation: scroll-platforms 20s linear infinite; width: max-content; }
-  .platform-track span { font-size: 13px; font-weight: 500; color: var(--text-faint); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .platform-track { display: flex; gap: 12px; animation: scroll-platforms 25s linear infinite; width: max-content; }
+  .platform-track span { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; padding: 7px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; }
   @keyframes scroll-platforms { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
   /* Provider logos */
