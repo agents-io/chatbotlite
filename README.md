@@ -6,7 +6,12 @@
 
 <p align="center">
   <strong>AI chatbot in 3 lines of code.</strong><br>
-  Stop burning tokens building chatbots from scratch. We did it for you.
+  Stop burning tokens building chatbots from scratch. We did it for you.<br>
+  <sub>Built for indie hackers and SMB sites that need a working chatbot today, not after a 3-week integration.</sub>
+</p>
+
+<p align="center">
+  <img src="docs/failover-demo.gif" width="720" alt="11 LLM providers with auto-failover — when OpenAI flakes, Groq picks up mid-stream. Zero tokens lost.">
 </p>
 
 <p align="center">
@@ -64,11 +69,7 @@ export async function POST(req: Request) {
 
 ## Zero downtime. Auto-failover.
 
-Add multiple provider keys. If one fails mid-stream, the next picks up. Zero tokens lost.
-
-<p align="center">
-  <img src="docs/failover-demo.gif" width="720" alt="Provider failover demo">
-</p>
+Add multiple provider keys. If one fails mid-stream, the next picks up. Zero tokens lost. See the GIF above.
 
 11 providers: OpenAI, Anthropic, Groq, DeepSeek, Gemini, Mistral, Fireworks, Cerebras, SambaNova, OpenRouter, Moonshot.
 
