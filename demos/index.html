@@ -131,10 +131,11 @@
 
   /* Demo gallery */
   .demos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-  .demo-card { display: block; padding: 22px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: inherit; transition: all 180ms ease; position: relative; overflow: hidden; }
-  .demo-card::after { content: "→"; position: absolute; top: 22px; right: 22px; color: var(--text-faint); transition: transform 180ms ease; font-size: 15px; }
-  .demo-card:hover { border-color: var(--border-bright); transform: translateY(-2px); box-shadow: 0 8px 24px -12px rgba(0,0,0,0.25); }
-  .demo-card:hover::after { transform: translateX(4px); color: var(--accent); }
+  .demo-card { display: block; padding: 0; background: transparent; border: none; border-radius: 12px; text-decoration: none; color: inherit; transition: all 180ms ease; position: relative; overflow: hidden; }
+  .demo-card::after { content: ""; }
+  .demo-card:hover { transform: translateY(-4px); }
+  .demo-card img { border-radius: 12px; transition: transform 180ms ease; }
+  .demo-card:hover img { transform: scale(1.03); }
   .demo-card .icon-frame { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: var(--bg-soft); border: 1px solid var(--border); font-size: 20px; margin-bottom: 12px; }
   .demo-card .vertical { font-size: 10.5px; font-weight: 600; color: var(--text-faint); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
   .demo-card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
@@ -256,37 +257,37 @@ TypeScript types ship in the package.</span></div></div>
   <p class="lede">Each demo runs on the same npm package + a <code>&lt;script&gt;</code> tag. Click any card, try the bot.</p>
   <div class="demos-grid">
     <a class="demo-card" href="/shopify-store/">
-      <img src="/public/cards/coffee.jpg" alt="Coffee Shop" style="width:100%;height:120px;object-fit:cover;border-radius:10px 10px 0 0;margin:-22px -22px 14px -22px;width:calc(100% + 44px);">
+      <img src="/public/cards/coffee.jpg" alt="Coffee Shop" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
       <div class="vertical">E-commerce</div>
       <h3>Bayside Coffee Co.</h3>
       <p>Product info, brewing tips, ordering.</p>
     </a>
     <a class="demo-card" href="/plumber/">
-      <img src="/public/cards/plumber.jpg" alt="Plumber" style="width:100%;height:120px;object-fit:cover;border-radius:10px 10px 0 0;margin:-22px -22px 14px -22px;width:calc(100% + 44px);">
+      <img src="/public/cards/plumber.jpg" alt="Plumber" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
       <div class="vertical">Service business</div>
       <h3>Acme Plumbing</h3>
       <p>Photo upload, quotes, Stripe payment.</p>
     </a>
     <a class="demo-card" href="/restaurant/">
-      <img src="/public/cards/restaurant.jpg" alt="Restaurant" style="width:100%;height:120px;object-fit:cover;border-radius:10px 10px 0 0;margin:-22px -22px 14px -22px;width:calc(100% + 44px);">
+      <img src="/public/cards/restaurant.jpg" alt="Restaurant" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
       <div class="vertical">Hospitality</div>
       <h3>Bella Italia</h3>
       <p>Menu, dietary options, reservations.</p>
     </a>
     <a class="demo-card" href="/dentist/">
-      <img src="/public/cards/dentist.jpg" alt="Dentist" style="width:100%;height:120px;object-fit:cover;border-radius:10px 10px 0 0;margin:-22px -22px 14px -22px;width:calc(100% + 44px);">
+      <img src="/public/cards/dentist.jpg" alt="Dentist" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
       <div class="vertical">Healthcare</div>
       <h3>Smile Care Dental</h3>
       <p>Appointments, insurance, file upload.</p>
     </a>
     <a class="demo-card" href="/tax-prep/">
-      <img src="/public/cards/tax.jpg" alt="Tax Prep" style="width:100%;height:120px;object-fit:cover;border-radius:10px 10px 0 0;margin:-22px -22px 14px -22px;width:calc(100% + 44px);">
+      <img src="/public/cards/tax.jpg" alt="Tax Prep" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
       <div class="vertical">Professional services</div>
       <h3>MaxTax</h3>
       <p>Pricing, document upload, multilingual.</p>
     </a>
     <a class="demo-card" href="/yoga-studio/">
-      <img src="/public/cards/yoga.jpg" alt="Yoga Studio" style="width:100%;height:120px;object-fit:cover;border-radius:10px 10px 0 0;margin:-22px -22px 14px -22px;width:calc(100% + 44px);">
+      <img src="/public/cards/yoga.jpg" alt="Yoga Studio" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
       <div class="vertical">Wellness</div>
       <h3>Sunrise Yoga</h3>
       <p>Classes, scheduling, drop-in pricing.</p>
