@@ -28,13 +28,14 @@
   .header nav a { margin-left: 24px; color: var(--ink); font-size: 14px; }
   .header nav a:hover { color: var(--brand); }
 
-  .hero { padding: 100px 28px 80px; text-align: center; max-width: 1100px; margin: 0 auto; }
-  .badge { display: inline-block; padding: 6px 14px; background: var(--brand); color: white; border-radius: 99px; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 16px; }
-  .hero h1 { font-size: clamp(36px, 5vw, 56px); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1.1; }
-  .hero p { font-size: 18px; color: var(--muted); max-width: 520px; margin: 0 auto 32px; }
-  .hero .cta { display: inline-block; padding: 14px 32px; background: var(--ink); color: var(--bg); border-radius: 4px; font-family: var(--sans); font-weight: 600; font-size: 15px; transition: background 150ms; }
-  .hero .cta:hover { background: var(--brand); }
-  .hero .sub-line { margin-top: 24px; font-family: var(--sans); font-size: 13px; color: var(--faint); }
+  .hero { background: linear-gradient(135deg, rgba(60,30,15,0.82) 0%, rgba(139,69,19,0.78) 100%), url('/public/cards/coffee.jpg') center/cover no-repeat; color: white; padding: 140px 28px 110px; text-align: center; }
+  .hero-inner { max-width: 1100px; margin: 0 auto; }
+  .badge { display: inline-block; padding: 6px 14px; background: rgba(255,255,255,0.18); color: white; border-radius: 99px; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 16px; backdrop-filter: blur(8px); }
+  .hero h1 { font-size: clamp(36px, 5vw, 56px); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1.1; color: white; }
+  .hero p { font-size: 18px; color: rgba(255,255,255,0.88); max-width: 520px; margin: 0 auto 32px; }
+  .hero .cta { display: inline-block; padding: 14px 32px; background: white; color: var(--ink); border-radius: 4px; font-family: var(--sans); font-weight: 600; font-size: 15px; transition: transform 150ms; }
+  .hero .cta:hover { transform: translateY(-2px); }
+  .hero .sub-line { margin-top: 24px; font-family: var(--sans); font-size: 13px; color: rgba(255,255,255,0.7); }
 
   .section { max-width: 1100px; margin: 0 auto; padding: 72px 28px; }
   .section-title { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
@@ -92,12 +93,6 @@
   <p>Specialty single-origin and blends, roasted Mondays in small batches and shipped the next day. Across Canada and US.</p>
   <a href="#shop" class="cta">Shop coffee</a>
   <p class="sub-line">Free shipping on orders over $50 · Roasted in East Vancouver</p>
-</section>
-
-<section style="background: var(--bg); padding: 0 28px;">
-  <div style="max-width: 1100px; margin: -40px auto 0;">
-    <img src="/public/cards/coffee.jpg" alt="Bayside Coffee Co. poster" style="width: 100%; height: auto; max-height: 380px; object-fit: cover; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); display: block;">
-  </div>
 </section>
 
 <section class="section" id="shop">
