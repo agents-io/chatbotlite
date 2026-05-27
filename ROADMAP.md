@@ -5,7 +5,13 @@
 
 ---
 
-## Current: `0.6.0` (published 2026-05-25)
+## Current: `0.7.21` (published 2026-05-27)
+
+Latest release adds: adapter SDK, robot logo as default launcher, llms-full.txt, picker messages, session persistence with pluggable storage, AI conversation titles, mobile auto full-screen, streaming "thinking" indicator. See sections below for the per-minor breakdown.
+
+---
+
+## Earlier baseline: `0.6.0` (published 2026-05-25)
 
 | Area | Status |
 |---|---|

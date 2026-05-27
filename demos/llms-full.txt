@@ -1,6 +1,6 @@
 # chatbotlite — Full API Reference
 
-> Version: 0.6.3 | License: Apache 2.0
+> Version: 0.7.21 | License: Apache 2.0
 > npm: https://www.npmjs.com/package/chatbotlite
 > GitHub: https://github.com/agents-io/chatbotlite
 
