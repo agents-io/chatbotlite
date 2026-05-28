@@ -112,6 +112,7 @@ Cherry-picked from Intercom, Tidio, tawk.to, Crisp. All can be built as open-sou
 - ❌ Pre-chat forms that block conversation — kills conversion; collect info later via tool cards
 - ❌ Per-resolution pricing — we are BYOK (bring your own key), never meter the widget layer
 - ❌ Heavy bundle — budget: <50KB gzipped
+- ❌ **Per-message provider routing** — flagged by r/reactjs user `ndreeming` (https://reddit.com/r/reactjs/comments/1tq9lhn/) on 2026-05-28. We considered a `providers.router` callback on top of the chain, but the math doesn't justify it for our SMB target: typical volume is ~200 messages/month, and the gpt-4o-mini vs gpt-4o cost diff is < $1/month, while LLM-as-classifier routing burns an extra LLM call per turn that often eats those savings. Heuristic routing (token count, keywords) is too crude to be the default. Power users can wrap their own routing in `/api/chat` and pass the chosen `chain` to `ChatBot`. Will reconsider if multiple users hit this with concrete cost/quality data, not speculatively.
 
 ---
 
