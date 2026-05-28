@@ -2,7 +2,7 @@
 
 Released under **agents.io** brand. Positioning: lightweight dev SDK / drop-in widget. Peer category: CopilotKit, assistant-ui, Vercel AI SDK, LiteLLM. (Not "OSS alternative to Intercom" — that's a different audience.)
 
-**Credibility hook** to use sparingly in opening: agents.io is also the team behind **pokeclaw** (875+ ★ on GitHub). This is a real track record — drop it in once per post to legitimise the "we" voice, then get to the technical detail.
+**Credibility hook** to use sparingly in opening: our team has shipped 6 OSS projects with 1,200+ ★ combined — most relevant for devs: **PokeClaw** (875 ★ Android app) and **Cross-Code Organizer** (328 ★ config dashboard for Claude Code / Codex CLI). Drop it in once per post to legitimise the "we" voice, then get to the technical detail. Pick CCO for r/reactjs / r/webdev (dev-tool audience), PokeClaw for broader subs.
 
 Based on patterns from CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch HN (432 pts), Chatwoot (~110 comments), Onyx YC W24 (254 pts).
 
@@ -14,7 +14,7 @@ Based on patterns from CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch 
 
 **Body**:
 
-We at agents.io (the team behind [pokeclaw](https://github.com/agents-io/pokeclaw), 875+ stars) just open-sourced ChatbotLite, the AI chat widget we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
+We at agents.io (same team behind [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) — 328★ Claude Code / Codex config dashboard — and [PokeClaw](https://github.com/agents-io/pokeclaw), 875★) just open-sourced ChatbotLite, the AI chat widget we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
 
 The basic usage:
 
@@ -71,7 +71,7 @@ Specifically asking: is `providers.chain` the right abstraction, or should failo
 
 **Body**:
 
-We at agents.io (the team behind [pokeclaw](https://github.com/agents-io/pokeclaw), 875+ stars on GitHub) just open-sourced ChatbotLite. It's the widget we built internally for our customer-facing chat. Apache 2.0, npm, BYOK (you bring the LLM key, we never proxy traffic).
+We at agents.io (same team that shipped [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) — 328★ — and [PokeClaw](https://github.com/agents-io/pokeclaw) — 875★) just open-sourced ChatbotLite. It's the widget we built internally for our customer-facing chat. Apache 2.0, npm, BYOK (you bring the LLM key, we never proxy traffic).
 
 The market has good toolkits (CopilotKit, assistant-ui) and a great model layer (Vercel AI SDK, LiteLLM). What was missing for us was a fully assembled widget you can drop in and ship the same afternoon. So we shipped one.
 
@@ -117,7 +117,7 @@ Genuine question for this sub: what's the one chat widget feature your clients k
 
 **Body**:
 
-agents.io just open-sourced ChatbotLite under Apache 2.0. We're the team behind [pokeclaw](https://github.com/agents-io/pokeclaw) (875+ ★) — this is the second OSS thing we've shipped.
+agents.io just open-sourced ChatbotLite under Apache 2.0. Our team has shipped 6 OSS projects with 1,200+ ★ combined — including [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) (328★ Claude Code config dashboard) and [PokeClaw](https://github.com/agents-io/pokeclaw) (875★). ChatbotLite is our latest.
 
 It's the AI chat widget we built for our own customer-facing tools. We're releasing it because the existing options weren't right for us. We needed something fully assembled (not a toolkit you assemble yourself), something that worked outside React (plain `<script>` tag), and automatic provider failover — none of which were available off the shelf.
 

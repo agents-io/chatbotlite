@@ -187,4 +187,4 @@ Apache 2.0. Use it for whatever, commercial too.
 
 ---
 
-Built by [agents-io](https://github.com/agents-io). Also from us: [pokeclaw](https://github.com/agents-io/pokeclaw) (875+ ★).
+Built by [agents-io](https://github.com/agents-io). Also from our team: [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) (328★ Claude Code / Codex config dashboard) · [PokeClaw](https://github.com/agents-io/pokeclaw) (875★) · [Pagecast](https://github.com/mcpware/pagecast), [LogoLoom](https://github.com/mcpware/logoloom), [Instagram MCP](https://github.com/mcpware/instagram-mcp).
