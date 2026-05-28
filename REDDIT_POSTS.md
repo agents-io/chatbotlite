@@ -2,7 +2,7 @@
 
 Released under **agents.io** brand. Positioning: lightweight dev SDK / drop-in widget. Peer category: CopilotKit, assistant-ui, Vercel AI SDK, LiteLLM. (Not "OSS alternative to Intercom" — that's a different audience.)
 
-**Credibility hook** to use sparingly in opening: agents.io is also the team behind **pokeclaw** (800+ ★ on GitHub). This is a real track record — drop it in once per post to legitimise the "we" voice, then get to the technical detail.
+**Credibility hook** to use sparingly in opening: agents.io is also the team behind **pokeclaw** (875+ ★ on GitHub). This is a real track record — drop it in once per post to legitimise the "we" voice, then get to the technical detail.
 
 Based on patterns from CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch HN (432 pts), Chatwoot (~110 comments), Onyx YC W24 (254 pts).
 
@@ -14,7 +14,7 @@ Based on patterns from CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch 
 
 **Body**:
 
-We at agents.io (the team behind [pokeclaw](https://github.com/agents-io/pokeclaw), 800+ stars) just open-sourced ChatbotLite, the AI chat widget we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
+We at agents.io (the team behind [pokeclaw](https://github.com/agents-io/pokeclaw), 875+ stars) just open-sourced ChatbotLite, the AI chat widget we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
 
 The basic usage:
 
@@ -59,7 +59,7 @@ const bot = new ChatBot({
 Other facts: Apache 2.0, <50KB gzipped, BYOK (we never proxy your traffic), 6 live demos at https://chatbotlite-demos.vercel.app.
 
 Repo: https://github.com/agents-io/chatbotlite
-npm: `chatbotlite@0.7.22`
+npm: `chatbotlite@0.7.23`
 
 Specifically asking: is `providers.chain` the right abstraction, or should failover be its own hook? We'll change it now if there's a better pattern.
 
@@ -71,7 +71,7 @@ Specifically asking: is `providers.chain` the right abstraction, or should failo
 
 **Body**:
 
-We at agents.io (the team behind [pokeclaw](https://github.com/agents-io/pokeclaw), 800+ stars on GitHub) just open-sourced ChatbotLite. It's the widget we built internally for our customer-facing chat. Apache 2.0, npm, BYOK (you bring the LLM key, we never proxy traffic).
+We at agents.io (the team behind [pokeclaw](https://github.com/agents-io/pokeclaw), 875+ stars on GitHub) just open-sourced ChatbotLite. It's the widget we built internally for our customer-facing chat. Apache 2.0, npm, BYOK (you bring the LLM key, we never proxy traffic).
 
 The market has good toolkits (CopilotKit, assistant-ui) and a great model layer (Vercel AI SDK, LiteLLM). What was missing for us was a fully assembled widget you can drop in and ship the same afternoon. So we shipped one.
 
@@ -105,7 +105,7 @@ What's in it:
 6 live demos with real LLM calls: https://chatbotlite-demos.vercel.app
 
 Repo: https://github.com/agents-io/chatbotlite
-npm: `chatbotlite@0.7.22`
+npm: `chatbotlite@0.7.23`
 
 Genuine question for this sub: what's the one chat widget feature your clients keep asking for that no library does well? We'd rather build the unsexy one everyone actually needs than another "AI agent that books your meetings".
 
@@ -117,7 +117,7 @@ Genuine question for this sub: what's the one chat widget feature your clients k
 
 **Body**:
 
-agents.io just open-sourced ChatbotLite under Apache 2.0. We're the team behind [pokeclaw](https://github.com/agents-io/pokeclaw) (800+ ★) — this is the second OSS thing we've shipped.
+agents.io just open-sourced ChatbotLite under Apache 2.0. We're the team behind [pokeclaw](https://github.com/agents-io/pokeclaw) (875+ ★) — this is the second OSS thing we've shipped.
 
 It's the AI chat widget we built for our own customer-facing tools. We're releasing it because the existing options weren't right for us. We needed something fully assembled (not a toolkit you assemble yourself), something that worked outside React (plain `<script>` tag), and automatic provider failover — none of which were available off the shelf.
 
@@ -141,7 +141,7 @@ What's intentionally out of scope (for now):
 We built 6 demo verticals (plumber, restaurant, coffee, dentist, tax prep, yoga) to prove the same widget fits without forking. Each has a custom illustrated poster background. Live at https://chatbotlite-demos.vercel.app
 
 Repo: https://github.com/agents-io/chatbotlite
-npm: `chatbotlite@0.7.22`
+npm: `chatbotlite@0.7.23`
 SKILL marker protocol: public spec in the repo — anyone can write adapters
 
 What helps most:
@@ -180,7 +180,7 @@ Comparison table on our landing page (https://chatbotlite-demos.vercel.app) — 
 6 live demos for typical small businesses: plumber, restaurant, coffee shop, dentist, tax preparer, yoga studio. Click any of them at the link above and try the bot in the bottom-right.
 
 Repo: https://github.com/agents-io/chatbotlite
-npm: `chatbotlite@0.7.22`
+npm: `chatbotlite@0.7.23`
 
 Question for this sub: if you've paid SaaS chat for the last year, what's the one thing you wished the chatbot did automatically that it didn't? We're building from real complaints.
 
