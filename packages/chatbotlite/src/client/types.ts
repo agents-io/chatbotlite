@@ -5,7 +5,6 @@ export type Provider =
   | "deepseek"
   | "groq"
   | "gemini"
-  | "anthropic"
   | "cerebras"
   | "sambanova"
   | "fireworks"
@@ -78,7 +77,7 @@ export interface AttemptInfo {
 }
 
 const PROVIDER_NAMES: ReadonlySet<string> = new Set([
-  "openai", "deepseek", "groq", "gemini", "anthropic",
+  "openai", "deepseek", "groq", "gemini",
   "cerebras", "sambanova", "fireworks", "mistral", "openrouter", "moonshot"
 ]);
 

@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/failover-demo.gif" width="720" alt="11 LLM providers with auto-failover — when OpenAI flakes, Groq picks up mid-stream. Zero tokens lost.">
+  <img src="docs/failover-demo.gif" width="720" alt="10 LLM providers with auto-failover — when OpenAI flakes, Groq picks up mid-stream.">
 </p>
 
 <p align="center">
@@ -69,9 +69,9 @@ export async function POST(req: Request) {
 
 ## Zero downtime. Auto-failover.
 
-Add multiple provider keys. If one fails mid-stream, the next picks up. Zero tokens lost. See the GIF above.
+Add multiple provider keys. If one fails mid-stream, the next picks up. See the GIF above.
 
-11 providers: OpenAI, Anthropic, Groq, DeepSeek, Gemini, Mistral, Fireworks, Cerebras, SambaNova, OpenRouter, Moonshot.
+10 providers: OpenAI, Groq, DeepSeek, Gemini, Mistral, Fireworks, Cerebras, SambaNova, OpenRouter, Moonshot.
 
 ---
 
@@ -80,7 +80,7 @@ Add multiple provider keys. If one fails mid-stream, the next picks up. Zero tok
 | | |
 |--|--|
 | **3 lines** | React component or `<script>` tag. No build step needed. |
-| **11 LLM providers** | Auto-failover chain. OpenAI today, Groq tomorrow, local Ollama for testing. |
+| **10 LLM providers** | Auto-failover chain. OpenAI today, Groq tomorrow, local Ollama for testing. |
 | **Markdown knowledge** | Write services, hours, pricing in a `.md` file. No vector DB. Anti-hallucination guards built-in. |
 | **13 adapters** | Stripe, PayPal, Calendly, Cal.com, Formspree, and 8 more. Paste a URL, done. |
 | **Tool cards** | Bot triggers payment, scheduling, file upload, picker buttons inline in chat. |

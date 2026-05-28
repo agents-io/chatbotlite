@@ -3,6 +3,17 @@
 All notable changes to ChatbotLite are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versioning follows [SemVer](https://semver.org/).
 
+## [0.7.23] — 2026-05-27
+
+### Fixed
+- **Embed bundle version string** is now injected at build time from `package.json` (was hardcoded `"0.6.3"`).
+- `tsup.config.ts` comment `embed.iife.js` corrected to `embed.global.js` to match the actual output filename.
+
+### Changed
+- **Removed `anthropic` from the built-in provider list.** Anthropic's native API uses `/v1/messages` with a different request shape and `x-api-key` header — our OpenAI-compat path would 404. Anthropic users should route via OpenRouter for now; native Anthropic adapter is on the 0.8 roadmap. Provider count is now 10 (was 11).
+- **Softened auto-failover claim**. The README previously implied "zero tokens lost" mid-stream replay. In reality, when a stream fails partway, the next provider takes over with a fresh reply — tokens already streamed to the client remain visible during the brief switch. True token-level replay is a 0.8 roadmap item.
+- Removed empty `examples/nextjs-demo/` and `examples/vanilla-demo/` folders. Runnable starters will return when they actually exist.
+
 ## [0.7.21] — 2026-05-27
 
 ### Added

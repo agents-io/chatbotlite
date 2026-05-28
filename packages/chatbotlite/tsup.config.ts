@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup";
+import pkg from "./package.json";
 
 export default defineConfig([
   // Main library — externalizes React (for users who already have React)
@@ -20,11 +21,10 @@ export default defineConfig([
     external: ["react", "react-dom", "node:fs", "node:path"]
   },
   // Embed bundle — vanilla JS, React + ReactDOM bundled inline.
-  // Drop into any HTML page via <script src="...embed.iife.js"></script>.
+  // Drop into any HTML page via <script src="...embed.global.js"></script>.
   {
     entry: { embed: "src/embed/index.tsx" },
     format: ["iife"],
-    globalName: "chatbotliteEmbed",
     sourcemap: true,
     clean: false,
     splitting: false,
@@ -32,6 +32,9 @@ export default defineConfig([
     minify: true,
     platform: "browser",
     dts: false,
-    noExternal: ["react", "react-dom", "react-dom/client"]
+    noExternal: ["react", "react-dom", "react-dom/client"],
+    define: {
+      __CHATBOTLITE_VERSION__: JSON.stringify(pkg.version)
+    }
   }
 ]);

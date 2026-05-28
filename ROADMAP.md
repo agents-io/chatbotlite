@@ -5,9 +5,21 @@
 
 ---
 
-## Current: `0.7.21` (published 2026-05-27)
+## Current: `0.7.23` (published 2026-05-27)
 
-Latest release adds: adapter SDK, robot logo as default launcher, llms-full.txt, picker messages, session persistence with pluggable storage, AI conversation titles, mobile auto full-screen, streaming "thinking" indicator. See sections below for the per-minor breakdown.
+Patch release of pre-launch fixes: embed bundle version is now injected at build time, removed broken Anthropic OpenAI-compat entry (use OpenRouter until 0.8), softened "mid-stream zero-tokens-lost" claim to match reality. See CHANGELOG.
+
+## `0.8` — provider depth + RAG
+
+- **Anthropic native adapter** (`/v1/messages` shape with `x-api-key`, separate from the OpenAI-compat chain)
+- **True mid-stream token replay** — track last successfully delivered token, re-inject partial assistant message as context for the next provider so the user sees a single continuous reply
+- **RAG hooks** for knowledge bases >50KB (pluggable retriever: pgvector, Pinecone, in-memory)
+- **`create-chatbotlite` CLI** scaffold for Next.js / Vite / vanilla starters
+- **Storybook + interactive playground**
+
+## Earlier: `0.7.21` (published 2026-05-27)
+
+Adapter SDK, robot logo as default launcher, llms-full.txt, picker messages, session persistence with pluggable storage, AI conversation titles, mobile auto full-screen, streaming "thinking" indicator. See sections below for the per-minor breakdown.
 
 ---
 

@@ -19,7 +19,6 @@ export const PROVIDER_ENDPOINTS: Record<Provider, ProviderEndpoint> = {
   deepseek:   { baseUrl: "https://api.deepseek.com/v1",                            defaultModel: "deepseek-chat" },
   groq:       { baseUrl: "https://api.groq.com/openai/v1",                         defaultModel: "llama-3.3-70b-versatile",                          visionModel: "llama-3.2-90b-vision-preview" },
   gemini:     { baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai", defaultModel: "gemini-2.5-flash",                                 visionModel: "gemini-2.5-flash" },
-  anthropic:  { baseUrl: "https://api.anthropic.com/v1",                           defaultModel: "claude-haiku-4-5",                                 visionModel: "claude-haiku-4-5" },
   cerebras:   { baseUrl: "https://api.cerebras.ai/v1",                             defaultModel: "qwen-3-235b-a22b-instruct-2507" },
   sambanova:  { baseUrl: "https://api.sambanova.ai/v1",                            defaultModel: "Meta-Llama-3.3-70B-Instruct" },
   fireworks:  { baseUrl: "https://api.fireworks.ai/inference/v1",                  defaultModel: "accounts/fireworks/models/llama-v3p3-70b-instruct" },

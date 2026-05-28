@@ -24,7 +24,7 @@ import { ChatWidget } from "chatbotlite/react";
 
 That's the floor. Everything else is opt-in. The pieces we'd love a sanity check on:
 
-**1. Provider failover.** The server-side `ChatBot` class takes an ordered chain. If a stream fails mid-token, the next provider resumes from where the first one stopped. 11 providers supported (OpenAI, Anthropic, Groq, DeepSeek, Gemini, Mistral, Fireworks, Cerebras, SambaNova, OpenRouter, Moonshot). Is `providers.chain: [...]` the right shape, or do people prefer per-message routing?
+**1. Provider failover.** The server-side `ChatBot` class takes an ordered chain. If a stream errors, the next provider takes over and the assistant restarts the reply from a clean slate. 10 providers supported (OpenAI, Groq, DeepSeek, Gemini, Mistral, Fireworks, Cerebras, SambaNova, OpenRouter, Moonshot). Is `providers.chain: [...]` the right shape, or do people prefer per-message routing? Also: true mid-stream replay (continue from token N) is on the 0.8 roadmap.
 
 ```ts
 import { ChatBot } from "chatbotlite/client";
@@ -93,7 +93,7 @@ import { ChatWidget } from "chatbotlite/react";
 
 What's in it:
 
-- **11 LLM providers with mid-stream failover.** OpenAI 500s after 40 tokens, the next provider continues from token 41. Configured server-side as an ordered chain
+- **10 LLM providers with auto-failover.** Server-side ordered chain. If a stream errors, the next provider takes over and restarts the reply. True mid-stream token replay is on the 0.8 roadmap
 - **13 URL-only skill adapters.** Drop a Stripe Payment Link or Calendly URL into config and the bot knows how to use it. No webhook wiring, no OAuth dance
 - **Markdown knowledge base.** Hours, pricing, services in a `.md` file. No vector DB, no embeddings pipeline. RAG hooks on the 0.8 roadmap when demand justifies it
 - **Anti-hallucination guards.** Phrase redlines (hard block) + optional LLM judges (soft check). Keeps the bot from promising things it shouldn't
@@ -111,18 +111,18 @@ Genuine question for this sub: what's the one chat widget feature your clients k
 
 ## Post 3 — r/opensource (recommended) OR r/SideProject
 
-**Title**: Releasing ChatbotLite — open-source AI chat widget with 11 LLM provider failover
+**Title**: Releasing ChatbotLite — open-source AI chat widget with 10-provider auto-failover
 
 **Body**:
 
 agents.io just open-sourced ChatbotLite under Apache 2.0.
 
-It's the AI chat widget we built for our own customer-facing tools. We're releasing it because the existing options weren't right for us. We needed something fully assembled (not a toolkit you assemble yourself), something that worked outside React (plain `<script>` tag), and mid-stream provider failover — none of which were available off the shelf.
+It's the AI chat widget we built for our own customer-facing tools. We're releasing it because the existing options weren't right for us. We needed something fully assembled (not a toolkit you assemble yourself), something that worked outside React (plain `<script>` tag), and automatic provider failover — none of which were available off the shelf.
 
 What it does:
 
 - Drop-in chat widget for any website (React component or `<script>` tag, your choice)
-- 11 LLM providers with auto-failover. If OpenAI dies mid-stream, the next provider continues from the last token
+- 10 LLM providers with auto-failover. If a stream errors, the next provider takes over and restarts the reply
 - 13 URL-only "skill" adapters — Stripe Payment Link, Calendly, PayPal, Cal.com, Acuity, etc. Paste URL, done
 - Markdown knowledge base, no vector DB
 - Anti-hallucination guards: phrase redlines + optional LLM judges
@@ -219,7 +219,7 @@ Never cross-post identical content. Reddit downranks duplicate text. Each sub ne
 
 **Q: "How is this different from CopilotKit / assistant-ui / Vercel AI SDK?"**
 
-> CopilotKit and assistant-ui are toolkits — you assemble the UX with their primitives. ChatbotLite is the assembled widget: one component, one config, done. Vercel AI SDK is the model layer underneath, no UI. None of them ship URL-only Stripe/Calendly adapters or mid-stream provider failover out of the box. If you want to build a custom in-app copilot, CopilotKit is better. If you want to ship a chat widget on a customer-facing site today, this is the path.
+> CopilotKit and assistant-ui are toolkits — you assemble the UX with their primitives. ChatbotLite is the assembled widget: one component, one config, done. Vercel AI SDK is the model layer underneath, no UI. None of them ship URL-only Stripe/Calendly adapters or automatic provider failover out of the box. If you want to build a custom in-app copilot, CopilotKit is better. If you want to ship a chat widget on a customer-facing site today, this is the path.
 
 **Q: "BYOK means the API key is in the browser?"**
 
@@ -231,7 +231,7 @@ Never cross-post identical content. Reddit downranks duplicate text. Each sub ne
 
 **Q: "Does the failover actually work mid-stream? Sounds hard."**
 
-> It's the part we spent the most time on. The stream resumer tracks the last successfully delivered token and on failure injects "continue from: ..." into the next provider's prompt. There's a regression test in the repo. Open edge case: if the first provider produced tool-call markers before failing, the second provider sees them as user context.
+> Today: yes for hard fails (connect error / 5xx / timeout). The next provider takes over and the assistant restarts the reply from scratch. Tokens already streamed to the client are visible during the brief switch, then the new reply renders. True token-level replay (where the user only ever sees one continuous response) is a 0.8 roadmap item — that path is harder because LLMs don't generally accept "resume from token N" semantics, so we need to track + re-inject the partial assistant message as conversation context. Happy to take design feedback on this.
 
 **Q: "Apache 2.0 why not MIT?"**
 

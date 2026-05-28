@@ -83,10 +83,12 @@ declare global {
   }
 }
 
+declare const __CHATBOTLITE_VERSION__: string;
+
 if (typeof window !== "undefined") {
   window.chatbotlite = {
     mount,
-    version: "0.6.3"
+    version: typeof __CHATBOTLITE_VERSION__ !== "undefined" ? __CHATBOTLITE_VERSION__ : "0.0.0-dev"
   };
 }
 

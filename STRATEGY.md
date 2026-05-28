@@ -32,7 +32,7 @@ Six reasons the Stainless-shape moat still holds (for now):
 | **3. Idiomatic language depth.** "Should this return a generator or iterator in Python?" — 1000 small decisions accumulating into taste AI can't yet model. | ChatbotLite's analog: idiomatic *integration patterns* — Next.js App Router vs Pages, WordPress hooks, Astro islands, Webflow's embed slot. Each needs native-feeling docs and examples. |
 | **4. Schema / spec expertise.** Real-world OpenAPI specs are messy; Stainless built normalization across 1000 edge cases. | ChatbotLite's analog: real-world SMB markdown is messy. Prompt grounding, redline strip, judge layer — that's the normalization expertise. |
 | **5. Opportunity cost for the buyer.** Anthropic engineers' time is worth $400K/year × 30%; $10K/year for Stainless is rational. | Solo devs building SMB sites would gladly pay attention (stars, recommendations) to skip the chatbot-from-scratch work, even if they don't pay money. |
-| **6. AI lacks systems thinking across 5000 decision points.** "Maintain 11 SDKs backwards-compatible across 50 API updates while staying idiomatic" — current AI can't hold this. | ChatbotLite's equivalent compound task: "drop-in for 6 frameworks + 11 LLM providers + 4 tool card categories + 6 verticals, all coherent." Holding the whole shape is the moat. |
+| **6. AI lacks systems thinking across 5000 decision points.** "Maintain 11 SDKs backwards-compatible across 50 API updates while staying idiomatic" — current AI can't hold this. | ChatbotLite's equivalent compound task: "drop-in for 6 frameworks + 10 LLM providers + 4 tool card categories + 6 verticals, all coherent." Holding the whole shape is the moat. |
 
 **The window**: this moat erodes in 3-5 years as AI gets better at long-horizon ownership. Anthropic paid $300M for Stainless partly to buy that 3-year window. ChatbotLite's equivalent window is shorter — probably **6-12 months of clear-air before someone with better marketing rebuilds it**.
 
@@ -68,7 +68,7 @@ Action items:
 - Benchmark post: markdown vs RAG on SMB queries, with numbers.
 
 ### D. Multi-LLM portability
-"litellm for chatbots" is a strong frame — LiteLLM became the standard LLM-portability layer. Same shape, one layer up. The fallback chain across 11 providers should be the headline demo (screen recording: kill OpenAI mid-stream, traffic auto-routes to Groq).
+"litellm for chatbots" is a strong frame — LiteLLM became the standard LLM-portability layer. Same shape, one layer up. The fallback chain across 10 providers should be the headline demo (screen recording: kill OpenAI mid-stream, traffic auto-routes to Groq).
 
 ---
 
@@ -87,7 +87,7 @@ Three patterns, with concrete steals from each analog.
 
 - **shadcn/ui** — inverted the install model ("you own the code"). The philosophy became identity. ChatbotLite needs a one-sentence philosophy devs repeat. Candidates: *"Your chatbot lives in your repo, not someone else's dashboard."* / *"The chatbot is markdown files you commit."*
 - **Resend** — README, dashboard, error messages, sister project (React Email) — all are the product. Spend disproportionate effort on a few surfaces vs. feature breadth. "litellm for chatbots" is a Resend-style steal-the-frame move.
-- **Plausible** — built brand on one number: <1KB script. ChatbotLite needs one number it owns. Bundle size? "11 providers, one config"? Put it in README headline + every social post + the tagline.
+- **Plausible** — built brand on one number: <1KB script. ChatbotLite needs one number it owns. Bundle size? "10 providers, one config"? Put it in README headline + every social post + the tagline.
 - **Clerk** — separate first-class SDK per framework. Don't treat plain HTML as second-class. Ship first-class Next.js App Router, plain `<script>`, and WordPress integrations, each with its own getting-started page.
 
 ### Pattern C — Abstraction / "X for chatbots"
@@ -110,7 +110,7 @@ Ranked by impact on the moat candidates above:
 | # | Move | Moat fed |
 |---|---|---|
 | 1 | Publish v0.7.0 to npm + redeploy demos (table stakes) | All |
-| 2 | One headline number / philosophy (pick: KB bundle? "11 providers, one config"?) and repeat everywhere | Mindshare |
+| 2 | One headline number / philosophy (pick: KB bundle? "10 providers, one config"?) and repeat everywhere | Mindshare |
 | 3 | `SKILL_MARKER_SPEC.md` as a public protocol document | Convention |
 | 4 | "Kill provider mid-stream, auto-route" demo video for landing + HN | Portability |
 | 5 | `npx create-chatbotlite-site <vertical>` scaffolder | Distribution |

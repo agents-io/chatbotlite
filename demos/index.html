@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ChatbotLite — AI chatbot in 3 lines of code</title>
-<meta name="description" content="Drop-in AI chatbot for any website. 3 lines of code. Works with React, Shopify, WordPress, plain HTML. 11 LLM providers with auto-failover. Open source, Apache 2.0.">
+<meta name="description" content="Drop-in AI chatbot for any website. 3 lines of code. Works with React, Shopify, WordPress, plain HTML. 10 LLM providers with auto-failover. Open source, Apache 2.0.">
 <meta name="keywords" content="AI chatbot, drop-in chatbot, npm chatbot, React chatbot widget, Shopify chatbot, WordPress chatbot, Webflow chatbot, HTML chatbot, AI customer service, SMB chatbot, Groq chatbot, open source chatbot">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="ChatbotLite — AI chatbot in 3 lines of code">
-<meta property="og:description" content="Drop-in AI chatbot for any website. 11 LLM providers. Auto-failover. Payment + scheduling cards built-in. Open source.">
+<meta property="og:description" content="Drop-in AI chatbot for any website. 10 LLM providers. Auto-failover. Payment + scheduling cards built-in. Open source.">
 <meta property="og:url" content="https://chatbotlite-demos.vercel.app">
 <meta property="og:site_name" content="ChatbotLite">
 <meta property="og:image" content="https://chatbotlite-demos.vercel.app/public/og.png">
@@ -20,7 +20,7 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ChatbotLite — AI chatbot in 3 lines of code">
-<meta name="twitter:description" content="Drop-in AI chatbot for any website. 3 lines. 11 providers. Open source.">
+<meta name="twitter:description" content="Drop-in AI chatbot for any website. 3 lines. 10 providers. Open source.">
 <meta name="twitter:image" content="https://chatbotlite-demos.vercel.app/public/og.png">
 
 <!-- Schema.org JSON-LD -->
@@ -31,9 +31,9 @@
   "name": "ChatbotLite",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "any (Node.js, browser)",
-  "description": "Drop-in AI chatbot SDK. 3 lines to integrate. 11 LLM providers with auto-failover. Payment, scheduling, file upload cards built-in. Works with React, Next.js, Shopify, WordPress, Webflow, plain HTML.",
+  "description": "Drop-in AI chatbot SDK. 3 lines to integrate. 10 LLM providers with auto-failover. Payment, scheduling, file upload cards built-in. Works with React, Next.js, Shopify, WordPress, Webflow, plain HTML.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "softwareVersion": "0.7.21",
+  "softwareVersion": "0.7.23",
   "license": "https://www.apache.org/licenses/LICENSE-2.0",
   "url": "https://github.com/agents-io/chatbotlite",
   "downloadUrl": "https://www.npmjs.com/package/chatbotlite",
@@ -247,7 +247,7 @@ Steps:
 3. Mount: &lt;ChatWidget endpoint="/api/chat" title="..." /&gt;
 4. Build /api/chat with ChatBot from "chatbotlite/client" + your LLM API key
 
-Supports 11 providers: OpenAI, Anthropic, Groq, DeepSeek, Gemini, Mistral, and more.
+Supports 10 providers: OpenAI, Groq, DeepSeek, Gemini, Mistral, and more.
 Add multiple keys for auto-failover if one provider goes down.
 Customize: theme.primary, avatar, tools.requestPayment.stripeLink, extraInstructions.
 TypeScript types ship in the package.</span></div></div>
@@ -326,7 +326,7 @@ TypeScript types ship in the package.</span></div></div>
 <!-- Failover demo (inline) -->
 <section class="block">
   <h2>Zero downtime. Auto-failover.</h2>
-  <p class="lede">Design your own fallback chain. For example, OpenAI first, Groq backup, DeepSeek last resort. If one fails mid-stream, the next picks up. Zero tokens lost.</p>
+  <p class="lede">Design your own fallback chain. For example, OpenAI first, Groq backup, DeepSeek last resort. If one fails mid-stream, the next picks up.</p>
   <div id="failover-demo" style="max-width:720px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
     <div style="background:var(--accent);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
       <span style="color:white;font-weight:600;font-size:14px;">Acme Plumbing · Chat</span>
@@ -503,7 +503,7 @@ TypeScript types ship in the package.</span></div></div>
 </footer>
 
 <!-- chatbotlite running on chatbotlite -->
-<script src="https://unpkg.com/chatbotlite@0.7.22/dist/embed.global.js"></script>
+<script src="https://unpkg.com/chatbotlite@0.7.23/dist/embed.global.js"></script>
 <script>
   chatbotlite.mount({
     endpoint: "/api/chat?demo=chatbotlite",
