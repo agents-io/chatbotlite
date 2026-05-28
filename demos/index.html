@@ -134,7 +134,8 @@
   /* Features */
   .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
   .feature { padding: 28px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border); }
-  .feature .icon-wrap { width: 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .feature .icon-wrap { width: 52px; height: 52px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .feature .icon-wrap svg { width: 26px; height: 26px; }
   .feature h3 { margin: 0 0 8px; font-size: 17px; font-weight: 600; }
   .feature p { margin: 0; font-size: 14px; color: var(--text-muted); line-height: 1.55; }
 
@@ -350,17 +351,17 @@ TypeScript types ship in the package.</span></div></div>
   <p class="lede">Ship in hours, not weeks.</p>
   <div class="features">
     <div class="feature">
-      <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
       <h3>Knowledge is a markdown file</h3>
       <p>Write your services, hours, pricing in a .md file. The bot grounds every answer in it. No vector DB, no RAG infra.</p>
     </div>
     <div class="feature">
-      <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
       <h3>Payment, scheduling, upload built-in</h3>
       <p>Stripe, PayPal, Calendly, Cal.com, file upload. 13 URL-only adapters. Paste a link, done.</p>
     </div>
     <div class="feature">
-      <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
       <h3>Anti-hallucination guards</h3>
       <p>Phrase redlines block the bot from confirming bookings or guaranteeing prices. Optional LLM judges for input/output safety.</p>
     </div>
@@ -373,19 +374,23 @@ TypeScript types ship in the package.</span></div></div>
   <h2>Documentation</h2>
   <p class="lede">Everything you need to integrate, customize, and ship.</p>
   <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-    <a href="https://github.com/agents-io/chatbotlite" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+    <a href="https://github.com/agents-io/chatbotlite" class="feature" style="text-decoration:none;transition:all 180ms;" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div>
       <h3>GitHub README</h3>
       <p>Quick start, installation, basic usage examples.</p>
     </a>
-    <a href="/llms-full.txt" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+    <a href="/llms-full.txt" class="feature" style="text-decoration:none;transition:all 180ms;" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
       <h3>Full API Reference</h3>
       <p>Every prop, method, type, and example. 35KB. LLM-readable.</p>
     </a>
-    <a href="https://github.com/agents-io/chatbotlite/blob/main/SKILL_MARKER_SPEC.md" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+    <a href="https://github.com/agents-io/chatbotlite/blob/main/SKILL_MARKER_SPEC.md" class="feature" style="text-decoration:none;transition:all 180ms;" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
       <h3>SKILL Protocol Spec</h3>
       <p>Open protocol for LLM-triggered UI cards. Adopt it in your own library.</p>
     </a>
-    <a href="https://github.com/agents-io/chatbotlite/blob/main/ROADMAP.md" class="feature" style="text-decoration:none;transition:border-color 180ms;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+    <a href="https://github.com/agents-io/chatbotlite/blob/main/ROADMAP.md" class="feature" style="text-decoration:none;transition:all 180ms;" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>
       <h3>Roadmap</h3>
       <p>What's shipped, what's next, what's in the ideas backlog.</p>
     </a>
@@ -402,7 +407,7 @@ TypeScript types ship in the package.</span></div></div>
     <thead>
       <tr style="border-bottom:2px solid var(--border);">
         <th style="text-align:left;padding:12px 14px;color:var(--text-muted);font-weight:600;"></th>
-        <th style="text-align:center;padding:12px 14px;color:var(--accent);font-weight:700;">ChatbotLite</th>
+        <th style="text-align:center;padding:14px 14px;color:var(--accent);font-weight:700;background:var(--accent-soft);border-top-left-radius:8px;border-top-right-radius:8px;font-size:15px;">★ ChatbotLite</th>
         <th style="text-align:center;padding:12px 14px;color:var(--text-muted);font-weight:500;">Int***om</th>
         <th style="text-align:center;padding:12px 14px;color:var(--text-muted);font-weight:500;">Ti**o</th>
         <th style="text-align:center;padding:12px 14px;color:var(--text-muted);font-weight:500;">Cr**p</th>
@@ -411,56 +416,56 @@ TypeScript types ship in the package.</span></div></div>
     <tbody>
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:10px 14px;font-weight:500;">Monthly cost</td>
-        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;">$0 forever</td>
+        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;background:var(--accent-soft);">$0 forever</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">$39/seat</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">$29/mo</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">€95/mo</td>
       </tr>
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:10px 14px;font-weight:500;">AI cost</td>
-        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;">Your own key</td>
+        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;background:var(--accent-soft);">Your own key</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">$0.99/resolution</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">Limited/mo</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">Limited/mo</td>
       </tr>
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:10px 14px;font-weight:500;">LLM providers</td>
-        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;">11 + auto-failover</td>
+        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;background:var(--accent-soft);">11 + auto-failover</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">1 (theirs)</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">1 (theirs)</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">1 (theirs)</td>
       </tr>
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:10px 14px;font-weight:500;">Data ownership</td>
-        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;">100% yours</td>
+        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;background:var(--accent-soft);">100% yours</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">Their servers</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">Their servers</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">Their servers</td>
       </tr>
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:10px 14px;font-weight:500;">Self-hostable</td>
-        <td style="padding:10px 14px;text-align:center;">✅</td>
+        <td style="padding:10px 14px;text-align:center;background:var(--accent-soft);">✅</td>
         <td style="padding:10px 14px;text-align:center;">❌</td>
         <td style="padding:10px 14px;text-align:center;">❌</td>
         <td style="padding:10px 14px;text-align:center;">❌</td>
       </tr>
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:10px 14px;font-weight:500;">Open source</td>
-        <td style="padding:10px 14px;text-align:center;">✅</td>
+        <td style="padding:10px 14px;text-align:center;background:var(--accent-soft);">✅</td>
         <td style="padding:10px 14px;text-align:center;">❌</td>
         <td style="padding:10px 14px;text-align:center;">❌</td>
         <td style="padding:10px 14px;text-align:center;">❌</td>
       </tr>
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:10px 14px;font-weight:500;">Non-React support</td>
-        <td style="padding:10px 14px;text-align:center;">✅ Script tag</td>
+        <td style="padding:10px 14px;text-align:center;background:var(--accent-soft);">✅ Script tag</td>
         <td style="padding:10px 14px;text-align:center;">✅ Script tag</td>
         <td style="padding:10px 14px;text-align:center;">✅ Script tag</td>
         <td style="padding:10px 14px;text-align:center;">✅ Script tag</td>
       </tr>
       <tr>
         <td style="padding:10px 14px;font-weight:500;">Vendor lock-in</td>
-        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;">None</td>
+        <td style="padding:10px 14px;text-align:center;color:var(--success);font-weight:700;background:var(--accent-soft);">None</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">High</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">High</td>
         <td style="padding:10px 14px;text-align:center;color:var(--text-muted);">Medium</td>
@@ -471,16 +476,22 @@ TypeScript types ship in the package.</span></div></div>
 </section>
 
 <!-- Final CTA -->
-<section class="block" style="text-align: center; border-top: none; padding-top: 24px;">
-  <h2>Ship your chatbot today</h2>
-  <p class="lede">3 lines. Any website. Free forever.</p>
-  <div class="install-bar" onclick="navigator.clipboard.writeText('npm install chatbotlite').then(()=>{this.querySelector('.hint').textContent='Copied!';setTimeout(()=>this.querySelector('.hint').textContent='Click to copy',1500)})"><code>$ npm install chatbotlite</code><span class="hint">Click to copy</span></div>
-  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-    <a href="https://github.com/agents-io/chatbotlite" style="color:var(--accent);font-size:14px;font-weight:600;text-decoration:none;">⭐ Star on GitHub</a>
-    <span style="color:var(--border);">·</span>
-    <a href="/llms-full.txt" style="color:var(--text-muted);font-size:14px;text-decoration:none;">API Reference</a>
-    <span style="color:var(--border);">·</span>
-    <a href="/llms.txt" style="color:var(--text-muted);font-size:14px;text-decoration:none;">llms.txt</a>
+<section style="position:relative;background:linear-gradient(135deg, #0B0D10 0%, #16181D 60%, #1A1D24 100%);color:#ECEDEE;padding:96px 32px;text-align:center;overflow:hidden;isolation:isolate;">
+  <div style="position:absolute;pointer-events:none;width:640px;height:640px;background:radial-gradient(circle, rgba(0,102,255,0.22) 0%, transparent 60%);top:-220px;left:50%;transform:translateX(-50%);z-index:0;filter:blur(8px);"></div>
+  <div style="position:relative;z-index:1;max-width:720px;margin:0 auto;">
+    <h2 style="font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-0.03em;margin:0 0 12px;color:#ECEDEE;">Ship your chatbot today.</h2>
+    <p style="font-size:18px;color:#9BA1A6;margin:0 0 36px;">3 lines. Any website. Free forever.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
+      <a href="https://github.com/agents-io/chatbotlite" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:#0066FF;color:white;border-radius:10px;font-size:16px;font-weight:600;text-decoration:none;transition:transform 150ms,box-shadow 150ms;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px -8px rgba(0,102,255,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow=''">⭐ Star on GitHub</a>
+      <button onclick="navigator.clipboard.writeText('npm install chatbotlite').then(()=>{const h=this.querySelector('.hint');h.textContent='Copied!';setTimeout(()=>h.textContent='Click to copy',1500)})" style="display:inline-flex;align-items:center;gap:14px;padding:14px 24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:10px;cursor:pointer;font-family:var(--mono);font-size:14px;color:#ECEDEE;transition:all 150ms;backdrop-filter:blur(8px);" onmouseover="this.style.borderColor='rgba(0,102,255,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.14)'"><span>$ npm install chatbotlite</span><span class="hint" style="font-family:var(--sans);font-size:12px;color:#6B7177;">Click to copy</span></button>
+    </div>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:14px;color:#6B7177;">
+      <a href="/llms-full.txt" style="color:#9BA1A6;text-decoration:none;" onmouseover="this.style.color='#ECEDEE'" onmouseout="this.style.color='#9BA1A6'">Full API Reference</a>
+      <span>·</span>
+      <a href="https://github.com/agents-io/chatbotlite/blob/main/CHANGELOG.md" style="color:#9BA1A6;text-decoration:none;" onmouseover="this.style.color='#ECEDEE'" onmouseout="this.style.color='#9BA1A6'">Changelog</a>
+      <span>·</span>
+      <a href="https://github.com/agents-io/chatbotlite/discussions" style="color:#9BA1A6;text-decoration:none;" onmouseover="this.style.color='#ECEDEE'" onmouseout="this.style.color='#9BA1A6'">Discussions</a>
+    </div>
   </div>
 </section>
 
