@@ -11,10 +11,15 @@
 </p>
 
 <p align="center">
-  <img src="docs/failover-demo.gif" width="720" alt="10 LLM providers with auto-failover — when OpenAI flakes, Groq picks up mid-stream.">
+  <img src="docs/widget-screenshot.png" width="720" alt="ChatbotLite widget on a real Acme Plumbing site — user asks 'how much is a leak inspection?', bot replies $95 and renders an inline payment card with Interac e-Transfer + card options.">
 </p>
 
 <p align="center">
+  <a href="https://chatbotlite-demos.vercel.app/plumber/">▶ Try it live on the Acme Plumbing demo</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/agents-io/chatbotlite/stargazers"><img src="https://img.shields.io/github/stars/agents-io/chatbotlite?style=social" alt="GitHub stars"></a>
   <a href="https://www.npmjs.com/package/chatbotlite"><img src="https://img.shields.io/npm/v/chatbotlite.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/chatbotlite"><img src="https://img.shields.io/npm/dw/chatbotlite.svg" alt="npm downloads"></a>
   <a href="https://bundlephobia.com/package/chatbotlite"><img src="https://img.shields.io/bundlephobia/minzip/chatbotlite.svg" alt="bundle size"></a>
@@ -69,7 +74,11 @@ export async function POST(req: Request) {
 
 ## Zero downtime. Auto-failover.
 
-Add multiple provider keys. If one fails mid-stream, the next picks up. See the GIF above.
+Add multiple provider keys. If one errors mid-stream, the next provider takes over and the assistant restarts the reply. True token-level replay is on the 0.8 roadmap.
+
+<p align="center">
+  <img src="docs/failover-demo.gif" width="640" alt="Failover demo: OpenAI 503s mid-stream, Groq takes over.">
+</p>
 
 10 providers: OpenAI, Groq, DeepSeek, Gemini, Mistral, Fireworks, Cerebras, SambaNova, OpenRouter, Moonshot.
 
@@ -180,6 +189,12 @@ Top-to-bottom = priority. Auto-retry on 429/5xx, then fall to next.
 PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for what we merge fast and what we usually decline.
 
 For security disclosures, see [SECURITY.md](SECURITY.md) — please do not open a public issue.
+
+## ⭐ If this saved you a weekend
+
+A star helps it reach the next dev who'd otherwise spend the weekend rebuilding a chat widget from scratch. That's basically the entire OSS deal — costs nothing, helps a lot.
+
+[★ Star on GitHub](https://github.com/agents-io/chatbotlite)
 
 ## License
 
