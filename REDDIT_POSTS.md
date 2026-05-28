@@ -10,11 +10,17 @@ Based on patterns from CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch 
 
 ## Post 1 — r/reactjs
 
-**Title**: Open-sourced our React chat widget — looking for API feedback before 1.0
+**Title**: Open-sourced our React chatbot — looking for API feedback before 1.0
 
 **Body**:
 
-We at agents.io (same team behind [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) — 328★ cross-harness config dashboard (Claude Code, Codex CLI, MCP servers) — and [PokeClaw](https://github.com/agents-io/pokeclaw), 875★) just open-sourced ChatbotLite, the AI chat widget we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
+**Repo:** https://github.com/agents-io/chatbotlite
+**Live demos (6 verticals):** https://chatbotlite-demos.vercel.app
+**npm:** `chatbotlite@0.7.23`
+
+---
+
+We at agents.io (same team behind [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) — 328★ cross-harness config dashboard for Claude Code, Codex CLI, MCP servers — and [PokeClaw](https://github.com/agents-io/pokeclaw), 875★) just open-sourced ChatbotLite, the AI chatbot we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
 
 The basic usage:
 
