@@ -187,4 +187,4 @@ Apache 2.0. Use it for whatever, commercial too.
 
 ---
 
-Built by [agents-io](https://github.com/agents-io).
+Built by [agents-io](https://github.com/agents-io). Also from us: [pokeclaw](https://github.com/agents-io/pokeclaw) (800+ ★).
