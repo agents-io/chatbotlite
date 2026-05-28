@@ -18,7 +18,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = path.resolve(__dirname, "..", "..");
 const EMBED_BUNDLE = path.join(PKG_ROOT, "dist", "embed.global.js");
 
-let mode: "stream" | "json" | "err500" | "err501" | "hang" | "empty" = "stream";
+let mode: "stream" | "json" | "err500" | "err501" | "hang" | "empty" | "partial-error" = "stream";
 
 function indexHtml(): string {
   return `<!doctype html>
@@ -69,7 +69,7 @@ const server = http.createServer((req, res) => {
 
   if (url.startsWith("/__mode/")) {
     const m = url.replace("/__mode/", "");
-    if (["stream", "json", "err500", "err501", "hang", "empty"].includes(m)) {
+    if (["stream", "json", "err500", "err501", "hang", "empty", "partial-error"].includes(m)) {
       mode = m as typeof mode;
       res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ mode }));
     } else {
@@ -117,6 +117,26 @@ const server = http.createServer((req, res) => {
       }
       if (mode === "json") {
         res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ reply: "JSON mode reply" }));
+        return;
+      }
+      if (mode === "partial-error") {
+        // Stream 2 tokens, then fire an SSE "error" event mid-stream + close.
+        // Simulates the chain-step failover case: first provider streamed some tokens
+        // before its connection dropped. Widget should show a clean error bubble,
+        // never crash, and never leak the raw payload to the DOM.
+        res.writeHead(200, {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive"
+        });
+        res.write(`event: token\ndata: ${JSON.stringify("Sink leak")}\n\n`);
+        setTimeout(() => {
+          res.write(`event: token\ndata: ${JSON.stringify(" inspection")}\n\n`);
+          setTimeout(() => {
+            res.write(`event: error\ndata: ${JSON.stringify({ message: "all chain steps failed. Trace: openai/gpt-4o-mini:503", attempts: [{ provider: "openai", model: "gpt-4o-mini", status: "error", error: "503 Service Unavailable", latencyMs: 120 }] })}\n\n`);
+            res.end();
+          }, 40);
+        }, 40);
         return;
       }
       // default: stream
