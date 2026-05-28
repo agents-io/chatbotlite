@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="https://chatbotlite-demos.vercel.app/plumber/">▶ Try it live on the Acme Plumbing demo</a>
+  <a href="https://chatbotlite-demos.vercel.app"><strong>▶ Try it live — landing page with 6 demos, install code, and comparison</strong></a>
 </p>
 
 <p align="center">
