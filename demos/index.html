@@ -204,25 +204,21 @@
 <section class="block">
   <h2>Integrate this afternoon</h2>
   <p class="lede">Pick your framework. Paste the code. You have a chatbot.</p>
-  <button type="button" onclick="showTab('html')" style="display:block;max-width:640px;margin:0 auto 16px;padding:14px 20px;background:transparent;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-family:var(--sans);text-align:left;width:100%;transition:all 150ms ease;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='var(--accent-soft)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
-    <div style="font-size:13px;color:var(--text-muted);margin-bottom:2px;">On Shopify, WordPress, Webflow, Squarespace, Wix, Astro, Ghost, or any plain HTML site?</div>
-    <div style="font-size:14px;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:6px;">Switch to the HTML / Script tag tab <span style="font-size:11px;">↓</span></div>
-  </button>
   <div class="code-wrap">
     <div class="code-tabs">
-      <button class="code-tab active" onclick="showTab('react')">React</button>
-      <button class="code-tab" onclick="showTab('html')">HTML / Script tag</button>
+      <button class="code-tab active" onclick="showTab('html')">HTML / Script tag</button>
+      <button class="code-tab" onclick="showTab('react')">React</button>
       <button class="code-tab" onclick="showTab('server')">Server</button>
       <button class="code-tab" onclick="showTab('ai')">AI Prompt</button>
     </div>
-    <div class="code-pane active" id="tab-react"><div class="code-block">import { ChatWidget } from "chatbotlite/react";
+    <div class="code-pane" id="tab-react"><div class="code-block">import { ChatWidget } from "chatbotlite/react";
 
 &lt;ChatWidget
   endpoint="/api/chat"
   title="Acme Plumbing"
   theme={{ primary: "#1e3a8a" }}
 /&gt;</div></div>
-    <div class="code-pane" id="tab-html"><div style="padding:14px 22px 10px;background:var(--accent-soft);border-bottom:1px solid var(--border);font-family:var(--sans);font-size:12px;color:var(--accent);font-weight:600;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">Works on: <span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Shopify</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">WordPress</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Webflow</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Squarespace</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Wix</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Any HTML</span></div><div class="code-block">&lt;script src="https://unpkg.com/chatbotlite/dist/embed.global.js"&gt;&lt;/script&gt;
+    <div class="code-pane active" id="tab-html"><div style="padding:14px 22px 10px;background:var(--accent-soft);border-bottom:1px solid var(--border);font-family:var(--sans);font-size:12px;color:var(--accent);font-weight:600;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">Works on: <span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Shopify</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">WordPress</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Webflow</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Squarespace</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Wix</span><span style="padding:3px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-weight:500;">Any HTML</span></div><div class="code-block">&lt;script src="https://unpkg.com/chatbotlite/dist/embed.global.js"&gt;&lt;/script&gt;
 &lt;script&gt;
   chatbotlite.mount({
     endpoint: "/api/chat",
