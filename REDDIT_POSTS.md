@@ -1,145 +1,193 @@
-# Reddit launch post drafts
+# ChatbotLite — Reddit launch playbook
 
-Three subreddits, three different angles. **Don't cross-post the same text** — Reddit and the mods hate that. Post one per day, not all at once.
+Based on patterns from successful OSS launches: CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch HN (432 pts), Chatwoot (~110 comments), Onyx YC W24 (254 pts).
 
-Each post must end as a comment in the conversation, not as a sales pitch. Reply to comments fast in the first hour — that's how upvote ranking decides whether to lift you.
+**Core patterns**: One concrete opening sentence, 1-paragraph origin story, 250-450 words, humble-confident tone, specific ask. Founder must reply in comments within 15 minutes for first 2 hours.
 
 ---
 
-## r/SideProject — "I built it" angle
+## Post 1 — r/SideProject
 
-**Title**: I got tired of Intercom charging $39/seat, so I built an open-source drop-in chatbot. 3 lines, any website.
+**Title**: I spent two weekends building a chatbot widget so I'd never pay Intercom $39/seat again
 
 **Body**:
 
-Been quoted $39/seat/mo (Intercom), $29/mo (Tidio), per-conversation pricing (Drift) for what is basically a JSON parser + a textarea + an OpenAI call. So I spent two weeks building [ChatbotLite](https://chatbotlite-demos.vercel.app).
+I run a few small side projects and every time I wanted to add a chat widget the options were Intercom ($39 per seat), Tidio ($29/mo), Drift ($0.99 per resolution), or Crisp (€95/mo for the useful tier). For a side project with three users this is absurd.
+
+So I built ChatbotLite. Apache 2.0, npm, 3 lines of code. You bring your own LLM key (OpenAI, Anthropic, Groq, whatever) and pay the model provider directly. I never proxy your traffic.
 
 What's in it:
-- 3 lines to integrate (React component or plain `<script>` tag)
-- 11 LLM provider auto-failover — OpenAI flakes mid-stream, Groq picks up
-- Markdown knowledge file (no vector DB)
-- Tool cards built-in: payment, scheduling, file upload, picker buttons
-- 13 URL-only adapters (Stripe Payment Link, Calendly, PayPal — paste URL, done)
-- Session persistence with pluggable storage interface
-- Apache 2.0, BYOK (bring your own LLM key)
 
-Live demos for 6 verticals: plumber, restaurant, coffee shop, dentist, tax prep, yoga studio — each rendered with a custom AI-generated poster style.
+- 11 LLM providers with auto-failover. If OpenAI 500s mid-stream, it picks up on Groq without losing tokens already streamed to the user
+- 13 URL-only adapters. Paste a Stripe Payment Link, Calendly URL, PayPal, Cal.com — the bot knows how to use it. No SDK wiring
+- A markdown file for the knowledge base. No vector DB, no embeddings pipeline, no Pinecone bill
+- Phrase redlines + optional LLM judges for hallucination guards
+- <50KB gzipped
+- Sessions persist; storage is a pluggable interface so you can swap localStorage for Postgres
 
-What I'd love feedback on:
-1. Is the `<script>` tag install actually drop-in for your use case, or do you need something even simpler?
-2. Anything missing in the adapter list?
-3. The SKILL marker protocol (`[SKILL:requestPayment amount=42 currency="usd"]`) — clear enough, or should it be something else?
+There are 6 live demos — plumber, restaurant, coffee shop, dentist, tax prep, yoga studio — each with its own poster background. I built them mostly to prove the same widget actually fits different verticals without forking.
+
+Demos: https://chatbotlite-demos.vercel.app
+GitHub: https://github.com/agents-io/chatbotlite (just shipped)
+npm: `chatbotlite@0.7.22`
+
+Honest ask: which of the 6 demo verticals looks the most useless? I want to cull one and replace it with something people actually need. Roast the worst one.
+
+---
+
+## Post 2 — r/webdev
+
+**Title**: Open-source alternative to Intercom/Tidio/Drift — math on why SaaS chat pricing stopped making sense
+
+**Body**:
+
+Quick napkin math that pushed me to build this. A side project doing 10k visitors a month, say 200 chats:
+
+- Intercom: $39/seat/mo, more for the AI add-on
+- Tidio: $29/mo base, jumps fast with operators
+- Drift: $0.99 per resolution = ~$200/mo at that volume
+- Crisp: €95/mo for the tier with actual integrations
+
+Now the same workload with your own OpenAI key on gpt-4o-mini: 200 chats × ~3k tokens × $0.15/M ≈ **9 cents a month**. Even on full gpt-4o you're under $5.
+
+The reason SaaS chat pricing didn't collapse with LLMs is that nobody shipped a serious open-source widget. So I shipped one.
+
+ChatbotLite is a `<script>` tag or a React component. BYOK — your LLM key sits in your env, the widget calls the provider directly through your `/api/chat` route. I never see your traffic.
+
+Things I cared about while building:
+
+- Provider failover that actually works mid-stream. If OpenAI dies after 40 tokens, the next provider continues from token 41. No "sorry, something went wrong, restart"
+- 13 URL-only "skills" — drop a Stripe Payment Link or Calendly URL in config, done. No webhook setup, no OAuth dance
+- Anti-hallucination: phrase redlines (hard block) + optional LLM judges (soft check) so the bot can't promise things it shouldn't
+- The knowledge base is one markdown file. I am tired of vector DBs for side projects
+- Apache 2.0, <50KB gzipped
 
 Repo: https://github.com/agents-io/chatbotlite
-Demos: https://chatbotlite-demos.vercel.app
+Demos (6 verticals, real LLM): https://chatbotlite-demos.vercel.app
+npm: `chatbotlite`
+
+Question for this sub: what's the one chat widget feature your clients keep asking for that no SaaS does well? I'd rather build the unsexy one everybody actually needs than another "AI agent that books your meetings".
 
 ---
 
-## r/webdev — practical / technical angle
+## Post 3 — r/reactjs
 
-**Title**: Drop-in AI chatbot widget — 3 lines, 11 providers with auto-failover, works in plain HTML (no React required)
-
-**Body**:
-
-Most "AI chatbot" libs assume you're already on React + Next.js + a vector DB + a fine-tuning pipeline. ChatbotLite is the opposite — it's for the case where you have a static site or a WordPress install and you just want a working chatbot.
-
-**Drop-in HTML**:
-```html
-<script src="https://unpkg.com/chatbotlite/dist/embed.global.js"></script>
-<script>
-  chatbotlite.mount({ endpoint: "/api/chat", title: "Acme Plumbing" });
-</script>
-```
-
-**Or React**:
-```tsx
-<ChatWidget endpoint="/api/chat" title="Acme Plumbing" />
-```
-
-**Server** (`/api/chat`):
-```ts
-const bot = new ChatBot({
-  knowledge: knowledgeFromFile("./knowledge.md"),
-  providers: { keys: { openai: process.env.OPENAI_API_KEY, groq: process.env.GROQ_API_KEY } }
-});
-```
-
-A few things I'm proud of:
-
-- **Auto-failover**: configure a chain of providers. If OpenAI 429s mid-stream, the next one picks up. Zero tokens lost. Demo recording in the README.
-- **Anti-hallucination guards**: prompt assembly blocks the bot from quoting prices/policies not in your knowledge file.
-- **Markdown knowledge instead of a vector DB**: works fine up to ~50KB. Above that we have RAG hooks planned for 0.8.
-- **`[SKILL:name args]` markers**: the LLM outputs these inline, the widget renders interactive cards (Stripe checkout, Calendly picker, file upload). [Public spec here.](https://github.com/agents-io/chatbotlite/blob/main/SKILL_MARKER_SPEC.md)
-
-Bundle: <50KB gzipped. Apache 2.0. BYOK (you bring the LLM key, we never proxy).
-
-GitHub: https://github.com/agents-io/chatbotlite
-
-Curious what people think about the SKILL marker protocol vs native function calling (which we'll also support in 0.8).
-
----
-
-## r/reactjs — React-specific angle
-
-**Title**: Open-source React chatbot widget with multi-provider failover, pluggable session storage, and zero vector DB
+**Title**: Built a 3-line React chat widget with provider failover. Want feedback on the API shape.
 
 **Body**:
 
-Tired of writing the same "chatbot with streaming + tool cards + provider fallback" boilerplate every project? I extracted it into a 3-line component.
+I shipped a React component called ChatbotLite and I want eyes on the API before I lock it into 1.0.
+
+The basic usage:
 
 ```tsx
 import { ChatWidget } from "chatbotlite/react";
 
-<ChatWidget
-  endpoint="/api/chat"
-  title="Acme"
-  theme={{ primary: "#1e3a8a" }}
-  sessionId={userId}        // returning visitors see previous convo
-  storage={new MyDBStorage()} // optional: wire to your backend
-/>
+<ChatWidget endpoint="/api/chat" title="Acme Plumbing" />
 ```
 
-What's interesting from a React standpoint:
+That's the floor. Everything else is opt-in.
 
-**Pluggable `ChatStorage` interface**
+The pieces I'd love a sanity check on:
+
+**1. Provider failover.** I have one config block on the server that takes an ordered list of providers. If a stream fails partway, the next provider picks up from the last token, not from scratch. 11 providers supported. Is this the right shape, or do people want per-message routing instead?
+
 ```ts
-interface ChatStorage {
-  loadMessages(sessionId: string): Promise<Message[]>;
-  saveMessages(sessionId: string, messages: Message[]): Promise<void>;
-  loadTitle?(sessionId: string): Promise<string | undefined>;
-  saveTitle?(sessionId: string, title: string): Promise<void>;
-}
+import { ChatBot } from "chatbotlite/client";
+
+const bot = new ChatBot({
+  knowledge: knowledgeFromFile("./knowledge.md"),
+  providers: {
+    keys: {
+      openai: process.env.OPENAI_API_KEY,
+      groq:   process.env.GROQ_API_KEY,
+    },
+    chain: [
+      { provider: "openai", model: "gpt-4o-mini" },
+      { provider: "groq",   model: "llama-3.3-70b-versatile" },
+    ]
+  }
+});
 ```
-Default is `LocalChatStorage`. Wire to Supabase / Firestore / your own API in 30 lines.
 
-**Tool cards via inline markers**
-The bot emits `[SKILL:requestPayment amount=4250 currency="cad"]`, the widget intercepts the stream and renders a Stripe card. No JSON tool-use roundtrips needed for the common 90% case (though native function calling is on the 0.8 roadmap).
+**2. Skills via markers.** Tool cards are rendered when the LLM emits `[SKILL:requestPayment amount=2000 currency="usd"]` in the stream. The protocol is public — anyone can write an adapter. 13 URL-only adapters ship in the box (Stripe Payment Link, Calendly, PayPal, Cal.com etc — you literally paste a URL into config).
 
-**Streaming SSE without the usual gotchas**
-- Provider chain auto-failover (configure OpenAI → Groq → DeepSeek; if one 429s mid-stream the next one picks up).
-- Streaming cursor stays in brand colour.
-- Stream-errors render cleanly (no raw HTML leak — regression tested).
+**3. Storage.** I went with a `ChatStorage` interface — `localStorage` default, swap in your own (Postgres, Redis, IndexedDB). Did I over-abstract? Should I just ship localStorage and a hook for "onMessage"?
 
-**Peer deps**: react >=18, react-dom >=18 (both optional — only needed if you use `chatbotlite/react`).
+```tsx
+<ChatWidget endpoint="/api/chat" sessionId={userId} storage={myDbStorage} />
+```
 
-Bundle: <50KB gzipped. TypeScript types ship with the package.
+**4. Knowledge base.** One markdown file, no vector DB. For SMB use cases the whole KB fits in context. Am I going to regret this at 50k tokens?
+
+Other facts: Apache 2.0, <50KB gzipped, BYOK (never proxied), also ships as a `<script>` tag for non-React sites. 6 live demos at https://chatbotlite-demos.vercel.app.
 
 Repo: https://github.com/agents-io/chatbotlite
-Live demos: https://chatbotlite-demos.vercel.app
+npm: `chatbotlite@0.7.22`
 
-Would love thoughts on the `ChatStorage` interface — anything you'd want that isn't there?
+Specifically asking: is the `providers.chain` array the right abstraction, or should failover be a separate hook? I'll change it now if there's a better pattern.
 
 ---
 
-## Posting timing
+## Posting order (3-4 day cadence, never same day)
 
-- **Day 1 (Mon-Wed, 10am-noon PT)**: r/SideProject — most lenient, friendly to launches.
-- **Day 2**: r/webdev — be in the comments answering for the first 2 hours.
-- **Day 3**: r/reactjs — has higher technical bar; lean on the storage interface + SKILL marker bits.
+1. **r/reactjs first** (Tue or Wed, 9-11am ET) — tightest community, highest signal. The API-feedback framing makes it OK for self-promo even in strict subs. If it lands you get technical credibility for the others.
+2. **r/SideProject 24-48h later** — broader, more forgiving, rewards the personal/founder angle. By then you'll have 1-2 stars and maybe an issue, which makes the post feel real.
+3. **r/webdev 24-48h after that** — the price-comparison framing works best when you can already say "since launching N days ago, X people have tried it".
 
-## After the post
+**Never** cross-post identical content. Reddit downranks duplicate text.
 
-- Reply to every comment in the first hour. Reddit ranks by reply velocity.
-- If someone asks "why not LangChain / CopilotKit / Vercel AI SDK" — have a one-line honest answer ready. (Ours: zero-backend URL adapters + plain HTML embed + markdown-only knowledge + multi-provider failover, all in <50KB.)
-- Don't argue. Thank corrections, note pushback as a roadmap item.
-- Pin the GitHub link in the first reply on every thread.
+---
+
+## Pre-drafted replies to anticipated comments
+
+**Q: "How is this different from CopilotKit / assistant-ui / Vercel AI SDK?"**
+
+> CopilotKit and assistant-ui are toolkits — you assemble the UX. ChatbotLite is the assembled widget: one component, one config, done. Vercel AI SDK is the model layer underneath. None of them ship URL-only Stripe/Calendly adapters or mid-stream failover out of the box. I'd actually recommend CopilotKit if you want to build a custom in-app copilot.
+
+**Q: "BYOK means the API key is in the browser?"**
+
+> No. The widget posts to your `/api/chat` route; the key lives server-side in your env. The `<script>` tag flow is the same — you still need a `/api/chat` route. README has a one-pager. Never paste an LLM key into client code.
+
+**Q: "Why no vector DB?"**
+
+> For the use cases I'm targeting — SMB sites, 5-50 page knowledge bases — the whole thing fits in a 32k context window cheaper than running embeddings. If your KB is 500 pages you're not my user yet. RAG hooks are on the 0.8 roadmap when there's real demand.
+
+**Q: "Does the failover actually work mid-stream? Sounds hard."**
+
+> It's the part I spent the most time on. The stream resumer tracks the last successfully delivered token, and on failure it injects "continue from: …" into the next provider's prompt. There's a regression test in the repo. Edge case still open: if the first provider produced tool-call markers before failing, the second provider sees them as user context.
+
+**Q: "Apache 2.0 why not MIT?"**
+
+> Patent grant. For something that touches payment links and integrations I wanted explicit patent coverage. No deeper reason.
+
+**Q: "Just launched, 0 stars — looks suspicious."**
+
+> Yeah, I literally pushed this last week. If you star it that helps; if you find a bug an issue helps more.
+
+**Q: "What if you stop maintaining it?"**
+
+> Apache 2.0, <50KB of code, one markdown KB file. The escape hatch is "keep using the version you forked." I'd rather build something you can walk away from than lock you into my hosting.
+
+---
+
+## Don't do
+
+- Don't ask for stars in the post body. If someone asks how to support, mention it then.
+- Don't post Sat/Sun. Weekday morning ET catches the largest engaged audience.
+- Don't argue with the troll who says "another chatbot, original". Upvote them and move on.
+- Don't reply with marketing fluff. Specific numbers, specific limits, specific tradeoffs.
+
+## Block 3 hours after each post
+
+Reply within 15 minutes to every comment for the first 2 hours. Founder presence is the single biggest engagement multiplier across every launch I read.
+
+---
+
+## Sources
+
+- [Show HN: CopilotKit v2 (Dec 2023, 197 pts, 67 comments)](https://news.ycombinator.com/item?id=38545207)
+- [Launch HN: Resend (Jun 2023, 432 pts, 270 comments)](https://news.ycombinator.com/item?id=36309120)
+- [Launch HN: Chatwoot (Mar 2021, ~110 comments)](https://news.ycombinator.com/item?id=26501527)
+- [Show HN: Plasmo (Jun 2022, 132 pts, 37 comments)](https://news.ycombinator.com/item?id=31609896)
+- [Launch HN: Onyx YC W24 (2025, 254 pts, 160 comments)](https://news.ycombinator.com/item?id=46045987)
