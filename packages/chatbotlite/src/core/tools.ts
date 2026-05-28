@@ -79,9 +79,9 @@ export function buildToolsPromptAddendum(enabledTools: readonly string[]): strin
   return [
     "",
     "## Available tools",
-    "When you need one of these workflows, emit the marker INLINE in your reply.",
-    "Write a short message first, THEN the marker. The marker will be replaced by an interactive card.",
-    "Pause the conversation after emitting — wait for the tool result before continuing.",
+    "Write a short message, then place one of these markers at the end of your reply. The marker is removed from the displayed text and replaced with an interactive card.",
+    "After emitting a marker, stop and wait for the tool result before continuing.",
+    "Do NOT include any descriptive words like 'INLINE' or 'CARD' next to the marker — write the marker itself, nothing more.",
     "",
     ...lines
   ].join("\n");
