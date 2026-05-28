@@ -82,17 +82,22 @@
   nav.top .links .primary { background: var(--text); color: var(--bg); }
   nav.top .links .primary:hover { opacity: 0.85; }
 
-  /* Hero */
-  .hero { max-width: 1100px; margin: 0 auto; padding: 72px 32px 48px; text-align: center; }
-  @media (max-width: 720px) { .hero { padding: 48px 20px 32px; } }
-  .hero h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; margin: 0 0 16px; }
-  .hero h1 .accent { color: var(--accent); }
-  .hero p.sub { font-size: 18px; color: var(--text-muted); max-width: 560px; margin: 0 auto 28px; line-height: 1.55; }
-  .hero .install-bar { display: inline-flex; align-items: center; background: var(--bg-soft); border-radius: 10px; margin-bottom: 16px; cursor: pointer; transition: background 120ms ease; }
-  .hero .install-bar:hover { background: var(--border); }
-  .hero .install-bar code { padding: 12px 20px; font-size: 15px; color: var(--text); white-space: nowrap; letter-spacing: -0.01em; }
-  .hero .install-bar .hint { padding: 12px 16px 12px 0; font-size: 12px; color: var(--text-faint); font-family: var(--sans); font-weight: 500; }
+  /* Hero — dramatic dark to match OG preview */
+  .hero { position: relative; background: linear-gradient(135deg, #0B0D10 0%, #16181D 60%, #1A1D24 100%); color: #ECEDEE; padding: 96px 32px 88px; text-align: center; overflow: hidden; isolation: isolate; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .hero::before { content: ""; position: absolute; pointer-events: none; width: 760px; height: 760px; background: radial-gradient(circle, rgba(0,102,255,0.28) 0%, rgba(0,102,255,0.04) 45%, transparent 65%); top: -280px; right: -220px; z-index: 0; filter: blur(8px); }
+  .hero::after { content: ""; position: absolute; pointer-events: none; width: 640px; height: 640px; background: radial-gradient(circle, rgba(0,102,255,0.18) 0%, transparent 60%); bottom: -240px; left: -180px; z-index: 0; filter: blur(8px); }
+  .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+  @media (max-width: 720px) { .hero { padding: 64px 20px 56px; } }
+  .hero h1 { font-size: clamp(44px, 7vw, 84px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.0; margin: 0 0 20px; color: #ECEDEE; }
+  .hero h1 .accent { color: #3D8BFF; background: linear-gradient(135deg, #0066FF 0%, #4D9BFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p.sub { font-size: 19px; color: #9BA1A6; max-width: 600px; margin: 0 auto 32px; line-height: 1.55; }
+  .hero .install-bar { display: inline-flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; margin-bottom: 18px; cursor: pointer; transition: all 120ms ease; backdrop-filter: blur(8px); }
+  .hero .install-bar:hover { background: rgba(255,255,255,0.1); border-color: rgba(0,102,255,0.3); }
+  .hero .install-bar code { padding: 12px 20px; font-size: 15px; color: #ECEDEE; white-space: nowrap; letter-spacing: -0.01em; }
+  .hero .install-bar .hint { padding: 12px 16px 12px 0; font-size: 12px; color: #6B7177; font-family: var(--sans); font-weight: 500; }
   .hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .hero .btn.ghost { background: rgba(255,255,255,0.04); color: #ECEDEE; border-color: rgba(255,255,255,0.18); }
+  .hero .btn.ghost:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
   .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; transition: all 150ms ease; cursor: pointer; border: 1px solid transparent; }
   .btn.ghost { background: transparent; color: var(--text); border-color: var(--border-bright); }
   .btn.ghost:hover { background: var(--bg-soft); }
@@ -150,8 +155,10 @@
   .failover-embed img { width: 100%; display: block; }
 
   /* Stats */
-  .stats { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; margin: 32px auto 0; }
+  .stats { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; margin: 36px auto 0; }
   .stats .stat { text-align: center; }
+  .hero .stats .stat .num { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: #ECEDEE; }
+  .hero .stats .stat .label { font-size: 12px; color: #6B7177; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-top: 4px; }
   .stats .stat .num { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
   .stats .stat .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-top: 2px; }
 
@@ -175,18 +182,20 @@
 
 <!-- Hero -->
 <header class="hero">
-  <h1>AI chatbot in<br><span class="accent">3 lines of code.</span></h1>
-  <p class="sub">Stop burning tokens building chatbots from scratch. We did it for you.<br>Still paying Int***om $39/seat? Ti**o $29/mo? Dr**t per conversation? There's a better way.</p>
-  <div class="install-bar" onclick="navigator.clipboard.writeText('npm install chatbotlite').then(()=>{this.querySelector('.hint').textContent='Copied!';setTimeout(()=>this.querySelector('.hint').textContent='Click to copy',1500)})"><code>$ npm install chatbotlite</code><span class="hint">Click to copy</span></div>
-  <div class="cta-row">
-    <a class="btn ghost" href="https://github.com/agents-io/chatbotlite">⭐ Star on GitHub</a>
-    <a class="btn ghost" href="#demos">See live demos</a>
-  </div>
-  <div class="stats">
-    <div class="stat"><div class="num">3 lines</div><div class="label">to integrate</div></div>
-    <div class="stat"><div class="num">11</div><div class="label">LLM providers</div></div>
-    <div class="stat"><div class="num">$0/mo</div><div class="label">forever</div></div>
-    <div class="stat"><div class="num">Open source</div><div class="label">Apache 2.0</div></div>
+  <div class="hero-inner">
+    <h1>AI chatbot in<br><span class="accent">3 lines of code.</span></h1>
+    <p class="sub">Stop burning tokens building chatbots from scratch. We did it for you.<br>Still paying Int***om $39/seat? Ti**o $29/mo? Dr**t per conversation? There's a better way.</p>
+    <div class="install-bar" onclick="navigator.clipboard.writeText('npm install chatbotlite').then(()=>{this.querySelector('.hint').textContent='Copied!';setTimeout(()=>this.querySelector('.hint').textContent='Click to copy',1500)})"><code>$ npm install chatbotlite</code><span class="hint">Click to copy</span></div>
+    <div class="cta-row">
+      <a class="btn ghost" href="https://github.com/agents-io/chatbotlite">⭐ Star on GitHub</a>
+      <a class="btn ghost" href="#demos">See live demos</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">3 lines</div><div class="label">to integrate</div></div>
+      <div class="stat"><div class="num">11</div><div class="label">LLM providers</div></div>
+      <div class="stat"><div class="num">$0/mo</div><div class="label">forever</div></div>
+      <div class="stat"><div class="num">Open source</div><div class="label">Apache 2.0</div></div>
+    </div>
   </div>
 </header>
 
