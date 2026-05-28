@@ -73,6 +73,8 @@ We at agents.io just open-sourced ChatbotLite. It's the widget we built internal
 
 The market has good toolkits (CopilotKit, assistant-ui) and a great model layer (Vercel AI SDK, LiteLLM). What was missing for us was a fully assembled widget you can drop in and ship the same afternoon. So we shipped one.
 
+Also relevant if you're shipping for SMB clients — instead of charging them $39/seat for Intercom or $29/mo for Tidio, they bring their own OpenAI/Groq key and pay the model provider directly (typically <$5/mo at SMB volume). The widget is free forever.
+
 Three lines on a static site:
 
 ```html
@@ -147,6 +149,41 @@ What helps most:
 
 ---
 
+## Post 4 — r/Entrepreneur / r/SmallBusiness / r/shopify / r/WordPress
+
+For business-owner audiences who run their own site (not devs).
+
+**Title**: We just open-sourced a chatbot for your site — bring your own ChatGPT key instead of paying Intercom $39/seat
+
+**Body**:
+
+If you run a small business website and you've been quoted $39/seat/mo for Intercom, $29/mo for Tidio, or per-conversation pricing from Drift — there's now a free option.
+
+agents.io just open-sourced ChatbotLite. The widget is free forever (Apache 2.0). You bring your own OpenAI/Anthropic/Groq API key and pay the model provider directly. At small-business volume (a few hundred chats a month) that's typically under $5/mo.
+
+How small business owners use it:
+
+- Pop it into your **Shopify** theme, **WordPress** site, **Squarespace**, **Wix**, **Webflow**, **Ghost**, or any plain HTML with a `<script>` tag. Three lines of code
+- Write your services / hours / pricing / FAQ in a markdown file. The bot grounds every answer in it (no random hallucinations about prices you don't charge)
+- Drop in your Stripe Payment Link or Calendly URL — the bot can take deposits and book appointments
+- Anti-hallucination guards stop it from confirming bookings or guaranteeing prices it shouldn't
+
+What this is not:
+- It's not a human helpdesk inbox. If you need a team of agents handling tickets, get Intercom
+- It's not zero-config. You need to paste an API key from OpenAI (10 minutes) and host a small server route (Vercel/Netlify free tier works)
+- Comfortable with pasting code into your theme? You're good. Never opened a code editor? Get a freelancer for an hour to install it once
+
+Comparison table on our landing page (https://chatbotlite-demos.vercel.app) — scroll to "Why not just use a SaaS chatbot?"
+
+6 live demos for typical small businesses: plumber, restaurant, coffee shop, dentist, tax preparer, yoga studio. Click any of them at the link above and try the bot in the bottom-right.
+
+Repo: https://github.com/agents-io/chatbotlite
+npm: `chatbotlite@0.7.22`
+
+Question for this sub: if you've paid SaaS chat for the last year, what's the one thing you wished the chatbot did automatically that it didn't? We're building from real complaints.
+
+---
+
 ## Sub choice for Post 3
 
 Recommend **r/opensource** over r/SideProject for the company-release framing. r/SideProject's audience is wired for solo founder stories; posting "agents.io released our internal SDK" reads slightly off there.
@@ -161,11 +198,20 @@ Alternative subs to consider:
 
 ## Posting order (3-4 day cadence)
 
-1. **r/reactjs first** (Tue/Wed, 9-11am ET) — tightest community, highest signal. API-feedback framing makes self-promo acceptable. Get technical credibility for the next two.
-2. **r/opensource 24-48h later** — clean company OSS announcement.
-3. **r/webdev 24-48h after that** — broader, the comparison-vs-toolkits framing works once we already have a couple stars.
+**Dev track** (r/reactjs, r/opensource, r/webdev) — for the developer audience comparing us to peer SDKs:
 
-Never cross-post identical content. Reddit downranks duplicate text.
+1. **r/reactjs first** (Tue/Wed, 9-11am ET) — API-feedback framing
+2. **r/opensource 24-48h later** — clean company OSS announcement
+3. **r/webdev 24-48h after that** — comparison-vs-toolkits framing
+
+**Business-owner track** (r/Entrepreneur, r/SmallBusiness, r/shopify, r/WordPress) — for SMB owners DIY-ing their own site:
+
+4. **r/SmallBusiness** or **r/Entrepreneur** — lead with the pricing pain (Post 4)
+5. **r/shopify** and **r/WordPress** — platform-specific subs, paste Post 4 with tweaked title naming the platform
+
+Run dev track first (gets stars + credibility). Then run business-owner track 5-7 days later — by then we can say "since launch X people are using it" which lifts BO trust.
+
+Never cross-post identical content. Reddit downranks duplicate text. Each sub needs its own tweaked title and intro.
 
 ---
 
