@@ -56,10 +56,7 @@ const bot = new ChatBot({
 
 **4. Knowledge base.** One markdown file, no vector DB. For most SMB use cases the whole thing fits in a 32k context. Will this fall apart at 50k tokens?
 
-Other facts: Apache 2.0, <50KB gzipped, BYOK (we never proxy your traffic), 6 live demos at https://chatbotlite-demos.vercel.app.
-
-Repo: https://github.com/agents-io/chatbotlite
-npm: `chatbotlite@0.7.23`
+Apache 2.0, <50KB gzipped, BYOK (we never proxy your traffic).
 
 Specifically asking: is `providers.chain` the right abstraction, or should failover be its own hook? We'll change it now if there's a better pattern.
 
