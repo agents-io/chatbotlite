@@ -2,7 +2,7 @@
 
 Released under **agents.io** brand. Positioning: lightweight dev SDK / drop-in widget. Peer category: CopilotKit, assistant-ui, Vercel AI SDK, LiteLLM. (Not "OSS alternative to Intercom" — that's a different audience.)
 
-**Credibility hook** to use sparingly in opening: our team has shipped **PokeClaw** (875 ★ Android app) and **Cross-Code Organizer** (328 ★ config dashboard for Claude Code / Codex CLI). Drop it in once per post to legitimise the "we" voice, then get to the technical detail.
+**Credibility hook** to use sparingly in opening: our team has shipped **PokeClaw** (875 ★ Android app) and **Cross-Code Organizer** (328 ★ cross-harness config dashboard for Claude Code, Codex CLI, MCP servers). Drop it in once per post to legitimise the "we" voice, then get to the technical detail.
 
 Based on patterns from CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch HN (432 pts), Chatwoot (~110 comments), Onyx YC W24 (254 pts).
 
@@ -14,7 +14,7 @@ Based on patterns from CopilotKit v2 (197 pts), Plasmo (132 pts), Resend Launch 
 
 **Body**:
 
-We at agents.io (same team behind [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) — 328★ Claude Code / Codex config dashboard — and [PokeClaw](https://github.com/agents-io/pokeclaw), 875★) just open-sourced ChatbotLite, the AI chat widget we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
+We at agents.io (same team behind [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) — 328★ cross-harness config dashboard (Claude Code, Codex CLI, MCP servers) — and [PokeClaw](https://github.com/agents-io/pokeclaw), 875★) just open-sourced ChatbotLite, the AI chat widget we built for our customer-facing tools. It ships as a React component (and a plain `<script>` tag for non-React sites). We want eyes on the API before locking it into 1.0.
 
 The basic usage:
 
@@ -117,7 +117,7 @@ Genuine question for this sub: what's the one chat widget feature your clients k
 
 **Body**:
 
-agents.io just open-sourced ChatbotLite under Apache 2.0. We're the team behind [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) (328★ Claude Code / Codex config dashboard) and [PokeClaw](https://github.com/agents-io/pokeclaw) (875★). ChatbotLite is our latest.
+agents.io just open-sourced ChatbotLite under Apache 2.0. We're the team behind [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) — 328★ cross-harness config dashboard for Claude Code, Codex CLI, and MCP servers — and [PokeClaw](https://github.com/agents-io/pokeclaw) (875★). ChatbotLite is our latest.
 
 It's the AI chat widget we built for our own customer-facing tools. We're releasing it because the existing options weren't right for us. We needed something fully assembled (not a toolkit you assemble yourself), something that worked outside React (plain `<script>` tag), and automatic provider failover — none of which were available off the shelf.
 
