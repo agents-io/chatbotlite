@@ -203,13 +203,10 @@
 <section class="block">
   <h2>Integrate this afternoon</h2>
   <p class="lede">Pick your framework. Paste the code. You have a chatbot.</p>
-  <div style="max-width:640px;margin:0 auto 16px;padding:12px 18px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;display:flex;align-items:center;gap:10px;font-size:14px;">
-    <span style="font-size:20px;">👉</span>
-    <span style="color:var(--accent);font-weight:600;">Shopify, WordPress, Webflow, Squarespace, Wix, Astro, Hugo, Ghost, Blogger, any HTML?</span>
-    <span style="color:var(--text-muted);">Use the</span>
-    <button onclick="showTab('html')" style="background:var(--accent);color:white;border:none;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">HTML / Script tag</button>
-    <span style="color:var(--text-muted);">tab below</span>
-  </div>
+  <button type="button" onclick="showTab('html')" style="display:block;max-width:640px;margin:0 auto 16px;padding:14px 20px;background:transparent;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-family:var(--sans);text-align:left;width:100%;transition:all 150ms ease;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='var(--accent-soft)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:2px;">On Shopify, WordPress, Webflow, Squarespace, Wix, Astro, Ghost, or any plain HTML site?</div>
+    <div style="font-size:14px;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:6px;">Switch to the HTML / Script tag tab <span style="font-size:11px;">↓</span></div>
+  </button>
   <div class="code-wrap">
     <div class="code-tabs">
       <button class="code-tab active" onclick="showTab('react')">React</button>
@@ -499,7 +496,7 @@ TypeScript types ship in the package.</span></div></div>
 </footer>
 
 <!-- chatbotlite running on chatbotlite -->
-<script src="https://unpkg.com/chatbotlite@0.7.21/dist/embed.global.js"></script>
+<script src="https://unpkg.com/chatbotlite@0.7.22/dist/embed.global.js"></script>
 <script>
   chatbotlite.mount({
     endpoint: "/api/chat?demo=chatbotlite",

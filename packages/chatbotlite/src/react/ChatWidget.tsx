@@ -685,7 +685,7 @@ export function ChatWidget(props: ChatWidgetProps): ReactElement {
                 ? <img src={props.launcherIcon} width="28" height="28" alt="" style={{ objectFit: "contain" }} />
                 : <span style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))" }}>{props.launcherIcon}</span>)
             : (
-              <img src={DEFAULT_LOGO} width="36" height="36" alt="" style={{ objectFit: "contain" }} />
+              <img src={DEFAULT_LOGO} width="50" height="50" alt="" style={{ objectFit: "contain" }} />
             )}
         </button>
       )}
