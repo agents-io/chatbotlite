@@ -175,6 +175,18 @@ Top-to-bottom = priority. Auto-retry on 429/5xx, then fall to next.
 
 ---
 
+## MCP server — let your AI agent scaffold it
+
+Building with Claude Code, Cursor, or Cline? Add the [`chatbotlite-mcp`](packages/chatbotlite-mcp) server and your agent can scaffold a working chatbot from a one-line ask ("add a chat widget to my Next.js site, fall back OpenAI → Groq, take Stripe deposits").
+
+```bash
+claude mcp add chatbotlite -- npx -y chatbotlite-mcp
+```
+
+Tools: `scaffold_chatbot` (paste-ready code), `list_providers`, `list_adapters`, `skill_markers`, `about_chatbotlite`. No API key needed.
+
+---
+
 ## Documentation
 
 - [Full API Reference](https://chatbotlite-demos.vercel.app/llms-full.txt) (35KB, LLM-readable)

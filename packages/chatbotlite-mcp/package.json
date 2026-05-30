@@ -1,0 +1,56 @@
+{
+  "name": "chatbotlite-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for ChatbotLite. Lets AI coding agents (Claude Code, Cursor, Cline) scaffold a drop-in AI chatbot for any website, discover the 10 LLM providers, and look up the 13 URL-only adapters.",
+  "license": "Apache-2.0",
+  "author": "agents.io",
+  "homepage": "https://github.com/agents-io/chatbotlite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agents-io/chatbotlite.git",
+    "directory": "packages/chatbotlite-mcp"
+  },
+  "bugs": "https://github.com/agents-io/chatbotlite/issues",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "chatbot",
+    "ai",
+    "llm",
+    "claude-code",
+    "cursor",
+    "cline",
+    "scaffold",
+    "chatbotlite",
+    "react",
+    "widget",
+    "openai",
+    "groq"
+  ],
+  "type": "module",
+  "bin": {
+    "chatbotlite-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
