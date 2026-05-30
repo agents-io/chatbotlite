@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/widget-screenshot.png" width="720" alt="ChatbotLite widget on a real Acme Plumbing site — user asks 'how much is a leak inspection?', bot replies $95 and renders an inline payment card with Interac e-Transfer + card options.">
+  <img src="docs/widget-demo.gif" width="440" alt="ChatbotLite widget demo — launcher opens, user asks 'how much is a leak inspection?', bot streams '$95, covers first visit, full diagnostic' with typing cursor.">
 </p>
 
 <p align="center">

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  width: 440px; height: 640px; overflow: hidden; position: relative;
+}
+
+/* Fake site background */
+.site-bg {
+  padding: 32px 24px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.site-bg h2 { color: #1e3a8a; font-size: 20px; margin-bottom: 12px; }
+.site-bg .bar { height: 10px; background: #e2e8f0; border-radius: 5px; margin: 6px 0; }
+.site-bg .bar.short { width: 60%; }
+.site-bg .bar.med { width: 85%; }
+
+/* Launcher */
+.launcher {
+  position: fixed; bottom: 20px; right: 20px;
+  width: 64px; height: 56px; border-radius: 18px;
+  background: #0f172a; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 12px 28px -8px rgba(15,23,42,0.32), 0 4px 8px -2px rgba(15,23,42,0.12);
+  cursor: pointer; z-index: 99999;
+  transform: scale(0); opacity: 0;
+  transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 320ms;
+}
+.launcher.visible { transform: scale(1); opacity: 1; }
+.launcher svg { width: 28px; height: 28px; }
+
+/* Panel */
+.panel {
+  position: fixed; bottom: 20px; right: 20px;
+  width: 380px; height: 520px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 24px 60px -16px rgba(15,23,42,0.32), 0 8px 24px -8px rgba(15,23,42,0.12), 0 0 0 1px rgba(15,23,42,0.04);
+  z-index: 99999;
+  display: flex; flex-direction: column;
+  transform: translateY(16px) scale(0.98); opacity: 0;
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 280ms;
+  overflow: hidden;
+}
+.panel.visible { transform: translateY(0) scale(1); opacity: 1; }
+
+/* Header */
+.header {
+  padding: 14px 16px;
+  background: #0f172a;
+  color: #fff;
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+.header .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.9); color: #0f172a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+}
+.header .info { flex: 1; }
+.header .title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.header .status { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+.header .close {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; opacity: 0.85; background: transparent; border: none; color: #fff;
+}
+
+/* Chat area */
+.chat {
+  flex: 1; padding: 16px 14px;
+  background: #F7F8FA;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+/* Bubbles */
+.bubble {
+  max-width: 82%; padding: 9px 13px;
+  font-size: 14px; line-height: 1.5; letter-spacing: -0.005em;
+  word-break: break-word; white-space: pre-wrap;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 220ms cubic-bezier(0.4, 0, 0.2, 1), transform 220ms;
+}
+.bubble.visible { opacity: 1; transform: translateY(0); }
+
+.bubble.bot {
+  align-self: flex-start;
+  background: #fff; color: #0f172a;
+  border: 1px solid #E5E7EB;
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.04);
+}
+.bubble.user {
+  align-self: flex-end;
+  background: #0f172a; color: #fff;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.12);
+}
+
+/* Streaming cursor */
+.cursor {
+  display: inline-block; width: 0.5ch;
+  vertical-align: text-bottom; margin-left: 1px;
+  color: #0f172a;
+  animation: cursor-blink 1.0s ease-in-out infinite;
+}
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.2; }
+}
+
+/* Thinking dots */
+.thinking {
+  display: flex; align-items: center; gap: 4px;
+  padding: 12px 14px;
+}
+.thinking .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #94A3B8;
+  animation: dot-bounce 1.2s ease-in-out infinite;
+}
+.thinking .dot:nth-child(2) { animation-delay: 0.15s; }
+.thinking .dot:nth-child(3) { animation-delay: 0.3s; }
+.thinking .label { font-size: 12px; color: #64748b; margin-left: 4px; }
+@keyframes dot-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Composer */
+.composer-wrap {
+  padding: 10px 12px 12px;
+  background: #fff;
+  flex-shrink: 0;
+}
+.composer {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 4px 4px 8px;
+  background: #F1F3F5;
+  border-radius: 999px;
+}
+.composer input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-size: 14px; padding: 4px 6px; color: #0f172a;
+  font-family: inherit;
+}
+.composer input::placeholder { color: #94A3B8; }
+.composer .send {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #0f172a; border: none; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.composer .send svg { width: 14px; height: 14px; }
+
+/* Branding */
+.branding {
+  padding: 8px 12px; text-align: center;
+  font-size: 11px; font-weight: 500;
+  color: #94A3B8; background: #fff;
+  border-top: 1px solid #E5E7EB;
+  letter-spacing: 0.01em;
+}
+</style>
+</head>
+<body>
+
+<!-- Fake site background -->
+<div class="site-bg">
+  <h2>🔧 Acme Plumbing</h2>
+  <div class="bar med"></div>
+  <div class="bar"></div>
+  <div class="bar short"></div>
+  <div class="bar med"></div>
+  <div class="bar"></div>
+  <div class="bar short"></div>
+  <div class="bar med"></div>
+  <div class="bar"></div>
+</div>
+
+<!-- Launcher -->
+<div class="launcher" id="launcher">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+</div>
+
+<!-- Chat Panel -->
+<div class="panel" id="panel">
+  <div class="header">
+    <div class="avatar">A</div>
+    <div class="info">
+      <div class="title">Acme · Chat</div>
+      <div class="status">Online</div>
+    </div>
+    <div class="close">×</div>
+  </div>
+  <div class="chat" id="chat"></div>
+  <div class="composer-wrap">
+    <div class="composer">
+      <input id="input" placeholder="Message" readonly>
+      <div class="send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5"/>
+          <polyline points="5 12 12 5 19 12"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="branding">⚡ Powered by ChatbotLite</div>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const launcher = document.getElementById('launcher');
+const panel = document.getElementById('panel');
+
+const GREETING = "Hi! Got a leak? Send me a photo and I'll quote the inspection.";
+const USER_MSG = "how much is a leak inspection?";
+const BOT_REPLY = "A standard leak inspection is $95. That covers the first visit, full diagnostic, and a written quote. Most inspections take about 30 minutes.\n\nWant to book one?";
+
+function addBubble(text, type, id) {
+  const div = document.createElement('div');
+  div.className = `bubble ${type}`;
+  div.id = id || '';
+  div.textContent = text;
+  chat.appendChild(div);
+  requestAnimationFrame(() => requestAnimationFrame(() => div.classList.add('visible')));
+  return div;
+}
+
+function addThinking() {
+  const div = document.createElement('div');
+  div.className = 'bubble bot visible';
+  div.id = 'thinking';
+  div.innerHTML = '<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span class="label">thinking</span></div>';
+  chat.appendChild(div);
+  return div;
+}
+
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function typeText(el, text, charDelay) {
+  el.textContent = '';
+  for (let i = 0; i < text.length; i++) {
+    el.textContent = text.slice(0, i + 1);
+    // Add cursor during streaming
+    if (i < text.length - 1) {
+      el.innerHTML = text.slice(0, i + 1).replace(/\n/g, '<br>') + '<span class="cursor">▍</span>';
+    } else {
+      el.innerHTML = text.slice(0, i + 1).replace(/\n/g, '<br>');
+    }
+    chat.scrollTop = chat.scrollHeight;
+    await sleep(charDelay);
+  }
+}
+
+async function typeInput(text, charDelay) {
+  input.value = '';
+  for (let i = 0; i < text.length; i++) {
+    input.value = text.slice(0, i + 1);
+    await sleep(charDelay);
+  }
+}
+
+// Timeline
+async function run() {
+  // Frame 0-500ms: show launcher
+  await sleep(400);
+  launcher.classList.add('visible');
+
+  // Frame 500-1200ms: wait, then click launcher
+  await sleep(800);
+  launcher.classList.remove('visible');
+  launcher.style.display = 'none';
+
+  // Frame 1200ms: open panel
+  await sleep(100);
+  panel.classList.add('visible');
+
+  // Frame 1500ms: greeting
+  await sleep(400);
+  addBubble(GREETING, 'bot');
+
+  // Frame 2500ms: user types
+  await sleep(1000);
+  await typeInput(USER_MSG, 50);
+
+  // Frame 4000ms: user sends
+  await sleep(400);
+  addBubble(USER_MSG, 'user');
+  input.value = '';
+
+  // Frame 4500ms: thinking dots
+  await sleep(500);
+  addThinking();
+
+  // Frame 5500ms: remove thinking, stream reply
+  await sleep(1000);
+  const thinking = document.getElementById('thinking');
+  if (thinking) thinking.remove();
+
+  const reply = addBubble('', 'bot', 'reply');
+  reply.classList.add('visible');
+  await typeText(reply, BOT_REPLY, 25);
+
+  // Frame ~9000ms: hold for 3 seconds then loop
+  await sleep(3000);
+
+  // Reset for loop
+  chat.innerHTML = '';
+  panel.classList.remove('visible');
+  launcher.style.display = 'flex';
+  await sleep(500);
+  run();
+}
+
+run();
+</script>
+</body>
+</html>
