@@ -31,7 +31,9 @@
   <a href="https://chatbotlite-demos.vercel.app">Live demos</a> ·
   <a href="https://chatbotlite-demos.vercel.app/llms-full.txt">API Reference</a> ·
   <a href="ROADMAP.md">Roadmap</a> ·
-  <a href="SKILL_MARKER_SPEC.md">SKILL Protocol</a>
+  <a href="SKILL_MARKER_SPEC.md">SKILL Protocol</a> ·
+  <a href="README.ja.md">日本語</a> ·
+  <a href="README.zh-CN.md">中文</a>
 </p>
 
 ---
