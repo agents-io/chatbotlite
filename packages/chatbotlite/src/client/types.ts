@@ -14,10 +14,24 @@ export type Provider =
 
 /**
  * One step in the fallback chain. Provider is required; model defaults to the provider's preset.
+ *
+ * For a self-hosted / local LLM (Ollama, LM Studio, vLLM, llama.cpp — anything that
+ * speaks the OpenAI-compatible `/chat/completions` API), use `provider: "custom"` with
+ * a `baseUrl` and `model`:
+ *
+ * ```ts
+ * { provider: "custom", baseUrl: "http://localhost:11434/v1", model: "llama3.2", apiKey: "ollama" }
+ * ```
+ *
+ * `baseUrl` can also override a known provider's endpoint (e.g. to point "openai" at a proxy).
  */
 export interface ChainEntry {
-  provider: Provider;
+  provider: Provider | "custom";
   model?: string;
+  /** OpenAI-compatible base URL. Required when `provider` is `"custom"`; optional override otherwise. */
+  baseUrl?: string;
+  /** API key for this entry. For `"custom"` it defaults to `"local"`; otherwise falls back to `keys[provider]`. */
+  apiKey?: string;
 }
 
 /**
@@ -62,14 +76,18 @@ export interface ClientOptions {
 }
 
 export interface ChainStep {
-  provider: Provider;
+  provider: Provider | "custom";
   model: string;
+  /** Resolved OpenAI-compatible base URL for this step (no trailing `/chat/completions`). */
+  baseUrl: string;
+  /** Resolved API key (or `"local"` dummy for custom endpoints that ignore auth). */
+  apiKey: string;
   /** Human-readable label used in attempt traces, e.g. `"openai/gpt-4o-mini"`. */
   label: string;
 }
 
 export interface AttemptInfo {
-  provider: Provider;
+  provider: Provider | "custom";
   model: string;
   status: "ok" | "error";
   error?: string;

@@ -91,7 +91,7 @@ Add multiple provider keys. If one errors mid-stream, the next provider takes ov
 | | |
 |--|--|
 | **3 lines** | React component or `<script>` tag. No build step needed. |
-| **10 LLM providers** | Auto-failover chain. OpenAI today, Groq tomorrow, local Ollama for testing. |
+| **10 LLM providers + local** | Auto-failover chain across 10 hosted providers, or point a `custom` entry at your own Ollama / LM Studio / vLLM. |
 | **Markdown knowledge** | Write services, hours, pricing in a `.md` file. No vector DB. Anti-hallucination guards built-in. |
 | **13 adapters** | Stripe, PayPal, Calendly, Cal.com, Formspree, and 8 more. Paste a URL, done. |
 | **Tool cards** | Bot triggers payment, scheduling, file upload, picker buttons inline in chat. |
@@ -157,6 +157,22 @@ providers: {
 ```
 
 Top-to-bottom = priority. Auto-retry on 429/5xx, then fall to next.
+
+### Local / self-hosted LLM
+
+A chatbot doesn't need a frontier model. If you already run a local model (Ollama, LM Studio, vLLM, llama.cpp) it speaks the same OpenAI-compatible API, so point a `custom` chain entry at it — your data never leaves your machine:
+
+```ts
+providers: {
+  keys: { openai: process.env.OPENAI_API_KEY },   // optional cloud fallback
+  chain: [
+    { provider: "custom", baseUrl: "http://localhost:11434/v1", model: "llama3.2", apiKey: "ollama" },
+    { provider: "openai", model: "gpt-4o-mini" }   // falls over to cloud if local is down
+  ]
+}
+```
+
+`apiKey` is optional for local servers that ignore auth. `baseUrl` can also override a hosted provider (e.g. point `openai` at an internal gateway).
 
 ---
 

@@ -21,6 +21,7 @@ Use `npm install chatbotlite` (single package; no peer setup beyond your LLM key
 - Providers are configured as `providers: { keys: {...}, chain: [{ provider, model }, ...] }`.
 - The `chain` is ordered failover (top = first try); on 429/5xx the next entry takes over. There is no per-message routing — do not generate a `strategy` or `router` option.
 - 10 providers supported: openai, groq, deepseek, gemini, mistral, fireworks, cerebras, sambanova, openrouter, moonshot. There is no `anthropic` provider in the chain (it uses a different native API).
+- For a local/self-hosted LLM (Ollama, LM Studio, vLLM, llama.cpp) use a `custom` chain entry: `{ provider: "custom", baseUrl: "http://localhost:11434/v1", model: "...", apiKey?: "..." }`. `baseUrl` can also override a hosted provider.
 - Keys live server-side in env vars; never put an LLM key in client code.
 
 ## Knowledge base facts

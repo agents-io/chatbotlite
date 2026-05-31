@@ -46,8 +46,8 @@ export interface ReplyWithMediaOptions extends ReplyOptions {
 
 export interface ReplyResult {
   reply: string;
-  /** Provider/model that produced the final reply (after fallback). */
-  usedProvider: Provider;
+  /** Provider/model that produced the final reply (after fallback). `"custom"` for self-hosted endpoints. */
+  usedProvider: Provider | "custom";
   usedModel: string;
   /** Token usage if reported by the final provider. */
   usage?: { prompt_tokens?: number; completion_tokens?: number };
@@ -169,7 +169,6 @@ export class ChatBot {
     ];
     const steps = this.steps;
     const fetcher = this.fetcher;
-    const keys = this.keys;
     const timeoutMs = this.timeoutMs;
 
     const encoder = new TextEncoder();
@@ -184,18 +183,12 @@ export class ChatBot {
 
         for (const step of steps) {
           const t0 = Date.now();
-          const endpoint = PROVIDER_ENDPOINTS[step.provider];
-          const key = keys[step.provider];
-          if (!key) {
-            attempts.push({ provider: step.provider, model: step.model, status: "error", error: "missing key", latencyMs: 0 });
-            continue;
-          }
           const abortCtrl = new AbortController();
           const timer = setTimeout(() => abortCtrl.abort(), timeoutMs);
           try {
-            const res = await fetcher(`${endpoint.baseUrl}/chat/completions`, {
+            const res = await fetcher(`${step.baseUrl}/chat/completions`, {
               method: "POST",
-              headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+              headers: { Authorization: `Bearer ${step.apiKey}`, "Content-Type": "application/json" },
               body: JSON.stringify({ model: step.model, messages, temperature: 0.3, max_tokens: 300, stream: true }),
               signal: abortCtrl.signal
             });
@@ -298,22 +291,21 @@ export class ChatBot {
     const attempts: AttemptInfo[] = [];
     let lastError: unknown;
     for (const step of this.steps) {
-      const endpoint = PROVIDER_ENDPOINTS[step.provider];
-      if (!endpoint.visionModel) {
-        attempts.push({ provider: step.provider, model: step.model, status: "error", error: "no vision support", latencyMs: 0 });
+      const endpoint = step.provider === "custom" ? undefined : PROVIDER_ENDPOINTS[step.provider];
+      if (!endpoint?.visionModel) {
+        const reason = step.provider === "custom" ? "custom endpoint: no vision support" : "no vision support";
+        attempts.push({ provider: step.provider, model: step.model, status: "error", error: reason, latencyMs: 0 });
         continue;
       }
       const t0 = Date.now();
-      const visionStep: ChainStep = { provider: step.provider, model: endpoint.visionModel, label: `${step.provider}/${endpoint.visionModel}` };
+      const visionStep: ChainStep = { provider: step.provider, model: endpoint.visionModel, baseUrl: step.baseUrl, apiKey: step.apiKey, label: `${step.provider}/${endpoint.visionModel}` };
       try {
-        const key = this.keys[step.provider];
-        if (!key) throw new Error(`Missing API key for provider: ${step.provider}`);
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), this.timeoutMs);
         try {
-          const res = await this.fetcher(`${endpoint.baseUrl}/chat/completions`, {
+          const res = await this.fetcher(`${step.baseUrl}/chat/completions`, {
             method: "POST",
-            headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+            headers: { Authorization: `Bearer ${step.apiKey}`, "Content-Type": "application/json" },
             body: JSON.stringify({ model: visionStep.model, messages, temperature: 0.3, max_tokens: 400 }),
             signal: controller.signal
           });
@@ -428,17 +420,13 @@ export class ChatBot {
   }
 
   private async callProvider(step: ChainStep, messages: Message[]): Promise<{ reply: string; usage?: { prompt_tokens?: number; completion_tokens?: number } }> {
-    const endpoint = PROVIDER_ENDPOINTS[step.provider];
-    const key = this.keys[step.provider];
-    if (!key) throw new Error(`Missing API key for provider: ${step.provider}`);
-
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
-      const res = await this.fetcher(`${endpoint.baseUrl}/chat/completions`, {
+      const res = await this.fetcher(`${step.baseUrl}/chat/completions`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${key}`,
+          "Authorization": `Bearer ${step.apiKey}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -482,18 +470,36 @@ function resolveChain(providers: ProviderConfig): ChainStep[] {
   return orderedProviders.map((provider) => ({
     provider,
     model: PROVIDER_ENDPOINTS[provider].defaultModel,
+    baseUrl: PROVIDER_ENDPOINTS[provider].baseUrl,
+    apiKey: keys[provider]!,
     label: `${provider}/${PROVIDER_ENDPOINTS[provider].defaultModel}`
   }));
 }
 
 function normalizeChainEntry(entry: ChainEntry, keys: Partial<Record<Provider, string>>): ChainStep {
+  // Self-hosted / local LLM (Ollama, LM Studio, vLLM, llama.cpp) via an OpenAI-compatible endpoint.
+  if (entry.provider === "custom") {
+    if (!entry.baseUrl) {
+      throw new Error('chatbotlite: a "custom" chain entry needs a baseUrl (e.g. "http://localhost:11434/v1").');
+    }
+    if (!entry.model) {
+      throw new Error('chatbotlite: a "custom" chain entry needs a model (no default for custom endpoints).');
+    }
+    const baseUrl = entry.baseUrl.replace(/\/+$/, "");
+    // Many local servers ignore auth; send a non-empty dummy so the Authorization header is present.
+    const apiKey = entry.apiKey ?? "local";
+    return { provider: "custom", model: entry.model, baseUrl, apiKey, label: `custom/${entry.model}` };
+  }
   if (!isKnownProvider(entry.provider)) {
     throw new Error(`chatbotlite: unknown provider "${entry.provider}" in chain entry.`);
   }
   const provider = entry.provider;
   const model = entry.model ?? PROVIDER_ENDPOINTS[provider].defaultModel;
-  if (!keys[provider]) {
-    throw new Error(`chatbotlite: chain entry for "${provider}" needs a matching key in providers.keys.`);
+  const apiKey = entry.apiKey ?? keys[provider];
+  if (!apiKey) {
+    throw new Error(`chatbotlite: chain entry for "${provider}" needs a matching key in providers.keys (or an inline apiKey).`);
   }
-  return { provider, model, label: `${provider}/${model}` };
+  // baseUrl override lets you point a known provider at a proxy / self-hosted gateway.
+  const baseUrl = (entry.baseUrl ?? PROVIDER_ENDPOINTS[provider].baseUrl).replace(/\/+$/, "");
+  return { provider, model, baseUrl, apiKey, label: `${provider}/${model}` };
 }

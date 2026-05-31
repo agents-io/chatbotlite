@@ -11,3 +11,6 @@ dist/
 coverage/
 .next/
 .npmrc
+
+CLAUDE.local.md
+HN_APPEAL_EMAIL.md

@@ -63,6 +63,12 @@ One markdown file (services, hours, pricing). No vector DB, no embeddings. The b
 ## Providers (failover chain)
 10 OpenAI-compatible providers: `openai`, `groq`, `deepseek`, `gemini`, `mistral`, `fireworks`, `cerebras`, `sambanova`, `openrouter`, `moonshot`. The `chain` is priority order; on 429/5xx the next provider takes over. There is **no** per-message routing option — don't invent one. No `anthropic` entry in the chain (native API differs).
 
+**Local / self-hosted LLM:** use `provider: "custom"` with a `baseUrl` + `model` for Ollama / LM Studio / vLLM / llama.cpp (all OpenAI-compatible):
+```ts
+chain: [{ provider: "custom", baseUrl: "http://localhost:11434/v1", model: "llama3.2", apiKey: "ollama" }]
+```
+`apiKey` is optional for local servers. `baseUrl` can also override a hosted provider (point `openai` at a gateway).
+
 ## Adapters (payment / scheduling / lead capture)
 URL-only — paste a URL, the bot can trigger it. Import from `chatbotlite/adapters`:
 ```ts
