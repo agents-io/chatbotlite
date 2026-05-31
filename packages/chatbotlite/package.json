@@ -70,8 +70,14 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "SKILL.md"
   ],
+  "agents": {
+    "skills": [
+      "./SKILL.md"
+    ]
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "ChatbotLite",
+  "description": "Drop-in AI chatbot for any website — React widget + server-side ChatBot client. 10 LLM providers with auto-failover, markdown knowledge base, URL-only payment/scheduling adapters. npm: chatbotlite. Apache-2.0.",
+  "folders": [
+    "packages/chatbotlite/src"
+  ],
+  "excludeFolders": [
+    "demos",
+    "docs",
+    "packages/chatbotlite/tests",
+    "packages/chatbotlite-mcp"
+  ],
+  "rules": [
+    "Server import is `chatbotlite/client` for ChatBot; `chatbotlite/node` for knowledgeFromFile; `chatbotlite/react` for ChatWidget; `chatbotlite/adapters` for URL adapters.",
+    "ChatBot constructor: new ChatBot({ knowledge, providers: { keys, chain } }). knowledge is a required markdown string.",
+    "Providers use an ordered failover chain (chain: [{ provider, model }]). There is no per-message routing option.",
+    "bot.replyStream(message, { history }) returns a ReadableStream for an SSE route (Content-Type: text/event-stream).",
+    "No vector DB — knowledge is one markdown file."
+  ]
+}

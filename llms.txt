@@ -1,0 +1,19 @@
+# ChatbotLite
+
+> Drop-in AI chatbot for any website. A React widget plus a server-side ChatBot client, published on npm as `chatbotlite`. Three lines to add chat: a widget, a `/api/chat` SSE route, and a markdown knowledge file. 10 LLM providers with auto-failover, 13 URL-only payment/scheduling adapters, no vector DB. Apache-2.0, BYOK.
+
+## Docs
+- [Full API reference (machine-readable, 35KB)](https://chatbotlite-demos.vercel.app/llms-full.txt)
+- [README](https://github.com/agents-io/chatbotlite/blob/main/README.md)
+- [AGENTS.md — facts for coding agents](https://github.com/agents-io/chatbotlite/blob/main/AGENTS.md)
+- [SKILL Marker Protocol spec](https://github.com/agents-io/chatbotlite/blob/main/SKILL_MARKER_SPEC.md)
+- [Skill for coding agents](https://github.com/agents-io/chatbotlite/blob/main/packages/chatbotlite/SKILL.md)
+
+## Usage
+- [Live demos (6 verticals)](https://chatbotlite-demos.vercel.app)
+- [npm package](https://www.npmjs.com/package/chatbotlite)
+- [MCP server (chatbotlite-mcp)](https://github.com/agents-io/chatbotlite/tree/main/packages/chatbotlite-mcp)
+
+## Optional
+- [Roadmap](https://github.com/agents-io/chatbotlite/blob/main/ROADMAP.md)
+- [llms.txt summary](https://chatbotlite-demos.vercel.app/llms.txt)
